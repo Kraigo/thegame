@@ -131,20 +131,3 @@ class Game {
 				body.position.y > this.camera.width)
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

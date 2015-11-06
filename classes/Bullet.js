@@ -10,6 +10,7 @@ class Bullet extends Basis {
 	}
 	update() {
 		this.bounceWorld();
+		this.fixStuckWorld();
 
 		if (this.isOuterWorld()) {
 			this.game.removeBody(this);	
