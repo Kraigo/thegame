@@ -123,6 +123,23 @@ class Game {
 		for(var i = 0; i<msg.length; i++) {
 			this.screen.fillText(msg[i],10, (i+1)*18);
 		}
+
+		this.screen.fillText('W', 40, this.camera.height - 40);
+		this.screen.fillText('S', 40, this.camera.height - 20);
+		this.screen.fillText('A', 20, this.camera.height - 20);
+		this.screen.fillText('D', 60, this.camera.height - 20);
+
+		this.screen.beginPath();
+		this.screen.moveTo(35, this.camera.height - 55);		
+		this.screen.lineTo(55, this.camera.height - 55);
+		this.screen.lineTo(55, this.camera.height - 35);
+		this.screen.lineTo(75, this.camera.height - 35);
+		this.screen.lineTo(75, this.camera.height - 15);
+		this.screen.lineTo(15, this.camera.height - 15);
+		this.screen.lineTo(15, this.camera.height - 35);
+		this.screen.lineTo(35, this.camera.height - 35);
+		this.screen.lineTo(35, this.camera.height - 55);
+		this.screen.stroke();
 	}
 	isCameraShow(body) {
 		return !(body.position.x + body.size.width < this.camera.x &&

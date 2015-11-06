@@ -24,5 +24,6 @@ class Bullet extends Basis {
 		}
 		this.position.x += this.speed.x;
 		this.position.y += this.speed.y;
+
 	}
 }
