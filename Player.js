@@ -9,10 +9,11 @@ class Player extends Basis {
 		this.size.height = 32;
 		this.position.x = game.world.width/2 - this.size.width/2;
 		this.position.y = game.world.height/2 - this.size.height/2;
-		this.bullet = 1;
 		this.shooting = {
-			speed: 5,
-			rate: 5
+			bullet: 1,
+			valocity: 5,
+			rate: 5,
+			reload: 0
 		};
 	}
 	render() {	
@@ -45,18 +46,21 @@ class Player extends Basis {
 		}
 	}
 	shot() {
-		if(this.bullet && this.game.point.isPressed('LEFT')) {
-			this.bullet --;
 
-			var shotDirection = this.normalize(this.position, this.game.point);
-			shotDirection.x *= this.shooting.speed;
-			shotDirection.y *= this.shooting.speed;
-
-			this.game.addBody(new Bullet(this.game, {x: this.position.x + this.size.width/2, y: this.position.y + this.size.height/2}, shotDirection))
+		if (!this.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {
+			this.bullet = 1;
+			this.shooting.reload = 0;
 		}
 
-		if (this.game.timer%this.shooting.rate==0) {
-			this.bullet = 1;
+
+		if(this.bullet && this.game.point.isPressed('LEFT')) {
+			this.bullet = 0;
+
+			var shotDirection = this.normalize(this.position, this.game.point);
+			shotDirection.x *= this.shooting.valocity;
+			shotDirection.y *= this.shooting.valocity;
+
+			this.game.addBody(new Bullet(this.game, {x: this.position.x + this.size.width/2, y: this.position.y + this.size.height/2}, shotDirection))
 		}
 
 	}

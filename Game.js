@@ -16,8 +16,8 @@ class Game {
 			height: this.canvas.height
 		};
 		this.world = {
-			width: 400,
-			height: 400
+			width: 1200,
+			height: 1200
 		}
 		this.player = new Player(game);
 
@@ -29,9 +29,8 @@ class Game {
 
 		this.bodies = [];
 		this.addBody(this.player);
-		this.timer = 0;
 
-		for (var i = 0; i < 50; i++) {
+		for (var i = 0; i < 200; i++) {
 			this.addBody(new Asteroid(game, {}));
 		}
 
@@ -68,7 +67,6 @@ class Game {
 
 	update() {
 		var self = this;
-		this.timer ++;
 
 		this.camera.x = this.player.position.x - this.camera.width/2 + this.player.size.width/2;
 		this.camera.y = this.player.position.y - this.camera.height/2 + this.player.size.height/2;
