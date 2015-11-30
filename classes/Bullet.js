@@ -1,12 +1,14 @@
 'use strict';
 class Bullet extends Basis {
-	constructor(game, position, speed) {
+	constructor(game, position, direction) {
 		super(game);
 		this.size.width = 24;
 		this.size.height = 24;
 		this.position.x = position.x - this.size.width/2;
 		this.position.y = position.y - this.size.height/2;
-		this.speed = speed || {x:0, y:0};
+		this.direction = direction;
+		this.speed = 5;
+		this.animation.name = 'bullet';
 	}
 	update() {
 		this.bounceWorld();
@@ -24,13 +26,13 @@ class Bullet extends Basis {
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 
-			if (body instanceof Asteroid && this.game.colliding(this, body)) {
+			if (!body.willDie && body instanceof Asteroid && this.game.colliding(this, body)) {
 
 				// this.game.removeBody([body, this]);
 
-				this.speed.x = this.speed.y = 0;
-				this.changeAnimation('exploed');
-				this.selfRemove = 12;
+
+				this.game.killBody(this);
+				this.game.killBody(body);
 
 				// var position = this.position;
 				// var exploed = new Bullet(this.game, position);
@@ -38,8 +40,8 @@ class Bullet extends Basis {
 				// this.game.addBody(exploed);		
 			}
 		}
-		this.position.x += this.speed.x;
-		this.position.y += this.speed.y;
+		this.position.x += this.direction.x * this.speed;
+		this.position.y += this.direction.y * this.speed;
 	}
 	render() {
 
@@ -49,7 +51,7 @@ class Bullet extends Basis {
 
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
-			{x: this.position.x - this.game.camera.x + this.speed.x, y: this.position.y - this.game.camera.y + this.speed.y});
-		this.game.sprite.draw('bullet', this, angle);
+			{x: this.position.x - this.game.camera.x + this.direction.x * this.speed, y: this.position.y - this.game.camera.y + this.direction.y * this.speed});
+		this.game.sprite.draw(this, angle);
 	}
 }

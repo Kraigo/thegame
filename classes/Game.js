@@ -18,7 +18,7 @@ class Game {
 		this.world = {
 			width: 1200,
 			height: 1200
-		}
+		};
 		this.player = new Player(game);
 		this.keyboard = new Keyboard();
 		this.point = new Point(game.canvas);
@@ -37,7 +37,7 @@ class Game {
 			game.update();
 			game.render();
 			requestAnimationFrame(tick);
-		}
+		};
 		tick();
 	}
 
@@ -52,7 +52,7 @@ class Game {
 			'Obj count: '+this.bodies.length,
 			'Camera (x: '+this.camera.x+', y: '+this.camera.y+')',
 			'Player (x: '+this.player.position.x+', y: '+this.player.position.y+')'
-			])
+			]);
 		this.screen.rect(0-this.camera.x,0-this.camera.y, this.world.width, this.world.height);
 		this.screen.stroke();
 
@@ -75,8 +75,14 @@ class Game {
 		this.camera.x += (this.point.x - this.camera.width/2)*0.2;
 		this.camera.y += (this.point.y - this.camera.height/2)*0.2;
 
-		for (var i = 0; i < this.bodies.length; i++ ) {
-			this.bodies[i].update();
+		for (var i = 0, body; i < this.bodies.length; i++ ) {
+			body = this.bodies[i];
+			if (body.willDie && body.animation.end) {
+				this.removeBody(body);
+				i--;
+				continue;
+			}
+			body.update();
 		}
 	}
 
@@ -90,6 +96,15 @@ class Game {
 
 	addBody(body) {
 		this.bodies.push(body);
+	}
+
+	killBody(body) {
+		body.changeAnimation('die');
+		body.speed = 0;
+		body.animation.rate = 15;
+		body.willDie = true;
+
+		console.log(body.animation);
 	}
 
 	removeBody(items) {

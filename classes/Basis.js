@@ -7,13 +7,16 @@ class Basis {
 			height: 16
 		};
 		this.position = {x: 0, y: 0};
-		this.speed = {x: 0, y: 0};
-		this.velocity = {x: 0, y: 0};
+		this.direction = {x: 0, y: 0};
+		this.speed = 0;
+		this.velocity = 0;
 		this.gravity = 0.5;
 		this.animation = {
+			name: null,
 			state: 'stand',
 			keyframe: 0,
-			rate: 5
+			rate: 5,
+			end: false
 		};
 	}
 	render() {
@@ -25,10 +28,10 @@ class Basis {
 	}
 	bounceWorld() {
 		if (this.position.x + this.size.width > this.game.world.width || this.position.x < 0) {
-			this.speed.x = -this.speed.x;
+			this.direction.x = -this.direction.x;
 		}
 		if (this.position.y + this.size.height > this.game.world.height || this.position.y < 0) {
-			this.speed.y = -this.speed.y;
+			this.direction.y = -this.direction.y;
 		}
 	}
 	isOuterWorld() {
@@ -40,25 +43,25 @@ class Basis {
 	fixStuckWorld() {
 		if (this.position.x < 0) {
 			this.position.x = 0;
-			if (this.speed.x < 0) {
-				this.speed.x = - this.speed.x;
+			if (this.direction.x < 0) {
+				this.direction.x = - this.direction.x;
 			}
 		} else if (this.position.x + this.size.width > this.game.world.width) {
 			this.position.x = this.game.world.width - this.size.width;
-			if (this.position.speed > 0) {
-				this.speed.x = - this.speed.x;
+			if (this.position.x > 0) {
+				this.direction.x = - this.direction.x;
 			}
 		}
 
 		if (this.position.y < 0) {
 			this.position.y = 0;
-			if (this.speed.y < 0) {
-				this.speed.y = - this.speed.y;
+			if (this.direction.y < 0) {
+				this.direction.y = - this.direction.y;
 			}
 		} else if (this.position.y + this.size.height > this.game.height) {
 			this.position.y = this.game.world.height - this.size.height;
-			if (this.position.speed > 0) {
-				this.speed.y = - this.speed.y;
+			if (this.position.y > 0) {
+				this.direction.y = - this.direction.y;
 			}
 		}
 	}
@@ -80,24 +83,22 @@ class Basis {
 			body = this.game.bodies[i];
 			if (body instanceof inst && this.game.colliding(this, body)) {
 
-				if ((this.speed.x > 0 && this.position.x < body.position.x) ||
-					(this.speed.x < 0 && this.position.x > body.position.x)) {
+				if ((this.direction.x > 0 && this.position.x < body.position.x) ||
+					(this.direction.x < 0 && this.position.x > body.position.x)) {
 
-					this.speed.x = -this.speed.x;
-					body.speed.x = -body.speed.x;
+					this.direction.x = -this.direction.x;
 
-					this.position.x += this.speed.x;
-					body.position.x += body.speed.x;
+					this.position.x += this.direction.x;
+					body.position.x += body.speed;
 
-				} else if ((this.speed.y > 0 && this.position.y < body.position.y) ||
-					(this.speed.y < 0 && this.position.y > body.position.y)) {
+				} else if ((this.direction.y > 0 && this.position.y < body.position.y) ||
+					(this.direction.y < 0 && this.position.y > body.position.y)) {
 
-					this.speed.y = -this.speed.y;
-					body.speed.y = -body.speed.y;
+					this.direction.y = -this.direction.y;
 
-					this.position.y += this.speed.y;
-					body.position.y += body.speed.y;
-				}		
+					this.position.y += this.direction.y;
+					body.position.y += body.speed;
+				}
 
 			}
 		}
@@ -106,6 +107,7 @@ class Basis {
 		if (this.animation.state != animName) {
 			this.animation.state = animName;
 			this.animation.keyframe = 0;
+			this.animation.end = false;
 		}
 	}
 }

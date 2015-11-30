@@ -10,10 +10,10 @@ class Player extends Basis {
 		this.position.y = game.world.height/2 - this.size.height/2;
 		this.shooting = {
 			bullet: 1,
-			valocity: 5,
 			rate: 5,
 			reload: 0
 		};
+		this.animation.name = 'player';
 	}
 	render() {	
 		// this.game.screen.beginPath();
@@ -23,7 +23,7 @@ class Player extends Basis {
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
 			{x: this.game.point.x, y: this.game.point.y});
-		this.game.sprite.draw('player', this, angle);
+		this.game.sprite.draw(this, angle);
 	}
 	update() {
 
@@ -63,12 +63,10 @@ class Player extends Basis {
 		}
 
 
-		if(this.bullet && this.game.point.isPressed('LEFT')) {
+		if(this.bullet && (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'))) {
 			this.bullet = 0;
 
 			var shotDirection = this.vectorNormalize(this.position, this.game.point);
-			shotDirection.x *= this.shooting.valocity;
-			shotDirection.y *= this.shooting.valocity;
 
 			this.game.addBody(new Bullet(this.game, {x: this.position.x + this.size.width/2, y: this.position.y + this.size.height/2}, shotDirection))
 		}

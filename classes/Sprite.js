@@ -15,25 +15,26 @@ class Sprite {
 			monster: {
 				stand: [{x:0, y: 144}],
 				walk: [{x:0, y: 144}, {x:48, y:144}, {x:96, y:144}, {x:144, y:144},{x:0, y: 192}, {x:48, y:192}, {x:96, y:192}, {x:144, y:192}],
-				bite: [{x: 0, y:240}, {x: 48, y:240}, {x: 96, y:240}]
+				bite: [{x: 0, y:240}, {x: 48, y:240}, {x: 96, y:240}],
+				die: [{x: 0, y: 336}, {x: 0, y: 336}, {x: 48, y: 336}, {x: 48, y: 336}]
 			},
 			bullet: {
 				stand: [{x:0, y: 96, w: 24, h:24}],
-				exploed: [{x:0, y: 120, w: 24, h:24},{x:24, y: 120, w: 24, h:24}]
+				die: [{x:0, y: 120, w: 24, h:24},{x:24, y: 120, w: 24, h:24}]
 			}
-		}
+		};
 
 		this.image = new Image();
 		this.image.src = this.dir;
 	}
 
-	draw(animName, body, angle) {
+	draw(body, angle) {
 		var x = body.position.x + body.size.width/2 - this.game.camera.x;
 		var y = body.position.y + body.size.height/2 - this.game.camera.y;
 		angle = angle - 90 % 360 || 0;
 
-		var frame = this.getFrame(animName, body.animation);
-		
+		var frame = this.getFrame(body.animation);
+
 		this.game.screen.save();
 		this.game.screen.translate(x, y);
 		this.game.screen.rotate(angle*Math.PI/180);
@@ -54,8 +55,8 @@ class Sprite {
 		this.game.screen.restore();
 	}
 
-	getFrame(name, animation) {
-		var pack = this.collection[name][animation.state];
+	getFrame(animation) {
+		var pack = this.collection[animation.name][animation.state];
 		if (this.game.timer % animation.rate == 0) {
 			if (pack.length - 1 > animation.keyframe) {
 				animation.keyframe += 1;
