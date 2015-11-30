@@ -10,6 +10,11 @@ class Basis {
 		this.speed = {x: 0, y: 0};
 		this.velocity = {x: 0, y: 0};
 		this.gravity = 0.5;
+		this.animation = {
+			state: 'stand',
+			keyframe: 0,
+			rate: 5
+		};
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -57,12 +62,17 @@ class Basis {
 			}
 		}
 	}
-	normalize(p1, p2) {
+	vectorNormalize(p1, p2) {
 		// (x1,y2) ==> (x2, y2)
 		var vx = p2.x + this.game.camera.x - p1.x - this.size.width/2;
 		var vy = p2.y + this.game.camera.y - p1.y - this.size.height/2;
 		var dxy = Math.sqrt(vx*vx + vy*vy);
 		return {x: vx/dxy, y: vy/dxy}
+	}
+
+	vectorAngle(p1, p2) {
+		var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 	}
 	brotherColliding() {
 		var inst = this.constructor;
@@ -90,6 +100,12 @@ class Basis {
 				}		
 
 			}
+		}
+	}
+	changeAnimation(animName) {
+		if (this.animation.state != animName) {
+			this.animation.state = animName;
+			this.animation.keyframe = 0;
 		}
 	}
 }

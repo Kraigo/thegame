@@ -1,6 +1,6 @@
 'use strict';
 class Keyboard {
-	constructor(game) {
+	constructor() {
 		var state = {};
 		var KEYS = {
 			SPACE: 32,

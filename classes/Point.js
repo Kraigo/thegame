@@ -1,6 +1,6 @@
 'use strict';
 class Point {
-	constructor(game) {
+	constructor(canvas) {
 		var point = this;
 		var state = {};
 		var BUTTONS = {
@@ -10,15 +10,15 @@ class Point {
 		}
 		this.x = 0;
 		this.y = 0;
-		game.canvas.addEventListener('mousemove', function(e) {
+		canvas.addEventListener('mousemove', function(e) {
 			point.x = e.clientX;
 			point.y = e.clientY;
 		})		
-		game.canvas.addEventListener('mousedown', function(e) {
+		canvas.addEventListener('mousedown', function(e) {
 			//e.preventDefault();
 			state[e.button] = true;
 		})
-		game.canvas.addEventListener('mouseup', function(e) {
+		canvas.addEventListener('mouseup', function(e) {
 			e.preventDefault();
 			state[e.button] = false;
 		})

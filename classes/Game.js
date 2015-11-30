@@ -20,17 +20,16 @@ class Game {
 			height: 1200
 		}
 		this.player = new Player(game);
-
-		this.keyboard = new Keyboard(game);
-
-		this.point = new Point(game);
-
+		this.keyboard = new Keyboard();
+		this.point = new Point(game.canvas);
+		this.sprite = new Sprite(game);
 		this.lastTick = new Date();
+		this.timer = 0;
 
 		this.bodies = [];
 		this.addBody(this.player);
 
-		for (var i = 0; i < 200; i++) {
+		for (var i = 0; i < 20; i++) {
 			this.addBody(new Asteroid(game, {}));
 		}
 
@@ -68,28 +67,17 @@ class Game {
 	update() {
 		var self = this;
 
+		this.timer ++;
+
 		this.camera.x = this.player.position.x - this.camera.width/2 + this.player.size.width/2;
 		this.camera.y = this.player.position.y - this.camera.height/2 + this.player.size.height/2;
+
+		this.camera.x += (this.point.x - this.camera.width/2)*0.2;
+		this.camera.y += (this.point.y - this.camera.height/2)*0.2;
 
 		for (var i = 0; i < this.bodies.length; i++ ) {
 			this.bodies[i].update();
 		}
-
-		// var bodies = [];
-		// for (var i = 0; i < this.bodies.length; i++) {
-		// 	var intact = true;
-		// 	for (var j = 0; j < this.bodies.length; j++) {
-		// 		if (self.colliding(this.bodies[i], this.bodies[j])) {
-		// 			intact = false;
-		// 			break;
-		// 		}
-		// 	}
-		// 	if (intact) {
-		// 		bodies.push(this.bodies[i]);
-		// 	}
-		// }
-
-		// this.bodies = bodies;
 	}
 
 	colliding(b1,b2) {
