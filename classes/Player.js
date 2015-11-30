@@ -10,7 +10,7 @@ class Player extends Basis {
 		this.position.y = game.world.height/2 - this.size.height/2;
 		this.shooting = {
 			bullet: 1,
-			rate: 5,
+			rate: 3,
 			reload: 0
 		};
 		this.animation.name = 'player';

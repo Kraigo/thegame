@@ -50,8 +50,8 @@ class Game {
 		this.debug([
 			'FPS: '+ fps,
 			'Obj count: '+this.bodies.length,
-			'Camera (x: '+this.camera.x+', y: '+this.camera.y+')',
-			'Player (x: '+this.player.position.x+', y: '+this.player.position.y+')'
+			//'Camera (x: '+this.camera.x+', y: '+this.camera.y+')',
+			//'Player (x: '+this.player.position.x+', y: '+this.player.position.y+')'
 			]);
 		this.screen.rect(0-this.camera.x,0-this.camera.y, this.world.width, this.world.height);
 		this.screen.stroke();

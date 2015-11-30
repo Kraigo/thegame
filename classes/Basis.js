@@ -18,6 +18,7 @@ class Basis {
 			rate: 5,
 			end: false
 		};
+		this.health = 0;
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -77,6 +78,12 @@ class Basis {
 		var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 	}
+
+	//vectorAngle(vector) {
+	//	var angleRad = Math.acos( vector.x / Math.sqrt(vector.x*vector.x + vector.y*vector.y) );
+	//	return angleRad * 180 / Math.PI;
+	//}
+
 	brotherColliding() {
 		var inst = this.constructor;
 		for (var i=0, body; i<this.game.bodies.length; i++) {
@@ -109,5 +116,8 @@ class Basis {
 			this.animation.keyframe = 0;
 			this.animation.end = false;
 		}
+	}
+	hit(demage, crit) {
+		this.health -= demage;
 	}
 }

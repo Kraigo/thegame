@@ -32,7 +32,7 @@ class Asteroid extends Basis {
 
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
-			{x: this.position.x - this.game.camera.x + this.direction.x * this.speed, y: this.position.y - this.game.camera.y + this.direction.y * this.speed});
+			{x: this.position.x - this.game.camera.x + this.direction.x, y: this.position.y - this.game.camera.y + this.direction.y});
 		this.game.sprite.draw(this, angle);
 	}
 	update() {
@@ -41,23 +41,20 @@ class Asteroid extends Basis {
 
 		this.fixStuckWorld();
 
-		if (!this.willDie && this.speed > 0) {
+		if (this.speed) {
 			this.changeAnimation('walk');
-		} else {
+			this.position.x += this.direction.x * this.speed;
+			this.position.y += this.direction.y * this.speed;
+
+			var directToPlayer = this.vectorNormalize(this.position, {
+				x: this.game.player.position.x - this.game.camera.x + this.game.player.size.width / 2,
+				y: this.game.player.position.y - this.game.camera.y + this.game.player.size.height / 2
+			});
+
+			this.direction.x += (directToPlayer.x - this.direction.x) * 0.05;
+			this.direction.y += (directToPlayer.y - this.direction.y) * 0.05;
+		} else if (!this.willDie) {
 			this.changeAnimation('stand');
 		}
-
-		this.position.x += this.direction.x * this.speed;
-		this.position.y += this.direction.y * this.speed;
-
-		var directToPlayer = this.vectorNormalize(this.position, {x: this.game.player.position.x - this.game.camera.x + this.game.player.size.width/2, y: this.game.player.position.y - this.game.camera.y + this.game.player.size.height/2});
-
-		this.direction.x += (directToPlayer.x - this.direction.x)*0.05;
-		this.direction.y += (directToPlayer.y - this.direction.y)*0.05;
-
-		//if (this.position.x < this.game.player.position.x) this.direction.x += 0.01 ;
-		//else this.direction.x -= 0.01;
-		//if (this.position.y < this.game.player.position.y) this.direction.y += 0.01;
-		//else this.direction.y -= 0.01;
 	}
 }

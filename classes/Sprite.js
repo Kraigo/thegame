@@ -31,7 +31,7 @@ class Sprite {
 	draw(body, angle) {
 		var x = body.position.x + body.size.width/2 - this.game.camera.x;
 		var y = body.position.y + body.size.height/2 - this.game.camera.y;
-		angle = angle - 90 % 360 || 0;
+		angle = angle - 90 % 360;
 
 		var frame = this.getFrame(body.animation);
 

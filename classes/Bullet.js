@@ -15,8 +15,7 @@ class Bullet extends Basis {
 		this.fixStuckWorld();
 
 		if (this.isOuterWorld()) {
-			// Problem!
-			// this.game.removeBody(this);
+			this.game.removeBody(this);
 		}
 
 		if (this.game.timer % this.selfRemove == 0) {
@@ -27,17 +26,8 @@ class Bullet extends Basis {
 			body = this.game.bodies[i];
 
 			if (!body.willDie && body instanceof Asteroid && this.game.colliding(this, body)) {
-
-				// this.game.removeBody([body, this]);
-
-
 				this.game.killBody(this);
 				this.game.killBody(body);
-
-				// var position = this.position;
-				// var exploed = new Bullet(this.game, position);
-				// exploed.changeAnimation('exploed');
-				// this.game.addBody(exploed);		
 			}
 		}
 		this.position.x += this.direction.x * this.speed;
