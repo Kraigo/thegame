@@ -25,6 +25,11 @@ class Asteroid extends Basis {
 		// this.game.screen.beginPath();
 		// this.game.screen.rect(this.position.x - this.game.camera.x, this.position.y - this.game.camera.y, this.size.width, this.size.height);
 		// this.game.screen.stroke();
+		this.game.screen.beginPath();
+		this.game.screen.arc(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y, (this.size.width + this.size.height) / 6, 0 ,2*Math.PI);
+		this.game.screen.fillStyle="rgba(0,0,0,0.2)";
+		this.game.screen.fill();
+
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
 			{x: this.position.x - this.game.camera.x + this.direction.x * this.speed, y: this.position.y - this.game.camera.y + this.direction.y * this.speed});
@@ -45,7 +50,7 @@ class Asteroid extends Basis {
 		this.position.x += this.direction.x * this.speed;
 		this.position.y += this.direction.y * this.speed;
 
-		var directToPlayer = this.vectorNormalize(this.position, {x: this.game.player.position.x - this.game.camera.x, y: this.game.player.position.y - this.game.camera.y,});
+		var directToPlayer = this.vectorNormalize(this.position, {x: this.game.player.position.x - this.game.camera.x + this.game.player.size.width/2, y: this.game.player.position.y - this.game.camera.y + this.game.player.size.height/2});
 
 		this.direction.x += (directToPlayer.x - this.direction.x)*0.05;
 		this.direction.y += (directToPlayer.y - this.direction.y)*0.05;

@@ -48,7 +48,7 @@ class Basis {
 			}
 		} else if (this.position.x + this.size.width > this.game.world.width) {
 			this.position.x = this.game.world.width - this.size.width;
-			if (this.position.x > 0) {
+			if (this.direction.x > 0) {
 				this.direction.x = - this.direction.x;
 			}
 		}
@@ -60,7 +60,7 @@ class Basis {
 			}
 		} else if (this.position.y + this.size.height > this.game.height) {
 			this.position.y = this.game.world.height - this.size.height;
-			if (this.position.y > 0) {
+			if (this.direction.y > 0) {
 				this.direction.y = - this.direction.y;
 			}
 		}

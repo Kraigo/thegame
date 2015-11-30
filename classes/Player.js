@@ -16,12 +16,13 @@ class Player extends Basis {
 		this.animation.name = 'player';
 	}
 	render() {	
-		// this.game.screen.beginPath();
-		// this.game.screen.arc(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y, (this.size.width + this.size.height) / 4, 0 ,2*Math.PI);
-		// this.game.screen.stroke();
+		this.game.screen.beginPath();
+		this.game.screen.arc(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y, (this.size.width + this.size.height) / 6, 0 ,2*Math.PI);
+		this.game.screen.fillStyle="rgba(0,0,0,0.2)";
+		this.game.screen.fill();
 
 		var angle = this.vectorAngle(
-			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
+			{x: this.position.x - this.game.camera.x + this.size.width/2, y: this.position.y - this.game.camera.y + this.size.width/2},
 			{x: this.game.point.x, y: this.game.point.y});
 		this.game.sprite.draw(this, angle);
 	}

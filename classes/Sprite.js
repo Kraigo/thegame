@@ -45,8 +45,8 @@ class Sprite {
 			frame.y,
 			frame.w || this.size.width,
 			frame.h || this.size.height,
-			-this.size.width/2,
-			-this.size.width/2,
+			-body.size.width/2,
+			-body.size.width/2,
 			body.size.width,
 			body.size.height
 		);

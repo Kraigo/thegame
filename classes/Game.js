@@ -103,8 +103,6 @@ class Game {
 		body.speed = 0;
 		body.animation.rate = 15;
 		body.willDie = true;
-
-		console.log(body.animation);
 	}
 
 	removeBody(items) {
@@ -120,9 +118,10 @@ class Game {
 				}
 			}
 		}
-
 	}
+
 	debug(msg) {
+		this.screen.fillStyle="#000";
 		for(var i = 0; i<msg.length; i++) {
 			this.screen.fillText(msg[i],10, (i+1)*18);
 		}
