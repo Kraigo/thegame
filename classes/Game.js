@@ -29,7 +29,7 @@ class Game {
 		this.bodies = [];
 		this.addBody(this.player);
 
-		for (var i = 0; i < 200; i++) {
+		for (var i = 0; i < 30; i++) {
 			this.addBody(new Asteroid(game, {}));
 		}
 
