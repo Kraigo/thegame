@@ -17,15 +17,11 @@ class Bullet extends Basis {
 		if (this.isOuterWorld()) {
 			this.game.removeBody(this);
 		}
-
-		if (this.game.timer % this.selfRemove == 0) {
-			this.game.removeBody(this)
-		}
 		
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 
-			if (!body.willDie && body instanceof Asteroid && this.game.colliding(this, body)) {
+			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.game.colliding(this, body)) {
 				this.game.killBody(this);
 				this.game.killBody(body);
 			}
