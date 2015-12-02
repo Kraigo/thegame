@@ -9,6 +9,7 @@ class Bullet extends Basis {
 		this.direction = direction;
 		this.speed = 5;
 		this.animation.name = 'bullet';
+		this.demage = Math.random()*40
 	}
 	update() {
 		this.bounceWorld();
@@ -23,7 +24,7 @@ class Bullet extends Basis {
 
 			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.game.colliding(this, body)) {
 				this.game.killBody(this);
-				this.game.killBody(body);
+				this.game.hitBody(body, this.demage);
 			}
 		}
 		this.position.x += this.direction.x * this.speed;

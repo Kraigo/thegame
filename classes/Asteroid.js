@@ -21,6 +21,8 @@ class Asteroid extends Basis {
 		this.speed = Math.random() * 2;
 		this.speed = 3;
 		this.animation.name = 'monster';
+		this.health.max = 100;
+		this.health.current = 100;
 		this.target = options.target || null;
 	}
 	render() {
@@ -33,6 +35,8 @@ class Asteroid extends Basis {
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
 			{x: this.position.x - this.game.camera.x + this.direction.x, y: this.position.y - this.game.camera.y + this.direction.y});
 		this.game.sprite.draw(this, angle);
+
+		this.healthBar();
 	}
 	update() {
 		this.bounceWorld();

@@ -29,8 +29,8 @@ class Game {
 		this.bodies = [];
 		this.addBody(this.player);
 
-		for (var i = 0; i < 30; i++) {
-			this.addBody(new Asteroid(game, {target: this.this.bodies}));
+		for (var i = 0; i < 5; i++) {
+			this.addBody(new Asteroid(game, {target: this.player}));
 		}
 
 		var tick = function() {
@@ -103,6 +103,14 @@ class Game {
 		body.speed = 0;
 		body.animation.rate = 15;
 		body.willDie = true;
+	}
+
+	hitBody(body, demage) {
+		body.health.current -= demage;
+		if (body.health.current <= 0) {
+			body.health.current = 0;
+			this.killBody(body);
+		}
 	}
 
 	removeBody(items) {

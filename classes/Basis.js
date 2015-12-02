@@ -18,11 +18,30 @@ class Basis {
 			rate: 5,
 			end: false
 		};
-		this.health = 0;
+		this.health = {
+			max: 0,
+			current: 0
+		};
+
+		this.willDie = false;
+		this.willAttack = false;
 	}
 	render() {
 		this.game.screen.beginPath();
 		this.game.screen.rect(this.position.x - this.game.camera.x, this.position.y - this.game.camera.y, this.size.width, this.size.height);
+		this.game.screen.stroke();
+	}
+	healthBar() {
+		var healthBar = {
+			x: this.position.x - this.game.camera.x,
+			y: this.position.y - this.game.camera.y-5,
+			height: 3,
+			width: this.size.width * (this.health.current / this.health.max)
+		}
+		this.game.screen.beginPath();
+		this.game.screen.rect(healthBar.x, healthBar.y, this.size.width, healthBar.height);
+		this.game.screen.fillStyle = 'red';
+		this.game.screen.fillRect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
 		this.game.screen.stroke();
 	}
 	update() {
