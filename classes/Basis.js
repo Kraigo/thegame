@@ -86,49 +86,31 @@ class Basis {
 
 	brotherColliding() {
 		var inst = this.constructor;
+		var intensity = 0.03;
+
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 			if (body instanceof inst && this.game.colliding(this, body)) {
 
-
 				if (this.position.x < body.position.x) {
-					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * 0.3;
+					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * intensity;
 					this.position.x -= diff;
 					body.position.x += diff;
 				} else if (this.position.x > body.position.x) {
-					var diff = (body.position.x - this.position.x + this.size.width) / 2 * 0.3;
+					var diff = (body.position.x - this.position.x + this.size.width) / 2 * intensity;
 					this.position.x += diff;
 					body.position.x -= diff;
 				}
 
 
 				if (this.position.y < body.position.y) {
-					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * 0.3;
+					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * intensity;
 					this.position.y -= diff;
-					body.position.y += diff;
+					body.position.y += diff;intensity
 				} else if (this.position.y > body.position.y) {
-					var diff = (body.position.y - this.position.y + this.size.height) / 2 * 0.3;
+					var diff = (body.position.y - this.position.y + this.size.height) / 2 * intensity;
 					this.position.y += diff;
 					body.position.y -= diff;
-				}
-				return;
-
-
-				if ((this.direction.x > 0 && this.position.x < body.position.x) ||
-					(this.direction.x < 0 && this.position.x > body.position.x)) {
-
-					// this.direction.x = -this.direction.x;
-
-					this.position.x += this.direction.x;
-					body.position.x += body.speed;
-
-				} else if ((this.direction.y > 0 && this.position.y < body.position.y) ||
-					(this.direction.y < 0 && this.position.y > body.position.y)) {
-
-					// this.direction.y = -this.direction.y;
-
-					this.position.y += this.direction.y;
-					body.position.y += body.speed;
 				}
 
 			}

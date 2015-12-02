@@ -30,7 +30,7 @@ class Game {
 		this.addBody(this.player);
 
 		for (var i = 0; i < 30; i++) {
-			this.addBody(new Asteroid(game, {}));
+			this.addBody(new Asteroid(game, {target: this.this.bodies}));
 		}
 
 		var tick = function() {
