@@ -30,7 +30,7 @@ class Game {
 		this.addBody(this.player);
 
 		for (var i = 0; i < 5; i++) {
-			this.addBody(new Asteroid(game, {target: this.player}));
+			this.addBody(new Asteroid(game, {target: this.player, width: 48, height: 48}));
 		}
 
 		var tick = function() {
@@ -85,8 +85,19 @@ class Game {
 			body.update();
 		}
 	}
-
+	collidingBody(b1,b2) {
+		return (b1 != b2 && this.colliding(
+					{x: b1.position.x, y: b1.position.y, r: b1.size.width/2},
+					{x: b2.position.x, y: b2.position.y, r: b2.size.width/2})
+				);
+	}
 	colliding(b1,b2) {
+		var dx = b1.x - b2.x;
+		var dy = b1.y - b2.y;
+		var distance = Math.sqrt(dx * dx + dy * dy);
+
+		return (distance < b1.r + b2.r);
+
 		return !(b1 == b2 ||
 			b1.position.x + b1.size.width < b2.position.x ||
 			b1.position.y + b1.size.height < b2.position.y ||
@@ -96,21 +107,6 @@ class Game {
 
 	addBody(body) {
 		this.bodies.push(body);
-	}
-
-	killBody(body) {
-		body.changeAnimation('die');
-		body.speed = 0;
-		body.animation.rate = 15;
-		body.willDie = true;
-	}
-
-	hitBody(body, demage) {
-		body.health.current -= demage;
-		if (body.health.current <= 0) {
-			body.health.current = 0;
-			this.killBody(body);
-		}
 	}
 
 	removeBody(items) {

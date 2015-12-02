@@ -1,11 +1,11 @@
 'use strict';
 class Asteroid extends Basis {
-	constructor(game, options) {
+	constructor(game, params) {
 		super(game);
 
 		this.size = {
-			width: options.width || 48,
-			height: options.height || 48
+			width: params.width,
+			height: params.height
 		};
 
 		this.position = {
@@ -17,13 +17,12 @@ class Asteroid extends Basis {
 			x: Math.random(),
 			y: Math.random()
 		};
+		this.attack.range = 5;
 
 		this.speed = Math.random() * 2;
 		this.speed = 3;
 		this.animation.name = 'monster';
-		this.health.max = 100;
-		this.health.current = 100;
-		this.target = options.target || null;
+		this.target = params.target || null;
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -43,7 +42,26 @@ class Asteroid extends Basis {
 		this.brotherColliding();
 		this.fixStuckWorld();
 
-		if (this.speed) {
+
+		if (this.willDie) {
+
+		}
+		else if (this.willAttack || this.isReach(this.target)) {
+			this.willAttack = true;
+			this.changeAnimation('attack');
+
+			if (this.animation.end) {
+				this.willAttack = false;
+
+				if (this.isReach(this.target)) {
+					console.log('hit you');
+					this.target.hit(this.getRandomInt(this.attack.damageMin, this.attack.damageMax));
+				}
+
+				this.changeAnimation('stand');
+			}
+		}
+		else if (this.speed) {
 			this.changeAnimation('walk');
 			this.position.x += this.direction.x * this.speed;
 			this.position.y += this.direction.y * this.speed;
@@ -52,9 +70,11 @@ class Asteroid extends Basis {
 				this.routeToTarget();
 			}
 
-		} else if (!this.willDie) {
+		}
+		else {
 			this.changeAnimation('stand');
 		}
+
 	}
 
 	routeToTarget() {

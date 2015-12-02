@@ -1,15 +1,15 @@
 'use strict';
 class Bullet extends Basis {
-	constructor(game, position, direction) {
+	constructor(game, params) {
 		super(game);
 		this.size.width = 24;
 		this.size.height = 24;
-		this.position.x = position.x - this.size.width/2;
-		this.position.y = position.y - this.size.height/2;
-		this.direction = direction;
+		this.position.x = params.x - this.size.width/2;
+		this.position.y = params.y - this.size.height/2;
+		this.direction = params.direction;
 		this.speed = 5;
 		this.animation.name = 'bullet';
-		this.demage = Math.random()*40
+		this.attack.damage = params.damage;
 	}
 	update() {
 		this.bounceWorld();
@@ -22,9 +22,9 @@ class Bullet extends Basis {
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 
-			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.game.colliding(this, body)) {
-				this.game.killBody(this);
-				this.game.hitBody(body, this.demage);
+			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.game.collidingBody(this, body)) {
+				this.kill();
+				body.hit(this.attack.damage);
 			}
 		}
 		this.position.x += this.direction.x * this.speed;

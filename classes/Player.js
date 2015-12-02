@@ -13,7 +13,13 @@ class Player extends Basis {
 			rate: 3,
 			reload: 0
 		};
+		this.attack = {
+			damageMin: 20,
+			damageMax: 50,
+			range: 10
+		};
 		this.animation.name = 'player';
+
 	}
 	render() {	
 		this.game.screen.beginPath();
@@ -25,15 +31,17 @@ class Player extends Basis {
 			{x: this.position.x - this.game.camera.x + this.size.width/2, y: this.position.y - this.game.camera.y + this.size.width/2},
 			{x: this.game.point.x, y: this.game.point.y});
 		this.game.sprite.draw(this, angle);
+
+		this.healthBar();
 	}
 	update() {
 
-		for (var i=0, body; i<this.game.bodies.length; i++) {
-			body = this.game.bodies[i];
-			if (body instanceof Asteroid && this.game.colliding(this, body)) {
-				console.log('loose');
-			}
-		}
+		//for (var i=0, body; i<this.game.bodies.length; i++) {
+		//	body = this.game.bodies[i];
+		//	if (body instanceof Asteroid && this.game.collidingBody(this, body)) {
+		//		console.log('loose');
+		//	}
+		//}
 		this.shot();
 		this.move();
 	}
@@ -58,18 +66,23 @@ class Player extends Basis {
 	}
 	shot() {
 
-		if (!this.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {
-			this.bullet = 1;
+		if (!this.shooting.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {
+			this.shooting.bullet = 1;
 			this.shooting.reload = 0;
 		}
 
 
-		if(this.bullet && (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'))) {
-			this.bullet = 0;
+		if(this.shooting.bullet && (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'))) {
+			this.shooting.bullet = 0;
 
-			var shotDirection = this.vectorNormalize(this.position, this.game.point);
 
-			this.game.addBody(new Bullet(this.game, {x: this.position.x + this.size.width/2, y: this.position.y + this.size.height/2}, shotDirection))
+			var bulletParams = {
+				x: this.position.x + this.size.width/2,
+				y: this.position.y + this.size.height/2,
+				direction: this.vectorNormalize(this.position, this.game.point),
+				damage: this.getRandomInt(this.attack.damageMin, this.attack.damageMax)
+			};
+			this.game.addBody(new Bullet(this.game, bulletParams));
 		}
 
 	}

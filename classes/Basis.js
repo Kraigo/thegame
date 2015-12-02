@@ -4,7 +4,8 @@ class Basis {
 		this.game = game;
 		this.size = {
 			width: 16,
-			height: 16
+			height: 16,
+			radius: 16
 		};
 		this.position = {x: 0, y: 0};
 		this.direction = {x: 0, y: 0};
@@ -19,8 +20,14 @@ class Basis {
 			end: false
 		};
 		this.health = {
-			max: 0,
-			current: 0
+			max: 100,
+			current: 100
+		};
+
+		this.attack = {
+			damageMin: 1,
+			damageMax: 2,
+			range: 0
 		};
 
 		this.willDie = false;
@@ -37,7 +44,7 @@ class Basis {
 			y: this.position.y - this.game.camera.y-5,
 			height: 3,
 			width: this.size.width * (this.health.current / this.health.max)
-		}
+		};
 		this.game.screen.beginPath();
 		this.game.screen.rect(healthBar.x, healthBar.y, this.size.width, healthBar.height);
 		this.game.screen.fillStyle = 'red';
@@ -97,6 +104,9 @@ class Basis {
 		var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 	}
+	getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
 
 	//vectorAngle(vector) {
 	//	var angleRad = Math.acos( vector.x / Math.sqrt(vector.x*vector.x + vector.y*vector.y) );
@@ -109,7 +119,7 @@ class Basis {
 
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
-			if (body instanceof inst && this.game.colliding(this, body)) {
+			if (body instanceof inst && this.game.collidingBody(this, body)) {
 
 				if (this.position.x < body.position.x) {
 					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * intensity;
@@ -142,7 +152,22 @@ class Basis {
 			this.animation.end = false;
 		}
 	}
-	hit(demage, crit) {
-		this.health -= demage;
+	kill() {
+		this.willDie = true;
+		this.changeAnimation('die');
+	}
+
+	hit(damage) {
+		this.health.current -= damage;
+		if (this.health.current <= 0) {
+			this.health.current = 0;
+			this.kill();
+		}
+	}
+
+	isReach(body) {
+		return (this != body && this.game.colliding(
+				{x: this.position.x, y: this.position.y, r: this.size.width/2},
+				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	}
 }
