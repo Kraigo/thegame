@@ -9,8 +9,8 @@ class Asteroid extends Basis {
 		};
 
 		this.position = {
-			x: Math.floor(Math.random()*(this.game.world.width-this.size.width)),
-			y: Math.floor(Math.random()*(this.game.world.height-this.size.height))
+			x: params.x || Math.floor(Math.random()*(this.game.world.width-this.size.width)),
+			y: params.y || Math.floor(Math.random()*(this.game.world.height-this.size.height))
 		};
 
 		this.direction = {

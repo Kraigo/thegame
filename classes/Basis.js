@@ -53,6 +53,58 @@ class Basis {
 	}
 	update() {
 	}
+	colliding(b1,b2) {
+		var dx = b1.x - b2.x;
+		var dy = b1.y - b2.y;
+		var distance = Math.sqrt(dx * dx + dy * dy);
+
+		return (distance < b1.r + b2.r);
+	}
+	collidingSqr(b1,b2) {
+		return !(b1 == b2 ||
+			b1.position.x + b1.size.width < b2.position.x ||
+			b1.position.y + b1.size.height < b2.position.y ||
+			b1.position.x > b2.position.x + b2.size.width ||
+			b1.position.y > b2.position.y + b2.size.height);
+	}
+	collidingBody(b1,b2) {
+		return (b1 != b2 && this.colliding(
+					{x: b1.position.x, y: b1.position.y, r: b1.size.width/2},
+					{x: b2.position.x, y: b2.position.y, r: b2.size.width/2})
+				);
+	}
+	brotherColliding() {
+		var inst = this.constructor;
+		var intensity = 0.03;
+
+		for (var i=0, body; i<this.game.bodies.length; i++) {
+			body = this.game.bodies[i];
+			if (body instanceof inst && this.collidingBody(this, body)) {
+
+				if (this.position.x < body.position.x) {
+					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * intensity;
+					this.position.x -= diff;
+					body.position.x += diff;
+				} else if (this.position.x > body.position.x) {
+					var diff = (body.position.x - this.position.x + this.size.width) / 2 * intensity;
+					this.position.x += diff;
+					body.position.x -= diff;
+				}
+
+
+				if (this.position.y < body.position.y) {
+					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * intensity;
+					this.position.y -= diff;
+					body.position.y += diff;intensity
+				} else if (this.position.y > body.position.y) {
+					var diff = (body.position.y - this.position.y + this.size.height) / 2 * intensity;
+					this.position.y += diff;
+					body.position.y -= diff;
+				}
+
+			}
+		}
+	}
 	bounceWorld() {
 		if (this.position.x + this.size.width > this.game.world.width || this.position.x < 0) {
 			this.direction.x = -this.direction.x;
@@ -113,38 +165,6 @@ class Basis {
 	//	return angleRad * 180 / Math.PI;
 	//}
 
-	brotherColliding() {
-		var inst = this.constructor;
-		var intensity = 0.03;
-
-		for (var i=0, body; i<this.game.bodies.length; i++) {
-			body = this.game.bodies[i];
-			if (body instanceof inst && this.game.collidingBody(this, body)) {
-
-				if (this.position.x < body.position.x) {
-					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * intensity;
-					this.position.x -= diff;
-					body.position.x += diff;
-				} else if (this.position.x > body.position.x) {
-					var diff = (body.position.x - this.position.x + this.size.width) / 2 * intensity;
-					this.position.x += diff;
-					body.position.x -= diff;
-				}
-
-
-				if (this.position.y < body.position.y) {
-					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * intensity;
-					this.position.y -= diff;
-					body.position.y += diff;intensity
-				} else if (this.position.y > body.position.y) {
-					var diff = (body.position.y - this.position.y + this.size.height) / 2 * intensity;
-					this.position.y += diff;
-					body.position.y -= diff;
-				}
-
-			}
-		}
-	}
 	changeAnimation(animName) {
 		if (this.animation.state != animName) {
 			this.animation.state = animName;
@@ -166,7 +186,7 @@ class Basis {
 	}
 
 	isReach(body) {
-		return (this != body && this.game.colliding(
+		return (this != body && this.colliding(
 				{x: this.position.x, y: this.position.y, r: this.size.width/2},
 				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	}
