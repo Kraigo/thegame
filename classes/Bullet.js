@@ -22,7 +22,7 @@ class Bullet extends Basis {
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 
-			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.game.collidingBody(this, body)) {
+			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.collidingBody(this, body)) {
 				this.kill();
 				body.hit(this.attack.damage);
 			}

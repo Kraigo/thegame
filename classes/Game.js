@@ -30,8 +30,24 @@ class Game {
 		this.addBody(this.player);
 
 		for (var i = 0; i < 5; i++) {
-			this.addBody(new Asteroid(game, {target: this.player, width: 48, height: 48}));
+			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48}));
 		}
+
+		setInterval(function() {
+			var x, y;
+			if (game.camera.x < 0) {
+				x = game.camera.width / 2;
+			} else if (game.camera.x > 48) {
+				x = game.camera.width / 2 + game.camera.x - 48;
+			}
+
+			if (game.camera.y < 0) {
+				y = game.camera.height;
+			} else if (game.camera.y > 48) {
+				y = game.camera.y - 48;
+			}
+			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: x, y: y}));
+		}, 1000);
 
 		var tick = function() {
 			game.update();
@@ -84,25 +100,6 @@ class Game {
 			}
 			body.update();
 		}
-	}
-	collidingBody(b1,b2) {
-		return (b1 != b2 && this.colliding(
-					{x: b1.position.x, y: b1.position.y, r: b1.size.width/2},
-					{x: b2.position.x, y: b2.position.y, r: b2.size.width/2})
-				);
-	}
-	colliding(b1,b2) {
-		var dx = b1.x - b2.x;
-		var dy = b1.y - b2.y;
-		var distance = Math.sqrt(dx * dx + dy * dy);
-
-		return (distance < b1.r + b2.r);
-
-		return !(b1 == b2 ||
-			b1.position.x + b1.size.width < b2.position.x ||
-			b1.position.y + b1.size.height < b2.position.y ||
-			b1.position.x > b2.position.x + b2.size.width ||
-			b1.position.y > b2.position.y + b2.size.height);
 	}
 
 	addBody(body) {
