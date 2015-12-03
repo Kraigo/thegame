@@ -1,6 +1,6 @@
 'use strict';
 class Player extends Basis {
-	constructor(game, options) {
+	constructor(game) {
 		super(game);
 
 		this.acceleration = {x: 3, y: 3};

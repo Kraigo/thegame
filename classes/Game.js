@@ -2,6 +2,7 @@
 class Game {
 	constructor() {
 		var game = this;
+		this.editMode = false;
 		this.canvas = document.createElement('canvas');		
 		document.body.appendChild(this.canvas);
 
@@ -13,19 +14,23 @@ class Game {
 			x: 0,
 			y: 0,
 			width: this.canvas.width,
-			height: this.canvas.height
+			height: this.canvas.height,
+			target: null
 		};
 		this.world = {
 			width: 1200,
 			height: 1200
 		};
 		this.player = new Player(game);
+		this.builder = new Builder(game);
 		this.keyboard = new Keyboard();
 		this.point = new Point(game.canvas);
 		this.sprite = new Sprite(game);
+		this.stage = new Stage(game);
 		this.lastTick = new Date();
 		this.timer = 0;
 
+		this.camera.target = this.player;
 		this.bodies = [];
 		this.addBody(this.player);
 
@@ -39,6 +44,7 @@ class Game {
 			requestAnimationFrame(tick);
 		};
 		tick();
+		this.modeToggler();
 	}
 
 	render() {
@@ -47,9 +53,12 @@ class Game {
         var fps = Math.round(1000/(now - this.lastTick));
         this.lastTick = now;
 
+		this.stage.render();
+
 		this.debug([
 			'FPS: '+ fps,
 			'Obj count: '+this.bodies.length,
+				'Stage count: '+this.stage.level.length
 			//'Camera (x: '+this.camera.x+', y: '+this.camera.y+')',
 			//'Player (x: '+this.player.position.x+', y: '+this.player.position.y+')'
 			]);
@@ -69,8 +78,8 @@ class Game {
 
 		this.timer ++;
 
-		this.camera.x = this.player.position.x - this.camera.width/2 + this.player.size.width/2;
-		this.camera.y = this.player.position.y - this.camera.height/2 + this.player.size.height/2;
+		this.camera.x = this.camera.target.position.x - this.camera.width/2 + this.camera.target.size.width/2;
+		this.camera.y = this.camera.target.position.y - this.camera.height/2 + this.camera.target.size.height/2;
 
 		this.camera.x += (this.point.x - this.camera.width/2)*0.2;
 		this.camera.y += (this.point.y - this.camera.height/2)*0.2;
@@ -152,5 +161,16 @@ class Game {
 				body.position.x > this.camera.width &&
 				body.position.y + body.size.height < this.camera.y &&
 				body.position.y > this.camera.width)
+	}
+	modeToggler() {
+		var game = this;
+		document.addEventListener('keydown', function(e) {
+			if (e.keyCode == 113) {
+				game.camera.target = game.builder;
+				game.bodies = [];
+				game.addBody(game.builder);
+
+			}
+		})
 	}
 }

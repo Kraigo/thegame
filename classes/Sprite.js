@@ -3,10 +3,12 @@ class Sprite {
 	constructor(game) {
 		this.game = game;
 		this.dir = 'sprites/sprite.png';
+		this.image = new Image();
+		this.image.src = this.dir;
 		this.size = {
 			width: 48,
 			height: 48
-		}
+		};
 		this.collection = {
 			player: {
 				stand: [{x:0, y: 0}],
@@ -24,9 +26,6 @@ class Sprite {
 				die: [{x:0, y: 120, w: 24, h:24},{x:24, y: 120, w: 24, h:24}]
 			}
 		};
-
-		this.image = new Image();
-		this.image.src = this.dir;
 	}
 
 	draw(body, angle) {
