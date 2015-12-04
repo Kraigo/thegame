@@ -3,7 +3,7 @@ class Player extends Basis {
 	constructor(game) {
 		super(game);
 
-		this.acceleration = {x: 3, y: 3};
+		this.speed = 3;
 		this.size.width = 48;
 		this.size.height = 48;
 		this.position.x = game.world.width/2 - this.size.width/2;
@@ -42,26 +42,28 @@ class Player extends Basis {
 		//		console.log('loose');
 		//	}
 		//}
-		this.shot();
-		this.move();
-	}
-	move() {
-		if (this.game.keyboard.isPressed('A') && this.position.x > 0) {
-			this.position.x -= this.acceleration.x;
-		} else if (this.game.keyboard.isPressed('D') && this.position.x + this.size.width < this.game.world.width) {
-			this.position.x += this.acceleration.x;
-		}
-
-		if (this.game.keyboard.isPressed('W') && this.position.y > 0) {
-			this.position.y -= this.acceleration.y;
-		} else if (this.game.keyboard.isPressed('S') && this.position.y + this.size.height < this.game.world.height) {
-			this.position.y += this.acceleration.y;
-		}
-
 		if (this.game.keyboard.isPressed('W') || this.game.keyboard.isPressed('S') || this.game.keyboard.isPressed('A') || this.game.keyboard.isPressed('D')) {
 			this.changeAnimation('walk');
-		} else {	
+		} else {
 			this.changeAnimation('stand');
+		}
+
+		this.shot();
+		if (this.isStep()) {
+			this.move();
+		}
+	}
+	move() {
+		if (this.game.keyboard.isPressed('A')) {
+			this.position.x -= this.speed;
+		} else if (this.game.keyboard.isPressed('D')) {
+			this.position.x += this.speed;
+		}
+
+		if (this.game.keyboard.isPressed('W')) {
+			this.position.y -= this.speed;
+		} else if (this.game.keyboard.isPressed('S')) {
+			this.position.y += this.speed;
 		}
 	}
 	shot() {

@@ -190,4 +190,15 @@ class Basis {
 				{x: this.position.x, y: this.position.y, r: this.size.width/2},
 				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	}
+
+	isStep() {
+		var dx = this.position.x + this.direction.x * this.speed;
+		var dy = this.position.y + this.direction.y * this.speed;
+		if (this.direction.x > 0 || this.direction.y > 0) {
+			dx += this.size.width;
+			dy += this.size.height;d
+		}
+
+		return !this.game.stage.level[dx - dx % this.game.stage.size.width][dy - dy % this.game.stage.size.height].solid;
+	}
 }

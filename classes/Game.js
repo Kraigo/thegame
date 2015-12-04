@@ -10,6 +10,7 @@ class Game {
 		this.canvas.height = document.body.offsetHeight-10;
 
 		this.screen = this.canvas.getContext('2d');
+		this.screen.imageSmoothingEnabled = false;
 		this.camera = {
 			x: 0,
 			y: 0,
