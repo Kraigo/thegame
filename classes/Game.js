@@ -22,7 +22,7 @@ class Game {
 			height: 1200
 		};
 		this.player = new Player(game);
-		this.builder = new Builder(game);
+		this.builder = null;
 		this.keyboard = new Keyboard();
 		this.point = new Point(game.canvas);
 		this.sprite = new Sprite(game);
@@ -38,21 +38,21 @@ class Game {
 			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48}));
 		}
 
-		setInterval(function() {
-			var x, y;
-			if (game.camera.x < 0) {
-				x = game.camera.width / 2;
-			} else if (game.camera.x > 48) {
-				x = game.camera.width / 2 + game.camera.x - 48;
-			}
+		// setInterval(function() {
+		// 	var x, y;
+		// 	if (game.camera.x < 0) {
+		// 		x = game.camera.width / 2;
+		// 	} else if (game.camera.x > 48) {
+		// 		x = game.camera.width / 2 + game.camera.x - 48;
+		// 	}
 
-			if (game.camera.y < 0) {
-				y = game.camera.height;
-			} else if (game.camera.y > 48) {
-				y = game.camera.y - 48;
-			}
-			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: x, y: y}));
-		}, 1000);
+		// 	if (game.camera.y < 0) {
+		// 		y = game.camera.height;
+		// 	} else if (game.camera.y > 48) {
+		// 		y = game.camera.y - 48;
+		// 	}
+		// 	game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: x, y: y}));
+		// }, 1000);
 
 		var tick = function() {
 			game.update();
@@ -74,10 +74,11 @@ class Game {
 		this.debug([
 			'FPS: '+ fps,
 			'Obj count: '+this.bodies.length,
-				'Stage count: '+this.stage.level.length
-			//'Camera (x: '+this.camera.x+', y: '+this.camera.y+')',
-			//'Player (x: '+this.player.position.x+', y: '+this.player.position.y+')'
+				'Stage count: '+this.stage.level.length,
+			'Camera (x: '+this.camera.x.toFixed()+', y: '+this.camera.y.toFixed()+')',
+			'Player (x: '+this.player.position.x.toFixed()+', y: '+this.player.position.y.toFixed()+')',
 			]);
+
 		this.screen.rect(0-this.camera.x,0-this.camera.y, this.world.width, this.world.height);
 		this.screen.stroke();
 
@@ -163,6 +164,7 @@ class Game {
 		var game = this;
 		document.addEventListener('keydown', function(e) {
 			if (e.keyCode == 113) {
+				game.builder = new Builder(game);
 				game.camera.target = game.builder;
 				game.bodies = [];
 				game.addBody(game.builder);

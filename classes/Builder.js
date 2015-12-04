@@ -10,28 +10,31 @@ class Builder {
 		};
 		this.position = {
 			x: 0,
-			y: 0
+			y: 0,
+			sx: 0,
+			sy: 0
 		};
 		this.speed = 3;
 
 	}
-	render () {
-		var spare = {
-			x: this.position.x % this.size.width,
-			y: this.position.y % this.size.height
-		};
-		this.game.screen.beginPath();
-		this.game.screen.rect(this.position.x - this.game.camera.x - spare.x, this.position.y - this.game.camera.y - spare.y, this.size.width, this.size.height);
-		this.game.screen.stroke();
-	}
 
 	update() {
+		this.position.sx = (this.game.point.x + this.game.camera.x) - (this.game.point.x + this.game.camera.x) % this.size.width;
+		this.position.sy = (this.game.point.y + this.game.camera.y) - (this.game.point.y + this.game.camera.y) % this.size.width;
 		this.move();
+	}
+	render () {
+
+
+		this.game.screen.beginPath();
+		this.game.screen.rect(this.position.sx - this.game.camera.x, this.position.sy - this.game.camera.y, this.size.width, this.size.height);
+		this.game.screen.stroke();
 	}
 	move() {
 
-		var x = this.position.x - this.position.x % this.size.width;
-		var y = this.position.y - this.position.y % this.size.height;
+		var x = this.position.sx;
+		var y = this.position.sy;
+
 		if (this.game.keyboard.isPressed('A')) {
 			this.position.x -= this.speed;
 		} else if (this.game.keyboard.isPressed('D')) {
