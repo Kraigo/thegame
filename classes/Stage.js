@@ -14,21 +14,20 @@ class Stage {
         };
         this.cleaned = true;
         this.level = [];
+        this.levelSolid = [];
 
-        for (var i = 0; i < this.game.world.width; i+=this.size.width) {
-            for (var j = 0; j < this.game.world.height; j+=this.size.height) {
-                if (!this.level[i]) this.level[i] = [];
-
-                if (i === 0 ) {
-                    this.build(['bfloor_4', i, j]);
-                } else if (j === 0 ) {
-                    this.build(['bfloor_2', i, j]);
-                } else if (i === this.game.world.width - this.size.width ) {
-                    this.build(['bfloor_6', i, j]);
-                } else if (j === this.game.world.height - this.size.height ) {
-                    this.build(['bfloor_8', i, j]);
+        for (var x = 0; x < this.game.world.width; x+=this.size.width) {
+            for (var y = 0; y < this.game.world.height; y+=this.size.height) {
+                if (x === 0 ) {
+                    this.build(['bfloor_4', x, y]);
+                } else if (y === 0 ) {
+                    this.build(['bfloor_2', x, y]);
+                } else if (x === this.game.world.width - this.size.width ) {
+                    this.build(['bfloor_6', x, y]);
+                } else if (y === this.game.world.height - this.size.height ) {
+                    this.build(['bfloor_8', x, y]);
                 } else {
-                    this.build(['bfloor_5', i, j]);
+                    this.build(['bfloor_5', x, y]);
                 }
 
             }
@@ -42,10 +41,8 @@ class Stage {
     }
 
     render() {
-        for (var x = 0; x < this.game.world.width; x+=this.size.width) {
-            for (var y = 0; y < this.game.world.height; y+=this.size.height) {
-                this.draw(this.level[x][y]);
-            }
+        for (var i=0; i<this.level.length; i++) {
+            this.draw(this.level[i]);
         }
     }
     draw(obj) {
@@ -155,7 +152,10 @@ class Stage {
                 break;
         }
         this.cleaned = false;
-        this.level[item[1]][item[2]] = obj;
+        this.level.push(obj);
+        if (obj.solid) {
+            this.levelSolid.push(obj);
+        }
     }
     clean() {
         if (!this.cleaned) {

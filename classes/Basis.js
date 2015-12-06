@@ -62,10 +62,10 @@ class Basis {
 	}
 	collidingSqr(b1,b2) {
 		return !(b1 == b2 ||
-			b1.position.x + b1.size.width < b2.position.x ||
-			b1.position.y + b1.size.height < b2.position.y ||
-			b1.position.x > b2.position.x + b2.size.width ||
-			b1.position.y > b2.position.y + b2.size.height);
+			b1.x + b1.width <= b2.x ||
+			b1.y + b1.height <= b2.y ||
+			b1.x >= b2.x + b2.width ||
+			b1.y >= b2.y + b2.height);
 	}
 	collidingBody(b1,b2) {
 		return (b1 != b2 && this.colliding(
@@ -190,15 +190,54 @@ class Basis {
 				{x: this.position.x, y: this.position.y, r: this.size.width/2},
 				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	}
+	isBarrier() {
+		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
+			item = {
+				x: this.game.stage.levelSolid[i].x + this.game.stage.size.width / 2,
+				y: this.game.stage.levelSolid[i].y + this.game.stage.size.height / 2,
+				width: this.game.stage.size.width / 4,
+				height: this.game.stage.size.height / 4
+			};
+			if (this.collidingSqr({
+						x: this.position.x + this.direction.x * this.speed,
+						y: this.position.y + this.direction.y * this.speed,
+						width: this.size.width,
+						height: this.size.height
+					}, item)) {
 
-	isStep() {
-		var dx = this.position.x + this.direction.x * this.speed;
-		var dy = this.position.y + this.direction.y * this.speed;
-		if (this.direction.x > 0 || this.direction.y > 0) {
-			dx += this.size.width;
-			dy += this.size.height;d
+				if (!this.collidingSqr({
+							x: this.position.x + this.direction.x * this.speed,
+							y: this.position.y,
+							width: this.size.width,
+							height: this.size.height
+						}, item)) {
+					this.direction.y = 0;
+					return false;
+				}
+
+				if (!this.collidingSqr({
+							x: this.position.x,
+							y: this.position.y + this.direction.y * this.speed,
+							width: this.size.width,
+							height: this.size.height
+						}, item)) {
+					this.direction.x = 0;
+					return false;
+				}
+
+				return true;
+				//if (this.position.x < item.x) {
+				//	this.position.x = item.x - this.size.width;
+				//} else if (this.position.x > item.x) {
+				//	this.position.x = item.x + this.game.stage.width;
+				//}
+				//if (this.position.y < item.y) {
+				//	this.position.y = item.y - this.size.height;
+				//} else if (this.position.y > item.y) {
+				//	this.position.y = item.y + this.game.stage.height;
+				//}
+			}
 		}
-
-		return !this.game.stage.level[dx - dx % this.game.stage.size.width][dy - dy % this.game.stage.size.height].solid;
+		return false;
 	}
 }

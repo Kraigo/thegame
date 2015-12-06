@@ -49,21 +49,28 @@ class Player extends Basis {
 		}
 
 		this.shot();
-		if (this.isStep()) {
-			this.move();
-		}
+		this.move();
 	}
 	move() {
+		this.direction.x = 0;
+		this.direction.y = 0;
+
 		if (this.game.keyboard.isPressed('A')) {
-			this.position.x -= this.speed;
+			this.direction.x = -1;
 		} else if (this.game.keyboard.isPressed('D')) {
-			this.position.x += this.speed;
+			this.direction.x = 1;
 		}
 
 		if (this.game.keyboard.isPressed('W')) {
-			this.position.y -= this.speed;
+			this.direction.y = -1;
 		} else if (this.game.keyboard.isPressed('S')) {
-			this.position.y += this.speed;
+			this.direction.y = 1;
+		}
+
+
+		if (!this.isBarrier()) {
+			this.position.x += this.direction.x * this.speed;
+			this.position.y += this.direction.y * this.speed;
 		}
 	}
 	shot() {

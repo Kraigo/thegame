@@ -19,8 +19,8 @@ class Game {
 			target: null
 		};
 		this.world = {
-			width: 1200,
-			height: 1200
+			width: 600,
+			height: 600
 		};
 		this.player = new Player(game);
 		this.builder = null;
@@ -78,6 +78,7 @@ class Game {
 				'Stage count: '+this.stage.level.length,
 			'Camera (x: '+this.camera.x.toFixed()+', y: '+this.camera.y.toFixed()+')',
 			'Player (x: '+this.player.position.x.toFixed()+', y: '+this.player.position.y.toFixed()+')',
+				'Player dir(x: ' + this.player.direction.x + ', y: ' + this.player.direction.y +')'
 			]);
 
 		this.screen.rect(0-this.camera.x,0-this.camera.y, this.world.width, this.world.height);
