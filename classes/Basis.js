@@ -194,46 +194,46 @@ class Basis {
 			};
 			var collided = false;
 
-			if (this.collidingSqr({
-						x: this.position.x,
-						y: this.position.y,
-						width: this.size.width,
-						height: this.size.height
-					}, {
-						x: this.game.stage.levelSolid[i].x + this.game.stage.size.width / 2,
-						y: this.game.stage.levelSolid[i].y + this.game.stage.size.height / 2,
-						width: this.game.stage.size.width / 4,
-						height: this.game.stage.size.height / 4
-					})) {
+			// if (this.collidingSqr({
+			// 			x: this.position.x,
+			// 			y: this.position.y,
+			// 			width: this.size.width,
+			// 			height: this.size.height
+			// 		}, {
+			// 			x: this.game.stage.levelSolid[i].x + this.game.stage.size.width / 2,
+			// 			y: this.game.stage.levelSolid[i].y + this.game.stage.size.height / 2,
+			// 			width: this.game.stage.size.width / 4,
+			// 			height: this.game.stage.size.height / 4
+			// 		})) {
 
-				if (this.position.x < item.x) {
-					this.position.x = item.x+this.size.width;
-					if (this.direction.x > 0) {
-						this.direction.x = 0 ;
-					}
-				} else if (this.position.x > item.x) {
-					this.position.x =  item.x + item.width;
-					if (this.direction.x < 0) {
-						this.direction.x = 0;
-					}
-				}
+			// 	if (this.position.x < item.x) {
+			// 		this.position.x = item.x+this.size.width;
+			// 		if (this.direction.x > 0) {
+			// 			this.direction.x = 0 ;
+			// 		}
+			// 	} else if (this.position.x > item.x) {
+			// 		this.position.x =  item.x + item.width;
+			// 		if (this.direction.x < 0) {
+			// 			this.direction.x = 0;
+			// 		}
+			// 	}
 
-				if (this.position.y < item.y) {
-					this.position.y = item.y+this.size.height;
-					if (this.direction.y > 0) {
-						this.direction.y = 0 ;
-					}
-				} else if (this.position.y > item.y) {
-					this.position.y =  item.y + item.height;
-					if (this.direction.y < 0) {
-						this.direction.y = 0;
-					}
-				}
+			// 	if (this.position.y < item.y) {
+			// 		this.position.y = item.y+this.size.height;
+			// 		if (this.direction.y > 0) {
+			// 			this.direction.y = 0 ;
+			// 		}
+			// 	} else if (this.position.y > item.y) {
+			// 		this.position.y =  item.y + item.height;
+			// 		if (this.direction.y < 0) {
+			// 			this.direction.y = 0;
+			// 		}
+			// 	}
 
-			}
+			// }
 
 
-			continue;
+			// continue;
 
 			if (this.collidingSqr({
 						x: this.position.x + this.direction.x * this.speed,
@@ -241,7 +241,7 @@ class Basis {
 						width: this.size.width,
 						height: this.size.height
 					}, item)) {
-				if (!bounce) this.direction.x = 0;
+				if (!bounce) this.diawrection.x = 0;
 				collided = true;
 			}
 
@@ -257,9 +257,9 @@ class Basis {
 
 			if (bounce && collided) {
 				if ((this.position.x < item.x && this.direction.x > 0) || (this.position.x > item.x && this.direction.x < 0)) {
-					this.direction.y = -this.direction.y;
-				} else if ((this.position.y < item.y && this.direction.y > 0) || (this.position.y > item.y && this.direction.y < 0)) {
 					this.direction.x = -this.direction.x;
+				} else if ((this.position.y < item.y && this.direction.y > 0) || (this.position.y > item.y && this.direction.y < 0)) {
+					this.direction.y = -this.direction.y;
 				}
 			}
 
