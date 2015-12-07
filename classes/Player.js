@@ -68,10 +68,9 @@ class Player extends Basis {
 		}
 
 
-		if (!this.isBarrier()) {
-			this.position.x += this.direction.x * this.speed;
-			this.position.y += this.direction.y * this.speed;
-		}
+		//this.faceBarrier();
+		this.position.x += this.direction.x * this.speed;
+		this.position.y += this.direction.y * this.speed;
 	}
 	shot() {
 

@@ -32,15 +32,15 @@ class Asteroid extends Basis {
 
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
-			{x: this.position.x - this.game.camera.x + this.direction.x, y: this.position.y - this.game.camera.y + this.direction.y});
+			{x: this.position.x - this.game.camera.x + this.view.x, y: this.position.y - this.game.camera.y + this.view.y});
 		this.game.sprite.draw(this, angle);
 
 		this.healthBar();
 	}
 	update() {
-		this.bounceWorld();
+		//this.bounceWorld();
 		this.brotherColliding();
-		this.fixStuckWorld();
+		//this.fixStuckWorld();
 
 
 		if (this.willDie) {
@@ -62,13 +62,16 @@ class Asteroid extends Basis {
 			}
 		}
 		else if (this.speed) {
-			this.changeAnimation('walk');
-			this.position.x += this.direction.x * this.speed;
-			this.position.y += this.direction.y * this.speed;
-
 			if (this.target) {
 				this.routeToTarget();
 			}
+			this.changeAnimation('walk');
+
+			this.faceBarrier();
+			this.position.x += this.direction.x * this.speed;
+			this.position.y += this.direction.y * this.speed;
+
+
 
 		}
 		else {
@@ -83,7 +86,9 @@ class Asteroid extends Basis {
 			y: this.target.position.y - this.game.camera.y + this.target.size.height / 2
 		});
 
-		this.direction.x += (direction.x - this.direction.x) * 0.05;
-		this.direction.y += (direction.y - this.direction.y) * 0.05;
+		this.direction.x += (direction.x - this.direction.x) * this.rotationSpeed;
+		this.direction.y += (direction.y - this.direction.y) * this.rotationSpeed;
+		this.view.x += (direction.x - this.view.x) * this.rotationSpeed;
+		this.view.y += (direction.y - this.view.y) * this.rotationSpeed;
 	}
 }

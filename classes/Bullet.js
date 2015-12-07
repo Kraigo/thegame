@@ -12,8 +12,7 @@ class Bullet extends Basis {
 		this.attack.damage = params.damage;
 	}
 	update() {
-		this.bounceWorld();
-		this.fixStuckWorld();
+		this.faceBarrier(true);
 
 		if (this.isOuterWorld()) {
 			this.game.removeBody(this);

@@ -9,6 +9,7 @@ class Basis {
 		};
 		this.position = {x: 0, y: 0};
 		this.direction = {x: 0, y: 0};
+		this.view = {x: 0, y: 0};
 		this.speed = 0;
 		this.velocity = 0;
 		this.gravity = 0.5;
@@ -32,6 +33,7 @@ class Basis {
 
 		this.willDie = false;
 		this.willAttack = false;
+		this.rotationSpeed = 0.05;
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -103,14 +105,6 @@ class Basis {
 				}
 
 			}
-		}
-	}
-	bounceWorld() {
-		if (this.position.x + this.size.width > this.game.world.width || this.position.x < 0) {
-			this.direction.x = -this.direction.x;
-		}
-		if (this.position.y + this.size.height > this.game.world.height || this.position.y < 0) {
-			this.direction.y = -this.direction.y;
 		}
 	}
 	isOuterWorld() {
@@ -190,54 +184,85 @@ class Basis {
 				{x: this.position.x, y: this.position.y, r: this.size.width/2},
 				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	}
-	isBarrier() {
+	faceBarrier(bounce) {
 		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
 			item = {
-				x: this.game.stage.levelSolid[i].x + this.game.stage.size.width / 2,
-				y: this.game.stage.levelSolid[i].y + this.game.stage.size.height / 2,
-				width: this.game.stage.size.width / 4,
-				height: this.game.stage.size.height / 4
+				x: this.game.stage.levelSolid[i].x,
+				y: this.game.stage.levelSolid[i].y,
+				width: this.game.stage.size.width,
+				height: this.game.stage.size.height
 			};
+			var collided = false;
+
+			if (this.collidingSqr({
+						x: this.position.x,
+						y: this.position.y,
+						width: this.size.width,
+						height: this.size.height
+					}, {
+						x: this.game.stage.levelSolid[i].x + this.game.stage.size.width / 2,
+						y: this.game.stage.levelSolid[i].y + this.game.stage.size.height / 2,
+						width: this.game.stage.size.width / 4,
+						height: this.game.stage.size.height / 4
+					})) {
+
+				if (this.position.x < item.x) {
+					this.position.x = item.x+this.size.width;
+					if (this.direction.x > 0) {
+						this.direction.x = 0 ;
+					}
+				} else if (this.position.x > item.x) {
+					this.position.x =  item.x + item.width;
+					if (this.direction.x < 0) {
+						this.direction.x = 0;
+					}
+				}
+
+				if (this.position.y < item.y) {
+					this.position.y = item.y+this.size.height;
+					if (this.direction.y > 0) {
+						this.direction.y = 0 ;
+					}
+				} else if (this.position.y > item.y) {
+					this.position.y =  item.y + item.height;
+					if (this.direction.y < 0) {
+						this.direction.y = 0;
+					}
+				}
+
+			}
+
+
+			continue;
+
 			if (this.collidingSqr({
 						x: this.position.x + this.direction.x * this.speed,
+						y: this.position.y,
+						width: this.size.width,
+						height: this.size.height
+					}, item)) {
+				if (!bounce) this.direction.x = 0;
+				collided = true;
+			}
+
+			if (this.collidingSqr({
+						x: this.position.x,
 						y: this.position.y + this.direction.y * this.speed,
 						width: this.size.width,
 						height: this.size.height
 					}, item)) {
-
-				if (!this.collidingSqr({
-							x: this.position.x + this.direction.x * this.speed,
-							y: this.position.y,
-							width: this.size.width,
-							height: this.size.height
-						}, item)) {
-					this.direction.y = 0;
-					return false;
-				}
-
-				if (!this.collidingSqr({
-							x: this.position.x,
-							y: this.position.y + this.direction.y * this.speed,
-							width: this.size.width,
-							height: this.size.height
-						}, item)) {
-					this.direction.x = 0;
-					return false;
-				}
-
-				return true;
-				//if (this.position.x < item.x) {
-				//	this.position.x = item.x - this.size.width;
-				//} else if (this.position.x > item.x) {
-				//	this.position.x = item.x + this.game.stage.width;
-				//}
-				//if (this.position.y < item.y) {
-				//	this.position.y = item.y - this.size.height;
-				//} else if (this.position.y > item.y) {
-				//	this.position.y = item.y + this.game.stage.height;
-				//}
+				if (!bounce) this.direction.y = 0;
+				collided = true;
 			}
+
+			if (bounce && collided) {
+				if ((this.position.x < item.x && this.direction.x > 0) || (this.position.x > item.x && this.direction.x < 0)) {
+					this.direction.y = -this.direction.y;
+				} else if ((this.position.y < item.y && this.direction.y > 0) || (this.position.y > item.y && this.direction.y < 0)) {
+					this.direction.x = -this.direction.x;
+				}
+			}
+
 		}
-		return false;
 	}
 }
