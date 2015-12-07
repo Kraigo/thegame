@@ -67,13 +67,12 @@ class Player extends Basis {
 			this.direction.y = 1;
 		}
 
-
-		//this.faceBarrier();
 		this.position.x += this.direction.x * this.speed;
 		this.position.y += this.direction.y * this.speed;
+
+		this.faceBarrier();
 	}
 	shot() {
-
 		if (!this.shooting.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {
 			this.shooting.bullet = 1;
 			this.shooting.reload = 0;
@@ -87,7 +86,12 @@ class Player extends Basis {
 			var bulletParams = {
 				x: this.position.x + this.size.width/2,
 				y: this.position.y + this.size.height/2,
-				direction: this.vectorNormalize(this.position, this.game.point),
+				direction: this.directionTo({
+					x: this.game.point.x + this.game.camera.x,
+					y: this.game.point.y + this.game.camera.y,
+					width: 0,
+					height: 0
+				}),
 				damage: this.getRandomInt(this.attack.damageMin, this.attack.damageMax)
 			};
 			this.game.addBody(new Bullet(this.game, bulletParams));

@@ -81,9 +81,11 @@ class Asteroid extends Basis {
 	}
 
 	routeToTarget() {
-		var direction = this.vectorNormalize(this.position, {
-			x: this.target.position.x - this.game.camera.x + this.target.size.width / 2,
-			y: this.target.position.y - this.game.camera.y + this.target.size.height / 2
+		var direction = this.directionTo({
+			x: this.target.position.x,
+			y: this.target.position.y,
+			width: this.size.width,
+			height: this.size.height
 		});
 
 		this.direction.x += (direction.x - this.direction.x) * this.rotationSpeed;

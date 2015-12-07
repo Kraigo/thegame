@@ -12,10 +12,7 @@ class Bullet extends Basis {
 		this.attack.damage = params.damage;
 	}
 	update() {
-		console.log(this);
-		this.faceBarrier(true);
-
-		if (this.isOuterWorld()) {
+		if (this.isOuterCamera()) {
 			this.game.removeBody(this);
 		}
 		
@@ -24,11 +21,15 @@ class Bullet extends Basis {
 
 			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.collidingBody(this, body)) {
 				this.kill();
+				this.speed = 0;
 				body.hit(this.attack.damage);
 			}
 		}
 		this.position.x += this.direction.x * this.speed;
 		this.position.y += this.direction.y * this.speed;
+
+
+		this.faceBarrier(true);
 	}
 	render() {
 

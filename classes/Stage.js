@@ -36,6 +36,18 @@ class Stage {
         this.build(['bfloor_3', this.game.world.width - this.size.width, 0]);
         this.build(['bfloor_7', 0, this.game.world.height - this.size.height]);
         this.build(['bfloor_9', this.game.world.width - this.size.width, this.game.world.height - this.size.height]);
+
+        this.build(['bfloor_10', 288, 120]);
+        this.build(['bfloor_11', 288, 144]);
+        this.build(['bfloor_11', 288, 168]);
+        this.build(['bfloor_11', 288, 192]);
+        this.build(['bfloor_11', 288, 216]);
+        this.build(['bfloor_12', 288, 240]);
+
+        this.build(['bfloor_13', 288, 336]);
+        this.build(['bfloor_14', 312, 336]);
+        this.build(['bfloor_14', 336, 336]);
+        this.build(['bfloor_15', 360, 336]);
         //this.clean();
 
     }
@@ -147,6 +159,36 @@ class Stage {
                 break;
             case 'bfloor_9':
                 obj.sx = 48;
+                obj.sy = 192;
+                obj.solid = true;
+                break;
+            case 'bfloor_10':
+                obj.sx = 72;
+                obj.sy = 144;
+                obj.solid = true;
+                break;
+            case 'bfloor_11':
+                obj.sx = 72;
+                obj.sy = 168;
+                obj.solid = true;
+                break;
+            case 'bfloor_12':
+                obj.sx = 72;
+                obj.sy = 192;
+                obj.solid = true;
+                break;
+            case 'bfloor_13':
+                obj.sx = 96;
+                obj.sy = 192;
+                obj.solid = true;
+                break;
+            case 'bfloor_14':
+                obj.sx = 120;
+                obj.sy = 192;
+                obj.solid = true;
+                break;
+            case 'bfloor_15':
+                obj.sx = 144;
                 obj.sy = 192;
                 obj.solid = true;
                 break;
