@@ -12,6 +12,7 @@ class Bullet extends Basis {
 		this.attack.damage = params.damage;
 	}
 	update() {
+		console.log(this);
 		this.faceBarrier(true);
 
 		if (this.isOuterWorld()) {

@@ -241,7 +241,7 @@ class Basis {
 						width: this.size.width,
 						height: this.size.height
 					}, item)) {
-				if (!bounce) this.diawrection.x = 0;
+				if (!bounce) this.direction.x = 0;
 				collided = true;
 			}
 
