@@ -150,7 +150,6 @@ class Basis {
 		var vx = (item.x + item.width/2) - (this.position.x + this.size.width/2);
 		var vy = (item.y + item.height/2) - (this.position.y + this.size.height/2);
 		var dxy = Math.sqrt(vx*vx + vy*vy);
-		console.log(item.x, item.width, this.position.x, this.size.width);
 		return {x: vx/dxy, y: vy/dxy}
 	}
 

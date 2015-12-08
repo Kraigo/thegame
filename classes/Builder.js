@@ -16,6 +16,8 @@ class Builder {
 		};
 		this.speed = 3;
 
+		this.material = '';
+
 	}
 
 	update() {
@@ -49,28 +51,48 @@ class Builder {
 
 		if (this.game.keyboard.isPressed('F')) {
 			if (this.game.keyboard.isPressed('1')) {
-				this.game.stage.build(['floor_1', x, y]);
+				this.material = 'wall_1';
 			} else if (this.game.keyboard.isPressed('2')) {
-				this.game.stage.build(['floor_2', x, y]);
+				this.material = 'wall_2';
 			} else if (this.game.keyboard.isPressed('3')) {
-				this.game.stage.build(['floor_3', x, y]);
+				this.material = 'wall_3';
 			} else if (this.game.keyboard.isPressed('4')) {
-				this.game.stage.build(['floor_4', x, y]);
+				this.material = 'wall_4';
 			} else if (this.game.keyboard.isPressed('5')) {
-				this.game.stage.build(['floor_5', x, y]);
+				this.material = 'wall_5';
 			} else if (this.game.keyboard.isPressed('6')) {
-				this.game.stage.build(['floor_6', x, y]);
+				this.material = 'wall_6';
 			} else if (this.game.keyboard.isPressed('7')) {
-				this.game.stage.build(['floor_7', x, y]);
+				this.material = 'wall_7';
 			} else if (this.game.keyboard.isPressed('8')) {
-				this.game.stage.build(['floor_8', x, y]);
+				this.material = 'wall_8';
 			} else if (this.game.keyboard.isPressed('9')) {
-				this.game.stage.build(['floor_9', x, y]);
+				this.material = 'wall_9';
+			}
+		}
+
+		if (this.game.keyboard.isPressed('G')) {
+			if (this.game.keyboard.isPressed('1')) {
+				this.material = 'wall_10';
+			} else if (this.game.keyboard.isPressed('2')) {
+				this.material = 'wall_11';
+			} else if (this.game.keyboard.isPressed('3')) {
+				this.material = 'wall_12';
+			} else if (this.game.keyboard.isPressed('4')) {
+				this.material = 'wall_13';
+			} else if (this.game.keyboard.isPressed('5')) {
+				this.material = 'wall_14';
+			} else if (this.game.keyboard.isPressed('6')) {
+				this.material = 'wall_15';
 			}
 		}
 
 		if (this.game.keyboard.isPressed('C')) {
 			this.game.stage.clean();
+		}
+
+		if (this.game.point.isPressed('LEFT')) {
+			this.game.stage.build([this.material, x, y]);
 		}
 
 	}
