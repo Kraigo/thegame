@@ -87,10 +87,14 @@ class Player extends Basis {
 				x: this.position.x + this.size.width/2,
 				y: this.position.y + this.size.height/2,
 				direction: this.directionTo({
-					x: this.game.point.x + this.game.camera.x,
-					y: this.game.point.y + this.game.camera.y,
-					width: 0,
-					height: 0
+					position: {
+						x: this.game.point.x + this.game.camera.x,
+						y: this.game.point.y + this.game.camera.y
+					},
+					size: {
+						width: 0,
+						height: 0
+					}
 				}),
 				damage: this.getRandomInt(this.attack.damageMin, this.attack.damageMax)
 			};

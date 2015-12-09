@@ -34,6 +34,7 @@ class Basis {
 		this.willDie = false;
 		this.willAttack = false;
 		this.rotationSpeed = 0.05;
+		this.density = 0;
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -55,19 +56,18 @@ class Basis {
 	}
 	update() {
 	}
-	colliding(b1,b2) {
+	colliding(b1, b2) {
 		var dx = b1.x - b2.x;
 		var dy = b1.y - b2.y;
 		var distance = Math.sqrt(dx * dx + dy * dy);
 
 		return (distance < b1.r + b2.r);
 	}
-	collidingSqr(b1,b2) {
-		return !(b1 == b2 ||
-			b1.x + b1.width <= b2.x ||
-			b1.y + b1.height <= b2.y ||
-			b1.x >= b2.x + b2.width ||
-			b1.y >= b2.y + b2.height);
+	collidingSqr(body) {
+		return !(this.position.x + this.size.width <= body.position.x ||
+			this.position.y + this.size.height <= body.position.y ||
+			this.position.x >= body.position.x + body.size.width ||
+			this.position.y >= body.position.y + body.size.height);
 	}
 	collidingBody(b1,b2) {
 		return (b1 != b2 && this.colliding(
@@ -77,29 +77,39 @@ class Basis {
 	}
 	brotherColliding() {
 		var inst = this.constructor;
-		var intensity = 0.03;
 
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 			if (body instanceof inst && this.collidingBody(this, body)) {
 
+
+				//var dirTo = this.directionTo(body);
+				//var range = this.size.width/2 + body.size.width/2;
+                //
+				//this.position.x += -dirTo.x * range * body.density;
+				//this.position.y += -dirTo.y * range * body.density;
+				//body.position.x -= -dirTo.x * range * this.density;
+				//body.position.y -= -dirTo.y * range * this.density;
+                //
+				//return;
+
 				if (this.position.x < body.position.x) {
-					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * intensity;
+					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * body.density;
 					this.position.x -= diff;
 					body.position.x += diff;
 				} else if (this.position.x > body.position.x) {
-					var diff = (body.position.x - this.position.x + this.size.width) / 2 * intensity;
+					var diff = (body.position.x - this.position.x + this.size.width) / 2 * body.density;
 					this.position.x += diff;
 					body.position.x -= diff;
 				}
 
 
 				if (this.position.y < body.position.y) {
-					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * intensity;
+					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * body.density;
 					this.position.y -= diff;
 					body.position.y += diff;
 				} else if (this.position.y > body.position.y) {
-					var diff = (body.position.y - this.position.y + this.size.height) / 2 * intensity;
+					var diff = (body.position.y - this.position.y + this.size.height) / 2 * body.density;
 					this.position.y += diff;
 					body.position.y -= diff;
 				}
@@ -108,17 +118,7 @@ class Basis {
 		}
 	}
 	isOuterCamera() {
-		return !this.collidingSqr({
-			x: this.position.x,
-			y: this.position.y,
-			width: this.size.width,
-			height: this.size.height
-		},{
-			x: this.game.camera.x,
-			y: this.game.camera.y,
-			width: this.game.camera.width,
-			height: this.game.camera.height
-		})
+		return !this.collidingSqr(this)
 	}
 	fixStuckWorld() {
 		if (this.position.x < 0) {
@@ -145,10 +145,10 @@ class Basis {
 			}
 		}
 	}
-	directionTo(item) {
+	directionTo(body) {
 		// (x1,y2) ==> (x2, y2)
-		var vx = (item.x + item.width/2) - (this.position.x + this.size.width/2);
-		var vy = (item.y + item.height/2) - (this.position.y + this.size.height/2);
+		var vx = (body.position.x + body.size.width/2) - (this.position.x + this.size.width/2);
+		var vy = (body.position.y + body.size.height/2) - (this.position.y + this.size.height/2);
 		var dxy = Math.sqrt(vx*vx + vy*vy);
 		return {x: vx/dxy, y: vy/dxy}
 	}
@@ -195,23 +195,24 @@ class Basis {
 
 		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
 			item = {
-				x: this.game.stage.levelSolid[i].x,
-				y: this.game.stage.levelSolid[i].y,
-				width: this.game.stage.size.width,
-				height: this.game.stage.size.height
+				position: {
+					x: this.game.stage.levelSolid[i].x,
+					y: this.game.stage.levelSolid[i].y
+				},
+				size: {
+					width: this.game.stage.size.width,
+					height: this.game.stage.size.height
+				}
 			};
 			var collided = false;
 
-			if (this.collidingSqr({
-						x: this.position.x,
-						y: this.position.y,
-						width: this.size.width,
-						height: this.size.height
-					}, item)) {
-				var dirToItem = this.directionTo(item);
+			if (this.collidingSqr(item)) {
 
-				this.position.x += -dirToItem.x * this.speed;
-				this.position.y += -dirToItem.y * this.speed;
+				var dirTo = this.directionTo(item);
+				var range = this.size.width/2 + item.size.width/2;
+
+				this.position.x += -dirTo.x * range * 0.1;
+				this.position.y += -dirTo.y * range * 0.1;
 				collided = true;
 			}
 

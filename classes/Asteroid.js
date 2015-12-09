@@ -23,6 +23,7 @@ class Asteroid extends Basis {
 		this.speed = 3;
 		this.animation.name = 'monster';
 		this.target = params.target || null;
+		this.density = 0.03;
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -34,7 +35,6 @@ class Asteroid extends Basis {
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
 			{x: this.position.x - this.game.camera.x + this.view.x, y: this.position.y - this.game.camera.y + this.view.y});
 		this.game.sprite.draw(this, angle);
-
 		this.healthBar();
 	}
 	update() {
@@ -82,10 +82,14 @@ class Asteroid extends Basis {
 
 	routeToTarget() {
 		var direction = this.directionTo({
-			x: this.target.position.x,
-			y: this.target.position.y,
-			width: this.size.width,
-			height: this.size.height
+			position: {
+				x: this.target.position.x,
+				y: this.target.position.y
+			},
+			size: {
+				width: this.size.width,
+				height: this.size.height
+			}
 		});
 
 		this.direction.x += (direction.x - this.direction.x) * this.rotationSpeed;
