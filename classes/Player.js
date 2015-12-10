@@ -33,6 +33,7 @@ class Player extends Basis {
 		this.game.sprite.draw(this, angle);
 
 		this.healthBar();
+		this.faceBarrier();
 	}
 	update() {
 
@@ -69,8 +70,6 @@ class Player extends Basis {
 
 		this.position.x += this.direction.x * this.speed;
 		this.position.y += this.direction.y * this.speed;
-
-		this.faceBarrier();
 	}
 	shot() {
 		if (!this.shooting.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {

@@ -208,18 +208,27 @@ class Basis {
 
 			if (this.collidingSqr(item)) {
 
-				var dirTo = this.directionTo(item);
+				var direction = this.directionTo(item);
 				var range = this.size.width/2 + item.size.width/2;
 
-				this.position.x += -dirTo.x * range * 0.1;
-				this.position.y += -dirTo.y * range * 0.1;
+				this.game.screen.beginPath();
+				this.game.screen.moveTo(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y);
+				this.game.screen.lineTo(item.position.x + item.size.width/2 - this.game.camera.x, item.position.y + item.size.height/2 - this.game.camera.y);
+				this.game.screen.strokeStyle = 'red';
+				this.game.screen.stroke();
+				this.game.screen.strokeStyle= '#000';
+
+				this.position.x += -direction.x * range * 0.1;
+				this.position.y += -direction.y * range * 0.1;
 				collided = true;
+
 			}
 
 			if (bounce && collided) {
-				if ((this.position.x < item.x && this.direction.x > 0) || (this.position.x > item.x && this.direction.x < 0)) {
+
+				if ((this.position.x < item.position.x && this.direction.x > 0) || (this.position.x > item.position.x && this.direction.x < 0)) {
 					this.direction.x = -this.direction.x;
-				} else if ((this.position.y < item.y && this.direction.y > 0) || (this.position.y > item.y && this.direction.y < 0)) {
+				} else if ((this.position.y < item.position.y && this.direction.y > 0) || (this.position.y > item.position.y && this.direction.y < 0)) {
 					this.direction.y = -this.direction.y;
 				}
 			}

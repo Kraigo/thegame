@@ -35,7 +35,7 @@ class Game {
 		this.bodies = [];
 		this.addBody(this.player);
 
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < 0; i++) {
 			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48}));
 		}
 
