@@ -33,7 +33,6 @@ class Player extends Basis {
 		this.game.sprite.draw(this, angle);
 
 		this.healthBar();
-		this.faceBarrier();
 	}
 	update() {
 
@@ -67,6 +66,9 @@ class Player extends Basis {
 		} else if (this.game.keyboard.isPressed('S')) {
 			this.direction.y = 1;
 		}
+
+
+		this.faceBarrier();
 
 		this.position.x += this.direction.x * this.speed;
 		this.position.y += this.direction.y * this.speed;
