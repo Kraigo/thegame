@@ -34,6 +34,7 @@ class Game {
 		this.camera.target = this.player;
 		this.bodies = [];
 		this.addBody(this.player);
+		this.socket = io.connect('http://localhost:8080');
 
 		for (var i = 0; i < 0; i++) {
 			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48}));
@@ -54,6 +55,10 @@ class Game {
 		// 	}
 		// 	game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: x, y: y}));
 		// }, 1000);
+		// socket.on('connected', function (data) {
+		// 	console.log(data);
+		// 	socket.emit('my other event', { my: 'data' });
+		// });
 
 		var tick = function() {
 			game.update();

@@ -67,7 +67,7 @@ class Player extends Basis {
 			this.direction.y = 1;
 		}
 
-
+		this.game.socket.emit('move', this.position);
 		this.faceBarrier();
 
 		this.position.x += this.direction.x * this.speed;
