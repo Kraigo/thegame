@@ -1,6 +1,6 @@
 'use strict';
 class Bullet extends Basis {
-	constructor(game, params) {
+	constructor(game, params, owner) {
 		super(game);
 		this.size.width = 24;
 		this.size.height = 24;
@@ -10,6 +10,7 @@ class Bullet extends Basis {
 		this.speed = 5;
 		this.animation.name = 'bullet';
 		this.attack.damage = params.damage;
+		this.owner = owner;
 	}
 	update() {
 		if (this.isOuterCamera()) {
@@ -19,7 +20,13 @@ class Bullet extends Basis {
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
 
-			if (!this.willDie && !body.willDie && body instanceof Asteroid && this.collidingBody(this, body)) {
+			//if (!this.willDie && !body.willDie && body instanceof Asteroid && this.collidingBody(this, body)) {
+			//	this.kill();
+			//	this.speed = 0;
+			//	body.hit(this.attack.damage);
+			//}
+
+			if (!this.willDie && !body.willDie && this.owner !== body && this.collidingBody(body)) {
 				this.kill();
 				this.speed = 0;
 				body.hit(this.attack.damage);

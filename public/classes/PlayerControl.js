@@ -5,18 +5,16 @@ class PlayerControl {
 	}
 
 	update() {
-
-		this.animate();
+		var _lookAngel = this.game.player.lookAngel;
 		this.move();
 		this.shot();
 
-	}
-	animate() {
-		if (this.game.keyboard.isPressed('W') || this.game.keyboard.isPressed('S') || this.game.keyboard.isPressed('A') || this.game.keyboard.isPressed('D')) {
-			this.game.player.changeAnimation('walk');
-		} else {
-			this.game.player.changeAnimation('stand');
+		this.rotate();
+
+		if (this.game.player.direction.x || this.game.player.direction.y || _lookAngel !== this.game.player.lookAngel) {
+			this.game.socket.move(this.game.player);
 		}
+
 	}
 	move() {
 		var player = this.game.player;
@@ -35,16 +33,13 @@ class PlayerControl {
 		} else if (this.game.keyboard.isPressed('S')) {
 			player.direction.y = 1;
 		}
-
-		if (player.direction.x || player.direction.y) {
-			this.game.socket.move(player.position);
-		}
 	}
 	shot() {
-		if (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE')) {
-			this.game.player.shooting.start = true;
-		} else {
-			this.game.player.shooting.start = false;
-		}
+		this.game.player.shooting.start = (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'));
+	}
+	rotate() {
+		this.game.player.lookAngel = this.game.player.vectorAngle(
+			{x: this.game.player.position.x - this.game.camera.x + this.game.player.size.width/2, y: this.game.player.position.y - this.game.camera.y + this.game.player.size.width/2},
+			{x: this.game.point.x, y: this.game.point.y});
 	}
 }

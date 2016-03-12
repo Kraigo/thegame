@@ -33,7 +33,7 @@ class Asteroid extends Basis {
 
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
-			{x: this.position.x - this.game.camera.x + this.view.x, y: this.position.y - this.game.camera.y + this.view.y});
+			{x: this.position.x - this.game.camera.x + this.look.x, y: this.position.y - this.game.camera.y + this.look.y});
 		this.game.sprite.draw(this, angle);
 		this.healthBar();
 	}
@@ -94,7 +94,7 @@ class Asteroid extends Basis {
 
 		this.direction.x += (direction.x - this.direction.x) * this.rotationSpeed;
 		this.direction.y += (direction.y - this.direction.y) * this.rotationSpeed;
-		this.view.x += (direction.x - this.view.x) * this.rotationSpeed;
-		this.view.y += (direction.y - this.view.y) * this.rotationSpeed;
+		this.look.x += (direction.x - this.look.x) * this.rotationSpeed;
+		this.look.y += (direction.y - this.look.y) * this.rotationSpeed;
 	}
 }

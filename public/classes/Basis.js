@@ -9,7 +9,8 @@ class Basis {
 		};
 		this.position = {x: 0, y: 0};
 		this.direction = {x: 0, y: 0};
-		this.view = {x: 0, y: 0};
+		this.look = {x: 0, y: 0}
+		this.lookAngel = 0;
 		this.speed = 0;
 		this.velocity = 0;
 		this.gravity = 0.5;
@@ -69,10 +70,10 @@ class Basis {
 			this.position.x >= body.position.x + body.size.width ||
 			this.position.y >= body.position.y + body.size.height);
 	}
-	collidingBody(b1,b2) {
-		return (b1 != b2 && this.colliding(
-					{x: b1.position.x, y: b1.position.y, r: b1.size.width/2},
-					{x: b2.position.x, y: b2.position.y, r: b2.size.width/2})
+	collidingBody(body) {
+		return (this != body && this.colliding(
+					{x: this.position.x, y: this.position.y, r: this.size.width/2},
+					{x: body.position.x, y: body.position.y, r: body.size.width/2})
 				);
 	}
 	brotherColliding() {
@@ -80,7 +81,7 @@ class Basis {
 
 		for (var i=0, body; i<this.game.bodies.length; i++) {
 			body = this.game.bodies[i];
-			if (body instanceof inst && this.collidingBody(this, body)) {
+			if (body instanceof inst && this.collidingBody(body)) {
 
 
 				//var dirTo = this.directionTo(body);
@@ -176,6 +177,10 @@ class Basis {
 	kill() {
 		this.willDie = true;
 		this.changeAnimation('die');
+		//if (this.id) {
+		//	this.game.socket.kill(this.id);
+		//}
+
 	}
 
 	hit(damage) {

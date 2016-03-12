@@ -128,6 +128,7 @@ class Game {
 	}
 
 	removeBody(items) {
+
 		if (!Array.isArray(items)) {
 			items = [items];
 		}
