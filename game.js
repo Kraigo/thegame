@@ -1,11 +1,11 @@
-var io;
+exports.init = function(io, socket) {
 
-exports.init = function(sio, socket) {
-	io = sio;
+	//socket.emit('connected', {socketId: socket.id});
+	socket.broadcast.emit('join', {socketId: socket.id});
 
-	socket.emit('connected', {'text': 'You are connected!'});
-
-	socket.on('move', move);
+	socket.on('move', function(data) {
+		socket.broadcast.emit('move', {socketId: socket.id, position: data});
+	});
 	// socket.on('hostJoinRoom', hostJoinRoom);
 
 	// socket.on('hostStartRoom', hostStartRoom);
@@ -18,7 +18,3 @@ exports.init = function(sio, socket) {
 	// socket.on('disconnect', hostLeaveRoom);
 
 };
-
-function move(data) {
-	console.log(data);
-}

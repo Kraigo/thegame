@@ -23,6 +23,8 @@ class Game {
 			height: 600
 		};
 		this.player = new Player(game);
+		this.playerControl = new PlayerControl(game);
+		this.socket = new Socket(game);
 		this.builder = null;
 		this.keyboard = new Keyboard();
 		this.point = new Point(game.canvas);
@@ -34,7 +36,6 @@ class Game {
 		this.camera.target = this.player;
 		this.bodies = [];
 		this.addBody(this.player);
-		this.socket = io.connect('http://localhost:8080');
 
 		for (var i = 0; i < 0; i++) {
 			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48}));
@@ -107,6 +108,9 @@ class Game {
 
 		this.camera.x += (this.point.x - this.camera.width/2)*0.2;
 		this.camera.y += (this.point.y - this.camera.height/2)*0.2;
+
+
+		this.playerControl.update();
 
 		for (var i = 0, body; i < this.bodies.length; i++ ) {
 			body = this.bodies[i];

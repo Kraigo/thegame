@@ -1,14 +1,16 @@
 'use strict';
 class Player extends Basis {
-	constructor(game) {
+	constructor(game, params) {
+		params = params || {};
 		super(game);
 
 		this.speed = 3;
 		this.size.width = 48;
 		this.size.height = 48;
-		this.position.x = game.world.width/2 - this.size.width/2;
-		this.position.y = game.world.height/2 - this.size.height/2;
+		this.position.x = params.x || game.world.width/2 - this.size.width/2;
+		this.position.y = params.x || game.world.height/2 - this.size.height/2;
 		this.shooting = {
+			start: false,
 			bullet: 1,
 			rate: 3,
 			reload: 0
@@ -42,33 +44,13 @@ class Player extends Basis {
 		//		console.log('loose');
 		//	}
 		//}
-		if (this.game.keyboard.isPressed('W') || this.game.keyboard.isPressed('S') || this.game.keyboard.isPressed('A') || this.game.keyboard.isPressed('D')) {
-			this.changeAnimation('walk');
-		} else {
-			this.changeAnimation('stand');
-		}
 
 		this.shot();
 		this.move();
 	}
 	move() {
-		this.direction.x = 0;
-		this.direction.y = 0;
 
-		if (this.game.keyboard.isPressed('A')) {
-			this.direction.x = -1;
-		} else if (this.game.keyboard.isPressed('D')) {
-			this.direction.x = 1;
-		}
-
-		if (this.game.keyboard.isPressed('W')) {
-			this.direction.y = -1;
-		} else if (this.game.keyboard.isPressed('S')) {
-			this.direction.y = 1;
-		}
-
-		this.game.socket.emit('move', this.position);
-		this.faceBarrier();
+		//this.faceBarrier();
 
 		this.position.x += this.direction.x * this.speed;
 		this.position.y += this.direction.y * this.speed;
@@ -80,7 +62,7 @@ class Player extends Basis {
 		}
 
 
-		if(this.shooting.bullet && (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'))) {
+		if(this.shooting.bullet && this.shooting.start) {
 			this.shooting.bullet = 0;
 
 
