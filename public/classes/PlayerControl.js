@@ -6,12 +6,16 @@ class PlayerControl {
 
 	update() {
 		var _lookAngel = this.game.player.lookAngel;
+		var _directionX = this.game.player.direction.x;
+		var _directionY = this.game.player.direction.y;
 		this.move();
 		this.shot();
-
 		this.rotate();
 
-		if (this.game.player.direction.x || this.game.player.direction.y || _lookAngel !== this.game.player.lookAngel) {
+		if (_lookAngel !== this.game.player.lookAngel ||
+			_directionX !== this.game.player.direction.x ||
+			_directionY !== this.game.player.direction.y) {
+
 			this.game.socket.move(this.game.player);
 		}
 

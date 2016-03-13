@@ -2,6 +2,7 @@
 class Socket {
     constructor(game) {
         //this.game = game;
+        var self = this;
         var socket = io.connect();
         this.socket = socket;
         var socketBodies = {};
@@ -22,6 +23,8 @@ class Socket {
                     onJoin(data.game[i]);
                 }
             }
+
+            self.move(game.player);
         }
 
         function onLeave(data) {
@@ -36,6 +39,7 @@ class Socket {
             }
             socketBodies[data.socketId].position = data.position;
             socketBodies[data.socketId].lookAngel = data.lookAngel;
+            socketBodies[data.socketId].direction = data.direction;
 
         }
 
@@ -61,7 +65,8 @@ class Socket {
     move(player) {
         this.socket.emit('move', {
             position: player.position,
-            lookAngel: player.lookAngel
+            lookAngel: player.lookAngel,
+            direction: player.direction
         });
     }
 

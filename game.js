@@ -38,8 +38,14 @@ exports.init = function(io, socket) {
 	}
 	function move(data) {
 		gamePlayers[socket.id].position = data.position;
-		gamePlayers[socket.id].lookAngel = data.lookAngel;
-		socket.broadcast.emit('move', {socketId: socket.id, position: data.position, lookAngel: data.lookAngel});
+		gamePlayers[socket.id].lookAngel = data.lookAngel;;
+		gamePlayers[socket.id].direction = data.direction;
+		socket.broadcast.emit('move', {
+			socketId: socket.id,
+			position: data.position,
+			lookAngel: data.lookAngel,
+			direction: data.direction
+		});
 	}
 	function bullet(data) {
 		socket.broadcast.emit('bullet', {socketId: socket.id, bullet: data});
