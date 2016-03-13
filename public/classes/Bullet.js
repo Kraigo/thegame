@@ -11,6 +11,7 @@ class Bullet extends Basis {
 		this.animation.name = 'bullet';
 		this.attack.damage = params.damage;
 		this.owner = owner;
+		this.timer = this.game.timer;
 	}
 	update() {
 		if (this.isOuterCamera()) {
@@ -37,6 +38,11 @@ class Bullet extends Basis {
 
 
 		this.faceBarrier(true);
+
+		if (this.game.timer > this.timer + 100) {
+			this.kill();
+			this.speed = 0;
+		}
 	}
 	render() {
 

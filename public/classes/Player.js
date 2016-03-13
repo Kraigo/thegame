@@ -16,8 +16,8 @@ class Player extends Basis {
 			reload: 0
 		};
 		this.attack = {
-			damageMin: 20,
-			damageMax: 50,
+			damageMin: 1,
+			damageMax: 3,
 			range: 10
 		};
 		this.animation.name = 'player';

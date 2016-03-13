@@ -2,7 +2,7 @@
 class Socket {
     constructor(game) {
         //this.game = game;
-        var socket = io.connect('http://localhost:8080');
+        var socket = io.connect();
         this.socket = socket;
         var socketBodies = {};
 
