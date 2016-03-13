@@ -2,7 +2,7 @@
 class Sprite {
 	constructor(game) {
 		this.game = game;
-		this.dir = 'sprites/sprite.png';
+		this.dir = '/sprites/sprite.png';
 		this.image = new Image();
 		this.image.src = this.dir;
 		this.size = {

@@ -4,7 +4,7 @@ class Stage {
     constructor(game) {
         var self = this;
         this.game = game;
-        this.dir = 'sprites/tileset.png';
+        this.dir = '/sprites/tileset.png';
         this.image = new Image();
         this.image.src = this.dir;
         this.current = 1;
