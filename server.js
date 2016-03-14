@@ -1,9 +1,8 @@
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 81;
-var server_address = '0.0.0.0';
+var server_port = process.env.PORT || 8080;
 
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app).listen(server_port, server_address);
+var server = require('http').createServer(app).listen(server_port);
 var io = require('socket.io')(server);
 
 var game = require('./game');
