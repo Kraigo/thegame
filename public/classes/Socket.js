@@ -18,6 +18,7 @@ class Socket {
             game.player.id = data.socketId;
             for (var i = 0; i<data.game.length; i++) {
                 if (data.socketId === data.game[i].socketId) {
+                    game.player.id = data.socketId;
                     game.player.position = data.game[i].position;
                 } else {
                     onJoin(data.game[i]);
@@ -28,12 +29,13 @@ class Socket {
         }
 
         function onLeave(data) {
-            socketBodies[data.socketId].willDie = true;
-            delete socketBodies[data.socketId];
+            if (socketBodies[data.socketId]) {
+                socketBodies[data.socketId].willDie = true;
+                delete socketBodies[data.socketId];
+            }
         }
 
         function onMove(data) {
-
             if (!socketBodies[data.socketId]) {
                 onJoin(data);
             }
@@ -58,7 +60,12 @@ class Socket {
         }
 
         function onKill(data) {
-            socketBodies[data.socketId].kill();
+            if (game.player.id == data.socketId) {
+                if (game.player)
+                    game.player.kill();
+            }
+            if (socketBodies[data.socketId])
+                socketBodies[data.socketId].kill();
         }
     }
 

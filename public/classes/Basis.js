@@ -177,10 +177,6 @@ class Basis {
 	kill() {
 		this.willDie = true;
 		this.changeAnimation('die');
-		//if (this.id) {
-		//	this.game.socket.kill(this.id);
-		//}
-
 	}
 
 	hit(damage) {

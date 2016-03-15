@@ -4,6 +4,7 @@ class Player extends Basis {
 		params = params || {};
 		super(game);
 
+		this.id = null;
 		this.speed = 3;
 		this.size.width = 48;
 		this.size.height = 48;
@@ -16,12 +17,11 @@ class Player extends Basis {
 			reload: 0
 		};
 		this.attack = {
-			damageMin: 1,
-			damageMax: 3,
+			damageMin: 5,
+			damageMax: 10,
 			range: 10
 		};
 		this.animation.name = 'player';
-
 	}
 	render() {	
 		this.game.screen.beginPath();

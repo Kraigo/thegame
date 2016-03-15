@@ -2,22 +2,35 @@
 class PlayerControl {
 	constructor(game) {
 		this.game = game;
+
+
+		setInterval(function() {
+			if (game.player) {
+				game.socket.move(game.player);
+
+				if (!game.player.willDie && game.player.health.current <= 0) {
+					this.game.socket.kill(this.id);
+				}
+			}
+		}, 1000/20)
 	}
 
 	update() {
-		var _lookAngel = this.game.player.lookAngel;
-		var _directionX = this.game.player.direction.x;
-		var _directionY = this.game.player.direction.y;
+		// var _lookAngel = this.game.player.lookAngel;
+		// var _directionX = this.game.player.direction.x;
+		// var _directionY = this.game.player.direction.y;
 		this.move();
 		this.shot();
 		this.rotate();
 
-		if (_lookAngel !== this.game.player.lookAngel ||
-			_directionX !== this.game.player.direction.x ||
-			_directionY !== this.game.player.direction.y) {
+		// if (this.game.timer % 8 == 0) {
+		// 	if (_lookAngel !== this.game.player.lookAngel ||
+		// 		_directionX !== this.game.player.direction.x ||
+		// 		_directionY !== this.game.player.direction.y) {
 
-			this.game.socket.move(this.game.player);
-		}
+				
+		// 	}
+		// }
 
 	}
 	move() {

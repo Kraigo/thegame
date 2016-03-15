@@ -21,7 +21,7 @@ exports.init = function(io, socket) {
 	socket.on('disconnect', disconnect);
 	socket.on('move', move);
 	socket.on('bullet', bullet);
-	//socket.on('kill', kill);
+	socket.on('kill', kill);
 	// socket.on('hostJoinRoom', hostJoinRoom);
 
 	// socket.on('hostStartRoom', hostStartRoom);
@@ -50,9 +50,9 @@ exports.init = function(io, socket) {
 	function bullet(data) {
 		socket.broadcast.emit('bullet', {socketId: socket.id, bullet: data});
 	}
-	//function kill(data) {
-	//	delete gamePlayers[data];
-	//	socket.broadcast.emit('kill', {socketId: data});
-	//}
+	function kill(data) {
+		delete gamePlayers[data];
+		socket.broadcast.emit('kill', {socketId: data});
+	}
 
 };

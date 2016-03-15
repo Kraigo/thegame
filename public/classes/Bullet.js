@@ -27,7 +27,7 @@ class Bullet extends Basis {
 			//	body.hit(this.attack.damage);
 			//}
 
-			if (!this.willDie && !body.willDie && this.owner !== body && this.collidingBody(body)) {
+			if (!this.willDie && !body.willDie && this.owner !== body && !(body instanceof Bullet) && this.collidingBody(body)) {
 				this.kill();
 				this.speed = 0;
 				body.hit(this.attack.damage);
