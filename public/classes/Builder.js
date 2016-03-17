@@ -95,66 +95,21 @@ class Builder {
 				self.material.sx = x;
 				self.material.sy = y;
 				console.log(self.material.sx, self.material.sy);
-			}
-			//self.game.stage.build([self.material, self.position.sx, self.position.sy]);
-		});
-
-		document.addEventListener('keydown', function(e) {
-
-			//if (keyboard.isPressed('F')) {
-			//	if (keyboard.isClicked('1', e.keyCode)) {
-			//		self.material = 'wall_1';
-			//	} else if (keyboard.isClicked('2', e.keyCode)) {
-			//		self.material = 'wall_2';
-			//	} else if (keyboard.isClicked('3', e.keyCode)) {
-			//		self.material = 'wall_3';
-			//	} else if (keyboard.isClicked('4', e.keyCode)) {
-			//		self.material = 'wall_4';
-			//	} else if (keyboard.isClicked('5', e.keyCode)) {
-			//		self.material = 'wall_5';
-			//	} else if (keyboard.isClicked('6', e.keyCode)) {
-			//		self.material = 'wall_6';
-			//	} else if (keyboard.isClicked('7', e.keyCode)) {
-			//		self.material = 'wall_7';
-			//	} else if (keyboard.isClicked('8', e.keyCode)) {
-			//		self.material = 'wall_8';
-			//	} else if (keyboard.isClicked('9', e.keyCode)) {
-			//		self.material = 'wall_9';
-			//	}
-			//}
-            //
-			//if (keyboard.isPressed('G')) {
-			//	if (keyboard.isClicked('1', e.keyCode)) {
-			//		self.material = 'wall_10';
-			//	} else if (keyboard.isClicked('2', e.keyCode)) {
-			//		self.material = 'wall_11';
-			//	} else if (keyboard.isClicked('3', e.keyCode)) {
-			//		self.material = 'wall_12';
-			//	} else if (keyboard.isClicked('4', e.keyCode)) {
-			//		self.material = 'wall_13';
-			//	} else if (keyboard.isClicked('5', e.keyCode)) {
-			//		self.material = 'wall_14';
-			//	} else if (keyboard.isClicked('6', e.keyCode)) {
-			//		self.material = 'wall_15';
-			//	} else if (keyboard.isClicked('7', e.keyCode)) {
-			//		self.material = 'wall_16';
-			//	} else if (keyboard.isClicked('8', e.keyCode)) {
-			//		self.material = 'wall_17';
-			//	} else if (keyboard.isClicked('9', e.keyCode)) {
-			//		self.material = 'wall_18';
-			//	} else if (keyboard.isClicked('0', e.keyCode)) {
-			//		self.material = 'wall_19';
-			//	}
-			//}
-
-			if (keyboard.isClicked('SPACE', e.keyCode)) {
-
+			} else {
 				self.game.stage.build({
 					x:self.position.sx,
 					y: self.position.sy,
 					sx: self.material.sx,
 					sy: self.material.sy
 				});
+			}
+		});
+
+		document.addEventListener('keydown', function(e) {
+
+			if (keyboard.isClicked('SPACE', e.keyCode)) {
+				self.game.stage.addSolid(self.position.sx, self.position.sy);
+				self.game.stage.simplifySolid();
 			}
 
 			if (keyboard.isClicked('C', e.keyCode)) {
@@ -164,6 +119,11 @@ class Builder {
 			if (keyboard.isClicked('R', e.keyCode)) {
 				self.game.stage.remove(self.position.sx, self.position.sy);
 			}
+
+			if (keyboard.isClicked('1', e.keyCode)) {
+				self.game.stage.simplifySolid();
+			}
+
 			if (keyboard.isClicked('F3', e.keyCode)) {
 				self.game.stage.logLevel();
 			}

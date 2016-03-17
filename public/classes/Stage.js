@@ -12,7 +12,6 @@ class Stage {
             width: 24,
             height: 24
         };
-        this.cleaned = true;
         this.level = [];
         this.levelSolid = [];
 
@@ -67,7 +66,7 @@ class Stage {
 
         for (var i=0; i<this.levelSolid.length; i++) {
             this.game.screen.beginPath();
-            this.game.screen.fillStyle = 'red';
+            this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
             this.game.screen.fillRect(this.levelSolid[i].x+2 - this.game.camera.x, this.levelSolid[i].y+2 - this.game.camera.y, this.levelSolid[i].width-4, this.levelSolid[i].height-4);
             this.game.screen.stroke();
         }
@@ -95,7 +94,6 @@ class Stage {
         this.level.push(item);
     }
     clean() {
-        if (!this.cleaned) {
             for (var i = 0, objFirst; i < this.level.length; i++) {
                 objFirst = this.level[i];
                 for (var j = 0, objSecond; j < this.level.length; j++) {
@@ -107,8 +105,6 @@ class Stage {
                     }
                 }
             }
-            this.cleaned = true;
-        }
     }
 
     remove(x, y) {
@@ -119,6 +115,7 @@ class Stage {
             }
         }
     }
+
 
     loadLevel(lvl) {
             var xobj = new XMLHttpRequest();
@@ -136,8 +133,6 @@ class Stage {
                             self.addSolid(levelData[i].x, levelData[i].y);
                         }
                     }
-
-                    self.simplifySolid();
                 }
             };
             xobj.send(null);
