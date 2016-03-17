@@ -18,22 +18,24 @@ class Stage {
 
 
 
-        for (var x = 0; x < this.game.world.width; x+=this.size.width) {
-            for (var y = 0; y < this.game.world.height; y+=this.size.height) {
-                //if (x === 0 ) {
-                //    this.build(['wall_4', x, y]);
-                //} else if (y === 0 ) {
-                //    this.build(['wall_2', x, y]);
-                //} else if (x === this.game.world.width - this.size.width ) {
-                //    this.build(['wall_6', x, y]);
-                //} else if (y === this.game.world.height - this.size.height ) {
-                //    this.build(['wall_8', x, y]);
-                //} else {
-                    this.build(['wall_5', x, y]);
-                //}
+        //for (var x = 0; x < this.game.world.width; x+=this.size.width) {
+        //    for (var y = 0; y < this.game.world.height; y+=this.size.height) {
+        //        //if (x === 0 ) {
+        //        //    this.build(['wall_4', x, y]);
+        //        //} else if (y === 0 ) {
+        //        //    this.build(['wall_2', x, y]);
+        //        //} else if (x === this.game.world.width - this.size.width ) {
+        //        //    this.build(['wall_6', x, y]);
+        //        //} else if (y === this.game.world.height - this.size.height ) {
+        //        //    this.build(['wall_8', x, y]);
+        //        //} else {
+        //            this.build(['wall_5', x, y]);
+        //        //}
+        //
+        //    }
+        //}
 
-            }
-        }
+        //game.stage.loadLevel('1');
 
         return;
         this.build(['wall_1', 0, 0]);
@@ -62,6 +64,13 @@ class Stage {
         for (var i=0; i<this.level.length; i++) {
             this.draw(this.level[i]);
         }
+
+        for (var i=0; i<this.levelSolid.length; i++) {
+            this.game.screen.beginPath();
+            this.game.screen.fillStyle = 'red';
+            this.game.screen.fillRect(this.levelSolid[i].x+2 - this.game.camera.x, this.levelSolid[i].y+2 - this.game.camera.y, this.levelSolid[i].width-4, this.levelSolid[i].height-4);
+            this.game.screen.stroke();
+        }
     }
     draw(obj) {
 
@@ -83,153 +92,7 @@ class Stage {
         }
     }
     build(item) {
-        var obj = {
-            x: item[1],
-            y: item[2]
-        };
-        switch (item[0]) {
-            case 'floor_1':
-                obj.sx = 0;
-                obj.sy = 72;
-                break;
-            case 'floor_2':
-                obj.sx = 24;
-                obj.sy = 72;
-                break;
-            case 'floor_3':
-                obj.sx = 48;
-                obj.sy = 72;
-                break;
-            case 'floor_4':
-                obj.sx = 0;
-                obj.sy = 96;
-                break;
-            case 'floor_5':
-                obj.sx = 24;
-                obj.sy = 96;
-                break;
-            case 'floor_6':
-                obj.sx = 48;
-                obj.sy = 96;
-                break;
-            case 'floor_7':
-                obj.sx = 0;
-                obj.sy = 120;
-                break;
-            case 'floor_8':
-                obj.sx = 24;
-                obj.sy = 120;
-                break;
-            case 'floor_9':
-                obj.sx = 48;
-                obj.sy = 120;
-                break;
-
-
-            case 'wall_1':
-                obj.sx = 0;
-                obj.sy = 144;
-                obj.solid = true;
-                break;
-            case 'wall_2':
-                obj.sx = 24;
-                obj.sy = 144;
-                obj.solid = true;
-                break;
-            case 'wall_3':
-                obj.sx = 48;
-                obj.sy = 144;
-                obj.solid = true;
-                break;
-            case 'wall_4':
-                obj.sx = 0;
-                obj.sy = 168;
-                obj.solid = true;
-                break;
-            case 'wall_5':
-                obj.sx = 24;
-                obj.sy = 168;
-                break;
-            case 'wall_6':
-                obj.sx = 48;
-                obj.sy = 168;
-                obj.solid = true;
-                break;
-            case 'wall_7':
-                obj.sx = 0;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-            case 'wall_8':
-                obj.sx = 24;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-            case 'wall_9':
-                obj.sx = 48;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-
-
-            case 'wall_10':
-                obj.sx = 72;
-                obj.sy = 144;
-                obj.solid = true;
-                break;
-            case 'wall_11':
-                obj.sx = 72;
-                obj.sy = 168;
-                obj.solid = true;
-                break;
-            case 'wall_12':
-                obj.sx = 72;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-            case 'wall_13':
-                obj.sx = 96;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-            case 'wall_14':
-                obj.sx = 120;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-            case 'wall_15':
-                obj.sx = 144;
-                obj.sy = 192;
-                obj.solid = true;
-                break;
-
-            case 'wall_16':
-                obj.sx = 96;
-                obj.sy = 144;
-                obj.solid = true;
-                break;
-            case 'wall_17':
-                obj.sx = 118;
-                obj.sy = 144;
-                obj.solid = true;
-                break;
-
-            case 'wall_18':
-                obj.sx = 96;
-                obj.sy = 168;
-                obj.solid = true;
-                break;
-            case 'wall_19':
-                obj.sx = 120;
-                obj.sy = 168;
-                obj.solid = true;
-                break;
-        }
-        this.cleaned = false;
-        this.level.push(obj);
-        if (obj.solid) {
-            this.addSolid(obj.x, obj.y);
-        }
+        this.level.push(item);
     }
     clean() {
         if (!this.cleaned) {
@@ -282,6 +145,8 @@ class Stage {
 
     logLevel() {
         console.log(JSON.stringify(this.level));
+        console.log('==============================');
+        console.log(JSON.stringify(this.levelSolid));
     }
     addSolid(x, y) {
        this.levelSolid.push({
@@ -297,6 +162,7 @@ class Stage {
         for (var i = 0, item; i < this.levelSolid.length; i++) {
             item = this.levelSolid[i];
             if (!item) continue;
+            var isMerged = false;
             for (var j = 0, neighbor; j < this.levelSolid.length; j++) {
                 neighbor = this.levelSolid[j];
                 if (!neighbor) continue;
@@ -307,26 +173,36 @@ class Stage {
                     item.height + item.y >= neighbor.y)
                 {
 
-                    if ((item.x === neighbor.x && item.height === neighbor.height) ||
-                        (item.y === neighbor.y && item.width === neighbor.width)) {
+                    if ((item.x === neighbor.x && item.width === neighbor.width) ||
+                        (item.y === neighbor.y && item.height === neighbor.height)) {
 
                         if (neighbor.x < item.x) {
                             item.x -= neighbor.width;
-                        }
-
-                        if (neighbor.y < item.y) {
+                            item.width += neighbor.width;
+                        } else if (neighbor.x > item.x) {
+                            item.width += neighbor.width;
+                        } else if (neighbor.y < item.y) {
                             item.y -= neighbor.height;
+                            item.height += neighbor.height;
+                        } else if (neighbor.y > item.y) {
+                            item.height += neighbor.height;
                         }
 
-                        item.width += neighbor.x - item.x;
-                        item.height += neighbor.y - item.y;
+                        //if (neighbor.y < item.y) {
+                        //    item.y -= neighbor.height;
+                        //}
+                        //
+                        //item.width += neighbor.x - item.x;
+                        //item.height += neighbor.y - item.y;
                         //console.log(item, neighbor, neighbor.x - item.x, neighbor.y - item.y);
+                        isMerged = true;
                         delete this.levelSolid[j];
-                        break;
-
                     }
                 }
 
+            }
+            if (isMerged) {
+                i--;
             }
         }
         this.levelSolid = this.levelSolid.filter(function(n){ return !!n });

@@ -64,7 +64,6 @@ class Game {
 			requestAnimationFrame(tick);
 		};
 		tick();
-		game.stage.loadLevel('1');
 		this.modeToggler();
 	}
 
