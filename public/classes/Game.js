@@ -19,8 +19,8 @@ class Game {
 			target: null
 		};
 		this.world = {
-			width: 600,
-			height: 600
+			width: 792,
+			height: 792
 		};
 		this.player = new Player(game);
 		this.playerControl = new PlayerControl(game);
@@ -56,10 +56,7 @@ class Game {
 		// 	}
 		// 	game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: x, y: y}));
 		// }, 1000);
-		// socket.on('connected', function (data) {
-		// 	console.log(data);
-		// 	socket.emit('my other event', { my: 'data' });
-		// });
+
 
 		var tick = function() {
 			game.update();
@@ -67,6 +64,7 @@ class Game {
 			requestAnimationFrame(tick);
 		};
 		tick();
+		game.stage.loadLevel('1');
 		this.modeToggler();
 	}
 
@@ -180,7 +178,6 @@ class Game {
 				game.camera.target = game.builder;
 				game.bodies = [];
 				game.addBody(game.builder);
-
 			}
 		})
 	}

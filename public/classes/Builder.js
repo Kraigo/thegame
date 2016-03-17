@@ -15,9 +15,9 @@ class Builder {
 			sy: 0
 		};
 		this.speed = 3;
-
 		this.material = '';
 
+		this.addActivity();
 	}
 
 	update() {
@@ -49,51 +49,79 @@ class Builder {
 			this.position.y += this.speed;
 		}
 
-		if (this.game.keyboard.isPressed('F')) {
-			if (this.game.keyboard.isPressed('1')) {
-				this.material = 'wall_1';
-			} else if (this.game.keyboard.isPressed('2')) {
-				this.material = 'wall_2';
-			} else if (this.game.keyboard.isPressed('3')) {
-				this.material = 'wall_3';
-			} else if (this.game.keyboard.isPressed('4')) {
-				this.material = 'wall_4';
-			} else if (this.game.keyboard.isPressed('5')) {
-				this.material = 'wall_5';
-			} else if (this.game.keyboard.isPressed('6')) {
-				this.material = 'wall_6';
-			} else if (this.game.keyboard.isPressed('7')) {
-				this.material = 'wall_7';
-			} else if (this.game.keyboard.isPressed('8')) {
-				this.material = 'wall_8';
-			} else if (this.game.keyboard.isPressed('9')) {
-				this.material = 'wall_9';
+	}
+
+	addActivity() {
+
+		var self = this;
+		var keyboard = this.game.keyboard;
+
+		document.addEventListener('mousedown', function(e) {
+			self.game.stage.build([self.material, self.position.sx, self.position.sy]);
+		});
+
+		document.addEventListener('keydown', function(e) {
+			console.log(1);
+
+			if (keyboard.isPressed('F')) {
+				if (keyboard.isClicked('1', e.keyCode)) {
+					self.material = 'wall_1';
+				} else if (keyboard.isClicked('2', e.keyCode)) {
+					self.material = 'wall_2';
+				} else if (keyboard.isClicked('3', e.keyCode)) {
+					self.material = 'wall_3';
+				} else if (keyboard.isClicked('4', e.keyCode)) {
+					self.material = 'wall_4';
+				} else if (keyboard.isClicked('5', e.keyCode)) {
+					self.material = 'wall_5';
+				} else if (keyboard.isClicked('6', e.keyCode)) {
+					self.material = 'wall_6';
+				} else if (keyboard.isClicked('7', e.keyCode)) {
+					self.material = 'wall_7';
+				} else if (keyboard.isClicked('8', e.keyCode)) {
+					self.material = 'wall_8';
+				} else if (keyboard.isClicked('9', e.keyCode)) {
+					self.material = 'wall_9';
+				}
 			}
-		}
 
-		if (this.game.keyboard.isPressed('G')) {
-			if (this.game.keyboard.isPressed('1')) {
-				this.material = 'wall_10';
-			} else if (this.game.keyboard.isPressed('2')) {
-				this.material = 'wall_11';
-			} else if (this.game.keyboard.isPressed('3')) {
-				this.material = 'wall_12';
-			} else if (this.game.keyboard.isPressed('4')) {
-				this.material = 'wall_13';
-			} else if (this.game.keyboard.isPressed('5')) {
-				this.material = 'wall_14';
-			} else if (this.game.keyboard.isPressed('6')) {
-				this.material = 'wall_15';
+			if (keyboard.isPressed('G')) {
+				if (keyboard.isClicked('1', e.keyCode)) {
+					self.material = 'wall_10';
+				} else if (keyboard.isClicked('2', e.keyCode)) {
+					self.material = 'wall_11';
+				} else if (keyboard.isClicked('3', e.keyCode)) {
+					self.material = 'wall_12';
+				} else if (keyboard.isClicked('4', e.keyCode)) {
+					self.material = 'wall_13';
+				} else if (keyboard.isClicked('5', e.keyCode)) {
+					self.material = 'wall_14';
+				} else if (keyboard.isClicked('6', e.keyCode)) {
+					self.material = 'wall_15';
+				} else if (keyboard.isClicked('7', e.keyCode)) {
+					self.material = 'wall_16';
+				} else if (keyboard.isClicked('8', e.keyCode)) {
+					self.material = 'wall_17';
+				} else if (keyboard.isClicked('9', e.keyCode)) {
+					self.material = 'wall_18';
+				} else if (keyboard.isClicked('0', e.keyCode)) {
+					self.material = 'wall_19';
+				}
 			}
-		}
 
-		if (this.game.keyboard.isPressed('C')) {
-			this.game.stage.clean();
-		}
+			if (keyboard.isClicked('C', e.keyCode)) {
+				self.game.stage.clean();
+			}
 
-		if (this.game.point.isPressed('LEFT')) {
-			this.game.stage.build([this.material, x, y]);
-		}
-
+			if (keyboard.isClicked('R', e.keyCode)) {
+				self.game.stage.remove(self.position.sx, self.position.sy);
+			}
+			if (keyboard.isClicked('F3', e.keyCode)) {
+				self.game.stage.logLevel();
+			}
+			if (keyboard.isClicked('F4', e.keyCode)) {
+				self.game.stage.loadLevel('1');
+			}
+		})
 	}
 }

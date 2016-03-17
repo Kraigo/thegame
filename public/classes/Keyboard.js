@@ -24,7 +24,11 @@ class Keyboard {
 			G: 71,
 			H: 72,
 			C: 67,
+			R: 82,
 			F2: 113,
+			F3: 114,
+			F4: 115,
+			F5: 116,
 
 			LEFT: 37,
 			UP: 38,
@@ -43,6 +47,15 @@ class Keyboard {
 		this.isPressed = function(key) {
 			key = key.toUpperCase();
 			return state[KEYS[key]];
+		};
+
+		this.isClicked = function(key, code) {
+			return KEYS[key] === code
+		};
+
+		this.keyCode = function(key) {
+			key = key.toUpperCase();
+			return KEYS[key];
 		}
 	}
 }

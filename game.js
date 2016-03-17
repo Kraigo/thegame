@@ -1,12 +1,16 @@
 var gamePlayers = {};
+var gameEmenies = {};
+var startPosition = [
+	{x: 375, y: 651},
+	{x: 135, y: 340},
+	{x: 605, y: 340},
+	{x: 375, y: 185}
+];
 
 exports.init = function(io, socket) {
 	var player = {
 		socketId: socket.id,
-		position: {
-			x: 50,
-			y: 50
-		},
+		position: startPosition[Math.floor(Math.random() * startPosition.length)],
 		lookAngel: 0
 	};
 	gamePlayers[socket.id] = player;
@@ -22,6 +26,7 @@ exports.init = function(io, socket) {
 	socket.on('move', move);
 	socket.on('bullet', bullet);
 	socket.on('kill', kill);
+
 	// socket.on('hostJoinRoom', hostJoinRoom);
 
 	// socket.on('hostStartRoom', hostStartRoom);

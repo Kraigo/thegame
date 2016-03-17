@@ -193,7 +193,7 @@ class Basis {
 				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	}
 	faceBarrier(bounce) {
-
+		//debugger;
 		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
 			item = {
 				position: {
@@ -201,8 +201,8 @@ class Basis {
 					y: this.game.stage.levelSolid[i].y
 				},
 				size: {
-					width: this.game.stage.size.width,
-					height: this.game.stage.size.height
+					width: this.game.stage.levelSolid[i].width,
+					height: this.game.stage.levelSolid[i].height
 				}
 			};
 			var collided = false;
