@@ -34,7 +34,7 @@ class Stage {
         //    }
         //}
 
-        //game.stage.loadLevel('1');
+        this.loadLevel('1');
 
         return;
         this.build(['wall_1', 0, 0]);
@@ -60,15 +60,22 @@ class Stage {
     }
 
     render() {
+
+
+        this.game.screen.fillStyle="#161318";
+        this.game.screen.fillRect(0-this.game.camera.x,0-this.game.camera.y, this.game.world.width, this.game.world.height);
+
         for (var i=0; i<this.level.length; i++) {
             this.draw(this.level[i]);
         }
 
-        for (var i=0; i<this.levelSolid.length; i++) {
-            this.game.screen.beginPath();
-            this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
-            this.game.screen.fillRect(this.levelSolid[i].x+2 - this.game.camera.x, this.levelSolid[i].y+2 - this.game.camera.y, this.levelSolid[i].width-4, this.levelSolid[i].height-4);
-            this.game.screen.stroke();
+        if (this.game.builder) {
+            for (var i = 0; i < this.levelSolid.length; i++) {
+                this.game.screen.beginPath();
+                this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
+                this.game.screen.fillRect(this.levelSolid[i].x + 2 - this.game.camera.x, this.levelSolid[i].y + 2 - this.game.camera.y, this.levelSolid[i].width - 4, this.levelSolid[i].height - 4);
+                this.game.screen.stroke();
+            }
         }
     }
     draw(obj) {
@@ -126,13 +133,16 @@ class Stage {
                 if (xobj.readyState == 4 && xobj.status == "200") {
                     var levelData = JSON.parse(xobj.responseText);
 
-                    for (var i = 0; i < levelData.length; i++) {
-                        self.level.push(levelData[i]);
 
-                        if (levelData[i].solid) {
-                            self.addSolid(levelData[i].x, levelData[i].y);
-                        }
-                    }
+                    self.level = levelData.tiles;
+                    self.levelSolid = levelData.solids;
+                    //for (var i = 0; i < levelData.length; i++) {
+                    //    self.level.push(levelData[i]);
+                    //
+                    //    if (levelData[i].solid) {
+                    //        self.addSolid(levelData[i].x, levelData[i].y);
+                    //    }
+                    //}
                 }
             };
             xobj.send(null);
@@ -201,6 +211,5 @@ class Stage {
             }
         }
         this.levelSolid = this.levelSolid.filter(function(n){ return !!n });
-        console.log('after simplify', this.levelSolid.length);
     }
 }

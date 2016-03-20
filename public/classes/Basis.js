@@ -65,10 +65,10 @@ class Basis {
 		return (distance < b1.r + b2.r);
 	}
 	collidingSqr(body) {
-		return !(this.position.x + this.size.width <= body.position.x ||
-			this.position.y + this.size.height <= body.position.y ||
-			this.position.x >= body.position.x + body.size.width ||
-			this.position.y >= body.position.y + body.size.height);
+		return !(this.position.x + this.size.width < body.position.x ||
+			this.position.y + this.size.height < body.position.y ||
+			this.position.x > body.position.x + body.size.width ||
+			this.position.y > body.position.y + body.size.height);
 	}
 	collidingBody(body) {
 		return (this != body && this.colliding(
@@ -158,6 +158,7 @@ class Basis {
 		var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
 		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 	}
+
 	getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
@@ -187,11 +188,11 @@ class Basis {
 		}
 	}
 
-	isReach(body) {
-		return (this != body && this.colliding(
-				{x: this.position.x, y: this.position.y, r: this.size.width/2},
-				{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
-	}
+	//isReach(body) {
+	//	return (this != body && this.colliding(
+	//			{x: this.position.x, y: this.position.y, r: this.size.width/2},
+	//			{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
+	//}
 	faceBarrier(bounce) {
 		//debugger;
 		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
@@ -209,12 +210,26 @@ class Basis {
 
 			if (this.collidingSqr(item)) {
 
-				var direction = this.directionTo(item);
-				var range = this.size.width/2 + item.size.width/2;
+				if (this.position.x < item.position.x) {
+					this.position.x -= this.direction.x * this.speed;
+				} else if (this.position.x > item.position.x + item.size.height) {
+					this.position.x += this.direction.x * this.speed;
+				}
 
-				this.position.x += -direction.x * range * 0.1;
-				this.position.y += -direction.y * range * 0.1;
+				if (this.position.y + this.size.height < item.position.y) {
+					this.position.y -= this.direction.y * this.speed;
+				} else if (this.position.y > item.position.y + item.size.height) {
+					this.position.y += this.direction.y * this.speed;
+				}
 
+
+				//var direction = this.directionTo(item);
+				//var range = this.size.width/2 + item.size.width/2;
+
+				//this.position.x += -direction.x * range * 0.1;
+				//this.position.y += -direction.y * range * 0.1;
+				//this.direction.x = 0;
+				//this.direction.y = 0;
 
 				//this.game.screen.beginPath();
 				//this.game.screen.moveTo(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y);
@@ -240,4 +255,5 @@ class Basis {
 
 		}
 	}
+
 }

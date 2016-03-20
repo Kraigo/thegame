@@ -45,7 +45,6 @@ class Player extends Basis {
 		this.move();
 	}
 	move() {
-
 		this.faceBarrier();
 
 		this.position.x += this.direction.x * this.speed;

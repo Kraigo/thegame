@@ -1,10 +1,10 @@
 var gamePlayers = {};
 var gameEmenies = {};
 var startPosition = [
-	{x: 375, y: 651},
-	{x: 135, y: 340},
-	{x: 605, y: 340},
-	{x: 375, y: 185}
+	{x: 500, y: 250},
+	{x: 250, y: 500},
+	{x: 250, y: 250},
+	{x: 500, y: 500}
 ];
 
 exports.init = function(io, socket) {

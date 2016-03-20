@@ -16,7 +16,8 @@ class Game {
 			y: 0,
 			width: this.canvas.width,
 			height: this.canvas.height,
-			target: null
+			target: null,
+			stretch: 0.2
 		};
 		this.world = {
 			width: 792,
@@ -69,6 +70,7 @@ class Game {
 
 	render() {
 		this.screen.clearRect(0,0, this.camera.width, this.camera.height);
+
 		var now = new Date();
         var fps = Math.round(1000/(now - this.lastTick));
         this.lastTick = now;
@@ -103,8 +105,8 @@ class Game {
 		this.camera.x = this.camera.target.position.x - this.camera.width/2 + this.camera.target.size.width/2;
 		this.camera.y = this.camera.target.position.y - this.camera.height/2 + this.camera.target.size.height/2;
 
-		this.camera.x += (this.point.x - this.camera.width/2)*0.2;
-		this.camera.y += (this.point.y - this.camera.height/2)*0.2;
+		this.camera.x += (this.point.x - this.camera.width/2)*this.camera.stretch;
+		this.camera.y += (this.point.y - this.camera.height/2)*this.camera.stretch;
 
 
 		this.playerControl.update();
@@ -175,6 +177,7 @@ class Game {
 			if (e.keyCode == 113) {
 				game.builder = new Builder(game);
 				game.camera.target = game.builder;
+				game.camera.stretch = 0;
 				game.bodies = [];
 				game.addBody(game.builder);
 			}
