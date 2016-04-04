@@ -16,26 +16,14 @@ class PlayerControl {
 	}
 
 	update() {
-		// var _lookAngel = this.game.player.lookAngel;
-		// var _directionX = this.game.player.direction.x;
-		// var _directionY = this.game.player.direction.y;
+
 		this.move();
 		this.shot();
 		this.rotate();
 
-		// if (this.game.timer % 8 == 0) {
-		// 	if (_lookAngel !== this.game.player.lookAngel ||
-		// 		_directionX !== this.game.player.direction.x ||
-		// 		_directionY !== this.game.player.direction.y) {
-
-				
-		// 	}
-		// }
-
 	}
 	move() {
 		var player = this.game.player;
-
 		player.direction.x = 0;
 		player.direction.y = 0;
 
@@ -50,6 +38,7 @@ class PlayerControl {
 		} else if (this.game.keyboard.isPressed('S')) {
 			player.direction.y = 1;
 		}
+
 	}
 	shot() {
 		this.game.player.shooting.start = (this.game.point.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'));

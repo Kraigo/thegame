@@ -1,5 +1,5 @@
 'use strict';
-class Vector {
+class Position {
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
@@ -12,3 +12,4 @@ class Vector {
 	// 	var dxy = Math.sqrt(vx*vx + vy*vy);
 	// 	return new Vector(vx/dxy, vy/dxy);
 	// }
+}

@@ -23,7 +23,7 @@ class Player extends Basis {
 		};
 		this.animation.name = 'player';
 	}
-	render() {	
+	render() {
 		this.game.screen.beginPath();
 		this.game.screen.arc(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y, (this.size.width + this.size.height) / 6, 0 ,2*Math.PI);
 		this.game.screen.fillStyle="rgba(0,0,0,0.2)";
@@ -43,14 +43,14 @@ class Player extends Basis {
 
 		this.shot();
 		this.move();
+
 	}
 	move() {
 		this.faceBarrier();
 
-		this.position.x += this.direction.x * this.speed;
-		this.position.y += this.direction.y * this.speed;
-
 		if (this.direction.x || this.direction.y) {
+			this.position.x += this.direction.x * this.speed;
+			this.position.y += this.direction.y * this.speed;
 			this.changeAnimation('walk');
 		} else {
 			this.changeAnimation('stand');

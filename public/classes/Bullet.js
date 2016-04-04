@@ -37,7 +37,10 @@ class Bullet extends Basis {
 		this.position.y += this.direction.y * this.speed;
 
 
-		this.faceBarrier(true);
+		if (this.faceBarrier()) {
+			this.kill();
+			this.speed = 0;
+		}
 
 		if (this.game.timer > this.timer + 100) {
 			this.kill();
@@ -50,9 +53,13 @@ class Bullet extends Basis {
 		// this.game.screen.rect(this.position.x - this.game.camera.x, this.position.y - this.game.camera.y, this.size.width, this.size.height);
 		// this.game.screen.stroke();
 
+
+
 		var angle = this.vectorAngle(
 			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
 			{x: this.position.x - this.game.camera.x + this.direction.x * this.speed, y: this.position.y - this.game.camera.y + this.direction.y * this.speed});
 		this.game.sprite.draw(this, angle);
+
+		//this.faceBarrier(true);
 	}
 }

@@ -193,10 +193,13 @@ class Basis {
 	//			{x: this.position.x, y: this.position.y, r: this.size.width/2},
 	//			{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
 	//}
-	faceBarrier(bounce) {
+	faceBarrier() {
+		var originalPositionX = this.position.x;
+		var originalPositionY = this.position.y;
+		var nextPositionX = this.position.x + this.direction.x * this.speed;
+		var nextPositionY = this.position.y + this.direction.y * this.speed;
 
 		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
-
 
 			item = {
 				position: {
@@ -211,69 +214,36 @@ class Basis {
 
 			var collided = false;
 
+			this.position.x = nextPositionX;
+			this.position.y = nextPositionY;
+
 			if (this.collidingSqr(item)) {
 
-
-				var acenter = { x: this.position.x + this.size.width / 2, y: this.position.y + this.size.height / 2 };
-				var bcenter = { x: item.position.x + item.size.width / 2, y: item.position.y + item.size.height / 2 };
-				var d = { x: acenter.x - bcenter.x, y: acenter.y - bcenter.y };
-
-				if (Math.abs(d.x) > item.size.width/2 ) {
-					this.position.x += Math.sign(d.x) * this.speed;
-				}
-
-				if (Math.abs(d.y) > item.size.height/2 ) {
-					this.position.y += Math.sign(d.x) * this.speed;
-				}
-
-
-				//var direction = this.directionTo(item);
-				//var range = this.size.width/2 + item.size.width/2;
-
-				//this.position.x += -direction.x * range * 0.1;
-				//this.position.y += -direction.y * range * 0.1;
-				//this.direction.x = 0;
-				//this.direction.y = 0;
-
-				//this.game.screen.beginPath();
-				//this.game.screen.moveTo(this.position.x + this.size.width/2 - this.game.camera.x, this.position.y + this.size.height/2 - this.game.camera.y);
-				//this.game.screen.lineTo(item.position.x + item.size.width/2 - this.game.camera.x, item.position.y + item.size.height/2 - this.game.camera.y);
-				//this.game.screen.strokeStyle = 'red';
-				//this.game.screen.stroke();
-				//this.game.screen.strokeStyle= '#000';
-
-				//this.position.x += -direction.x * range * 0.1;
-				//this.position.y += -direction.y * range * 0.1;
 				collided = true;
 
-			}
+				this.position.x = originalPositionX;
+				this.position.y = nextPositionY;
 
-			if (bounce && collided) {
-
-
-				var acenter = { x: this.position.x + this.size.width / 2, y: this.position.y + this.size.height / 2 };
-				var bcenter = { x: item.position.x + item.size.width / 2, y: item.position.y + item.size.height / 2 };
-				var d = { x: acenter.x - bcenter.x, y: acenter.y - bcenter.y };
-
-				if (Math.abs(d.x) > item.size.width/2 ) {
-					this.direction.x = -this.direction.x;
+				if (this.collidingSqr(item)) {
+					this.direction.y = 0;
 				}
 
-				if (Math.abs(d.y) > item.size.height/2 ){
-					this.direction.y = -this.direction.y;
+
+				this.position.x = nextPositionX;
+				this.position.y = originalPositionY;
+
+				if (this.collidingSqr(item)) {
+					this.direction.x = 0;
 				}
 
-				this.position.x += this.direction.x*this.speed;
-				this.position.y += this.direction.y*this.speed;
-
-				//if ((this.position.x < item.position.x && this.direction.x > 0) || (this.position.x > item.position.x && this.direction.x < 0)) {
-				//	this.direction.x = -this.direction.x;
-				//} else if ((this.position.y < item.position.y && this.direction.y > 0) || (this.position.y > item.position.y && this.direction.y < 0)) {
-				//	this.direction.y = -this.direction.y;
-				//}
+				break;
 			}
 
 		}
+
+		this.position.x = originalPositionX;
+		this.position.y = originalPositionY;
+		return collided;
 	}
 
 }

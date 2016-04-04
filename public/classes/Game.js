@@ -91,7 +91,7 @@ class Game {
 
 		for (var i = 0, body; i < this.bodies.length; i++ ) {
 			body = this.bodies[i];
-			if (this.isCameraShow(this.bodies[i])) {
+			if (this.isCameraShow(body)) {
 				body.render();
 			}
 		}
