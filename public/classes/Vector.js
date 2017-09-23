@@ -12,3 +12,4 @@ class Vector {
 	// 	var dxy = Math.sqrt(vx*vx + vy*vy);
 	// 	return new Vector(vx/dxy, vy/dxy);
 	// }
+}

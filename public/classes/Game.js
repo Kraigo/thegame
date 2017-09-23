@@ -25,7 +25,8 @@ class Game {
 		};
 		this.player = new Player(game);
 		this.playerControl = new PlayerControl(game);
-		this.socket = new Socket(game);
+		// this.socket = new Socket(game);
+		// Create GAME EVENTS to catch and sync with server
 		this.builder = null;
 		this.keyboard = new Keyboard();
 		this.point = new Point(game.canvas);

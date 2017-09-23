@@ -85,7 +85,6 @@ class Player extends Basis {
 			};
 
 			this.game.addBody(new Bullet(this.game, bulletParams, this.game.player));
-			this.game.socket.shot(bulletParams);
 
 		}
 

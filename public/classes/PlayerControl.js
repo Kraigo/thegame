@@ -4,15 +4,15 @@ class PlayerControl {
 		this.game = game;
 
 
-		setInterval(function() {
-			if (game.player) {
-				game.socket.move(game.player);
+		// setInterval(function() {
+		// 	if (game.player) {
+		// 		game.socket.move(game.player);
 
-				if (!game.player.willDie && game.player.health.current <= 0) {
-					this.game.socket.kill(this.id);
-				}
-			}
-		}, 1000/20)
+		// 		if (!game.player.willDie && game.player.health.current <= 0) {
+		// 			this.game.socket.kill(this.id);
+		// 		}
+		// 	}
+		// }, 1000/20)
 	}
 
 	update() {

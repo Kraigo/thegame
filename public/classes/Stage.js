@@ -34,7 +34,7 @@ class Stage {
         //    }
         //}
 
-        this.loadLevel('1');
+         this.loadLevel('1');
 
         return;
         this.build(['wall_1', 0, 0]);
@@ -128,7 +128,7 @@ class Stage {
             var xobj = new XMLHttpRequest();
             var self = this;
             xobj.overrideMimeType("application/json");
-            xobj.open('GET', '/levels/level_'+lvl+'.json', true);
+            xobj.open('GET', 'levels/level_'+lvl+'.json', true);
             xobj.onreadystatechange = function () {
                 if (xobj.readyState == 4 && xobj.status == "200") {
                     var levelData = JSON.parse(xobj.responseText);
