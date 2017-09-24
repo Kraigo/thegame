@@ -16,6 +16,26 @@ class Stage {
         this.levelSolid = [];
 
 
+        this.levelBodies = [
+            {
+                model: "Teleport",
+                view: {
+                    x: 315,
+                    y: 57
+                },
+                pairId: 'A'
+            },
+            {
+                model: "Teleport",
+                view: {
+                    x: 348,
+                    y: 574
+                },
+                pairId: 'A'
+            }
+        ]
+
+
 
         //for (var x = 0; x < this.game.world.width; x+=this.size.width) {
         //    for (var y = 0; y < this.game.world.height; y+=this.size.height) {
@@ -77,6 +97,30 @@ class Stage {
                 this.game.screen.stroke();
             }
         }
+
+        this.renderSolid();
+    }
+
+    renderSolid() {
+        for (var i=0; i<this.levelSolid.length; i++) {
+            let collider = this.levelSolid[i];
+            this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
+            if (collider instanceof SAT.Box) {
+                this.game.screen.fillRect(
+                collider.pos.x - this.game.camera.x + 1,
+                collider.pos.y - this.game.camera.y + 1,
+                collider.w - 2,
+                collider.h - 2);
+            } else if (collider instanceof SAT.Polygon) {
+                this.game.screen.beginPath();
+                this.game.screen.moveTo(collider.points[0].x - this.game.camera.x, collider.points[0].y - this.game.camera.y);
+                for (var p = 1; p < collider.points.length; p++) {
+                    this.game.screen.lineTo(collider.points[p].x - this.game.camera.x, collider.points[p].y - this.game.camera.y);
+                }
+                this.game.screen.lineTo(collider.points[collider.points.length - 1].x - this.game.camera.x, collider.points[collider.points.length - 1].y - this.game.camera.y);
+                this.game.screen.stroke();
+            }
+        }
     }
     draw(obj) {
 
@@ -134,15 +178,23 @@ class Stage {
                     var levelData = JSON.parse(xobj.responseText);
 
 
-                    self.level = levelData.tiles;
-                    self.levelSolid = levelData.solids;
-                    //for (var i = 0; i < levelData.length; i++) {
-                    //    self.level.push(levelData[i]);
-                    //
-                    //    if (levelData[i].solid) {
-                    //        self.addSolid(levelData[i].x, levelData[i].y);
-                    //    }
-                    //}
+                    // self.level = levelData.tiles;
+                    // self.levelSolid = levelData.solids;
+
+                    for (let i = 0; i < levelData.tiles.length; i++) {
+                        self.level.push(levelData.tiles[i]);
+                    }
+
+                    for (let i = 0; i < levelData.solids.length; i++) {
+                        let solid = levelData.solids[i];
+                        self.addSolid(solid.x, solid.y, solid.width, solid.height);
+                    }
+
+                    for (let i = 0; i < self.levelBodies.length; i++) {
+                        let model = eval(self.levelBodies[i].model);
+                        self.game.addBody(new model(self.game, self.levelBodies[i]));
+                    }
+                    // self.simplifySolid();
                 }
             };
             xobj.send(null);
@@ -153,16 +205,31 @@ class Stage {
         console.log('==============================');
         console.log(JSON.stringify(this.levelSolid));
     }
-    addSolid(x, y) {
-       this.levelSolid.push({
-           x: x,
-           y: y,
-           width: this.size.width,
-           height: this.size.height
-       })
+    addSolid(x, y, width, height) {
+       this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
+    }
+    simplifySolid() {
+        this.levelSolid = this.levelSolid.map(b => b.toPolygon());
+
+        for(var i = 0; i < this.levelSolid.length; i++) {
+            let collider = this.levelSolid[i];
+            let response = new SAT.Response();
+            for (var j = 0; j < this.levelSolid.length; j++) {
+                if (collider != this.levelSolid) {
+                    response.clear();
+                    // debugger;
+                    let collided = SAT.testPolygonPolygon(collider, this.levelSolid[j], response);
+                    if(collided) {
+                        this.levelSolid[i] = new SAT.Polygon(new SAT.Vector(collider.pos.x, collider.pos.y), collider.points.concat(this.levelSolid[j].points));
+                        this.levelSolid.splice(j, 1);
+                        // j--;
+                    }
+                }
+            }
+        }
     }
 
-    simplifySolid() {
+    simplifySolid__old() {
         console.log('before simplify', this.levelSolid.length);
         for (var i = 0, item; i < this.levelSolid.length; i++) {
             item = this.levelSolid[i];

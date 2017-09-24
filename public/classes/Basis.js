@@ -1,13 +1,15 @@
 'use strict';
 class Basis {
-	constructor(game) {
+	constructor(game, params) {
+		params = params || {};
 		this.game = game;
-		this.size = {
+		this.view = Object.assign({
 			width: 16,
 			height: 16,
-			radius: 16
-		};
-		this.position = {x: 0, y: 0};
+			x: 0,
+			y: 0
+		}, params.view);
+		this.collider = new SAT.Circle(new SAT.Vector(this.view.x + this.view.width / 2, this.view.y + this.view.height / 2), this.view.width / 2);
 		this.direction = {x: 0, y: 0};
 		this.look = {x: 0, y: 0}
 		this.lookAngel = 0;
@@ -39,23 +41,44 @@ class Basis {
 	}
 	render() {
 		this.game.screen.beginPath();
-		this.game.screen.rect(this.position.x - this.game.camera.x, this.position.y - this.game.camera.y, this.size.width, this.size.height);
+		this.game.screen.rect(this.view.x - this.game.camera.x, this.view.y - this.game.camera.y, this.view.width, this.view.height);
 		this.game.screen.stroke();
+	}
+	renderDebug() {
+		this.game.screen.beginPath();
+		this.game.screen.strokeStyle = 'green';
+		this.game.screen.rect(this.view.x - this.game.camera.x, this.view.y - this.game.camera.y, this.view.width, this.view.height);
+		this.game.screen.stroke();
+
+		if (this.collider) {
+			this.game.screen.beginPath();
+			this.game.screen.strokeStyle = 'purple';
+			this.game.screen.arc(this.collider.pos.x - this.game.camera.x, this.collider.pos.y - this.game.camera.y, this.collider.r, 0, 2*Math.PI);
+			this.game.screen.stroke();
+		}
 	}
 	healthBar() {
 		var healthBar = {
-			x: this.position.x - this.game.camera.x,
-			y: this.position.y - this.game.camera.y-5,
+			x: this.view.x - this.game.camera.x,
+			y: this.view.y - this.game.camera.y-5,
 			height: 3,
-			width: this.size.width * (this.health.current / this.health.max)
+			width: this.view.width * (this.health.current / this.health.max)
 		};
 		this.game.screen.beginPath();
-		this.game.screen.rect(healthBar.x, healthBar.y, this.size.width, healthBar.height);
+		this.game.screen.rect(healthBar.x, healthBar.y, this.view.width, healthBar.height);
 		this.game.screen.fillStyle = 'red';
 		this.game.screen.fillRect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
 		this.game.screen.stroke();
 	}
 	update() {
+		//Void
+	}
+
+	onEnter() {
+		//Void
+	}
+	onLeave() {
+		//Void
 	}
 	colliding(b1, b2) {
 		var dx = b1.x - b2.x;
@@ -65,91 +88,24 @@ class Basis {
 		return (distance < b1.r + b2.r);
 	}
 	collidingSqr(body) {
-		return !(this.position.x + this.size.width < body.position.x ||
-			this.position.y + this.size.height < body.position.y ||
-			this.position.x > body.position.x + body.size.width ||
-			this.position.y > body.position.y + body.size.height);
+		return !(this.view.x + this.view.width < body.view.x ||
+			this.view.y + this.view.height < body.view.y ||
+			this.view.x > body.view.x + body.view.width ||
+			this.view.y > body.view.y + body.view.height);
 	}
 	collidingBody(body) {
 		return (this != body && this.colliding(
-					{x: this.position.x, y: this.position.y, r: this.size.width/2},
-					{x: body.position.x, y: body.position.y, r: body.size.width/2})
+					{x: this.view.x, y: this.view.y, r: this.view.width/2},
+					{x: body.view.x, y: body.view.y, r: body.view.width/2})
 				);
-	}
-	brotherColliding() {
-		var inst = this.constructor;
-
-		for (var i=0, body; i<this.game.bodies.length; i++) {
-			body = this.game.bodies[i];
-			if (body instanceof inst && this.collidingBody(body)) {
-
-
-				//var dirTo = this.directionTo(body);
-				//var range = this.size.width/2 + body.size.width/2;
-                //
-				//this.position.x += -dirTo.x * range * body.density;
-				//this.position.y += -dirTo.y * range * body.density;
-				//body.position.x -= -dirTo.x * range * this.density;
-				//body.position.y -= -dirTo.y * range * this.density;
-                //
-				//return;
-
-				if (this.position.x < body.position.x) {
-					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * body.density;
-					this.position.x -= diff;
-					body.position.x += diff;
-				} else if (this.position.x > body.position.x) {
-					var diff = (body.position.x - this.position.x + this.size.width) / 2 * body.density;
-					this.position.x += diff;
-					body.position.x -= diff;
-				}
-
-
-				if (this.position.y < body.position.y) {
-					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * body.density;
-					this.position.y -= diff;
-					body.position.y += diff;
-				} else if (this.position.y > body.position.y) {
-					var diff = (body.position.y - this.position.y + this.size.height) / 2 * body.density;
-					this.position.y += diff;
-					body.position.y -= diff;
-				}
-
-			}
-		}
 	}
 	isOuterCamera() {
 		return !this.collidingSqr(this)
 	}
-	fixStuckWorld() {
-		if (this.position.x < 0) {
-			this.position.x = 0;
-			if (this.direction.x < 0) {
-				this.direction.x = - this.direction.x;
-			}
-		} else if (this.position.x + this.size.width > this.game.world.width) {
-			this.position.x = this.game.world.width - this.size.width;
-			if (this.direction.x > 0) {
-				this.direction.x = - this.direction.x;
-			}
-		}
-
-		if (this.position.y < 0) {
-			this.position.y = 0;
-			if (this.direction.y < 0) {
-				this.direction.y = - this.direction.y;
-			}
-		} else if (this.position.y + this.size.height > this.game.world.height) {
-			this.position.y = this.game.world.height - this.size.height;
-			if (this.direction.y > 0) {
-				this.direction.y = - this.direction.y;
-			}
-		}
-	}
 	directionTo(body) {
 		// (x1,y2) ==> (x2, y2)
-		var vx = (body.position.x + body.size.width/2) - (this.position.x + this.size.width/2);
-		var vy = (body.position.y + body.size.height/2) - (this.position.y + this.size.height/2);
+		var vx = (body.view.x + body.view.width/2) - (this.view.x + this.view.width/2);
+		var vy = (body.view.y + body.view.height/2) - (this.view.y + this.view.height/2);
 		var dxy = Math.sqrt(vx*vx + vy*vy);
 		return {x: vx/dxy, y: vy/dxy}
 	}
@@ -188,62 +144,70 @@ class Basis {
 		}
 	}
 
-	//isReach(body) {
-	//	return (this != body && this.colliding(
-	//			{x: this.position.x, y: this.position.y, r: this.size.width/2},
-	//			{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
-	//}
-	faceBarrier() {
-		var originalPositionX = this.position.x;
-		var originalPositionY = this.position.y;
-		var nextPositionX = this.position.x + this.direction.x * this.speed;
-		var nextPositionY = this.position.y + this.direction.y * this.speed;
+	isReach(body) {
+		return (this != body && this.colliding(
+				{x: this.view.x, y: this.view.y, r: this.view.width/2},
+				{x: body.view.x, y: body.view.y, r: this.attack.range + this.view.width/2}));
+	}
 
-		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
-
-			item = {
-				position: {
-					x: this.game.stage.levelSolid[i].x,
-					y: this.game.stage.levelSolid[i].y
-				},
-				size: {
-					width: this.game.stage.levelSolid[i].width,
-					height: this.game.stage.levelSolid[i].height
-				}
-			};
-
-			var collided = false;
-
-			this.position.x = nextPositionX;
-			this.position.y = nextPositionY;
-
-			if (this.collidingSqr(item)) {
-
-				collided = true;
-
-				this.position.x = originalPositionX;
-				this.position.y = nextPositionY;
-
-				if (this.collidingSqr(item)) {
-					this.direction.y = 0;
-				}
-
-
-				this.position.x = nextPositionX;
-				this.position.y = originalPositionY;
-
-				if (this.collidingSqr(item)) {
-					this.direction.x = 0;
-				}
-
-				break;
-			}
-
+	stepMove(x, y) {
+		this.view.x += x;
+		this.view.y += y;
+		if (this.collider) {
+			this.collider.pos.x += x;
+			this.collider.pos.y += y;
 		}
+	}
 
-		this.position.x = originalPositionX;
-		this.position.y = originalPositionY;
-		return collided;
+	teleport(x, y) {
+		this.view.x = x;
+		this.view.y = y;
+		if (this.collider) {
+			this.collider.pos.x = x + this.view.width / 2;
+			this.collider.pos.y = y + this.view.width / 2;
+		}
+	}
+
+	faceBarrier() {
+		let response = new SAT.Response();
+
+		for (let i = 0, barrier; i < this.game.stage.levelSolid.length; i++) {
+			response.clear();
+			barrier = this.game.stage.levelSolid[i];
+			if (barrier instanceof SAT.Box) {
+				barrier = barrier.toPolygon();
+			}
+			let collided = SAT.testCirclePolygon(this.collider, barrier, response);
+			if (collided && response.overlap) {
+				return {collided, response, barrier};
+			}
+		}
+	}
+
+	faceBodies() {
+		let response = new SAT.Response();
+		let collestion = [];
+		
+		for (let i = 0, body; i < this.game.bodies.length; i++) {
+			body = this.game.bodies[i];
+			if (this != body) {
+				response.clear();
+				let collided = SAT.testCircleCircle(this.collider, body.collider, response);
+				if (collided && response.overlap) {
+					console.log(`this collided with body ${body.constructor.name}`);
+					collestion.push({collided, response, body});
+				}
+			}
+		}
+		return collestion;
+	}
+
+	fixStuck() {
+		let collision = this.faceBarrier();
+		if (collision) {
+			collision.response.overlapV.reverse();
+			this.stepMove(collision.response.overlapV.x, collision.response.overlapV.y);
+		}
 	}
 
 }

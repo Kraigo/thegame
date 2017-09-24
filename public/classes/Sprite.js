@@ -5,7 +5,7 @@ class Sprite {
 		this.dir = '/sprites/sprite.png';
 		this.image = new Image();
 		this.image.src = this.dir;
-		this.size = {
+		this.view = {
 			width: 48,
 			height: 48
 		};
@@ -30,8 +30,8 @@ class Sprite {
 	}
 
 	draw(body, angle) {
-		var x = body.position.x + body.size.width/2 - this.game.camera.x;
-		var y = body.position.y + body.size.height/2 - this.game.camera.y;
+		var x = body.view.x + body.view.width/2 - this.game.camera.x;
+		var y = body.view.y + body.view.height/2 - this.game.camera.y;
 		angle = angle - 90 % 360;
 
 		var frame = this.getFrame(body.animation);
@@ -44,12 +44,12 @@ class Sprite {
 			this.image,
 			frame.x,
 			frame.y,
-			frame.w || this.size.width,
-			frame.h || this.size.height,
-			-body.size.width/2,
-			-body.size.width/2,
-			body.size.width,
-			body.size.height
+			frame.w || this.view.width,
+			frame.h || this.view.height,
+			-body.view.width/2,
+			-body.view.width/2,
+			body.view.width,
+			body.view.height
 		);
 		this.game.screen.translate(-x, -y);
 		this.game.screen.rotate(-angle*Math.PI/180);

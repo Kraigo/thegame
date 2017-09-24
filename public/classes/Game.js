@@ -8,35 +8,29 @@ class Game {
 
 		this.canvas.width = document.body.offsetWidth-10;
 		this.canvas.height = document.body.offsetHeight-10;
+		
+		this.bodies = [];
 
 		this.screen = this.canvas.getContext('2d');
 		this.screen.imageSmoothingEnabled = false;
-		this.camera = {
-			x: 0,
-			y: 0,
-			width: this.canvas.width,
-			height: this.canvas.height,
-			target: null,
-			stretch: 0.2
-		};
+		this.camera = new Camera(game);
 		this.world = {
 			width: 792,
 			height: 792
 		};
-		this.player = new Player(game);
+		this.player = new Unit(game, {view: {x: 300, y: 300, width: 48, height: 48}});
 		this.playerControl = new PlayerControl(game);
 		// this.socket = new Socket(game);
 		// Create GAME EVENTS to catch and sync with server
 		this.builder = null;
 		this.keyboard = new Keyboard();
-		this.point = new Point(game.canvas);
+		this.mouse = new Mouse(game.canvas);
 		this.sprite = new Sprite(game);
 		this.stage = new Stage(game);
 		this.lastTick = new Date();
 		this.timer = 0;
 
-		this.camera.target = this.player;
-		this.bodies = [];
+		this.camera.setTarget(this.player);
 		this.addBody(this.player);
 
 		for (var i = 0; i < 0; i++) {
@@ -69,6 +63,10 @@ class Game {
 		this.modeToggler();
 	}
 
+	static Teleport() {
+		
+	}
+
 	render() {
 		this.screen.clearRect(0,0, this.camera.width, this.camera.height);
 
@@ -83,18 +81,20 @@ class Game {
 			'Obj count: '+this.bodies.length,
 				'Stage count: '+this.stage.level.length,
 			'Camera (x: '+this.camera.x.toFixed()+', y: '+this.camera.y.toFixed()+')',
-			'Player (x: '+this.player.position.x.toFixed()+', y: '+this.player.position.y.toFixed()+')',
+			'Player (x: '+this.player.view.x.toFixed()+', y: '+this.player.view.y.toFixed()+')',
 				'Player dir(x: ' + this.player.direction.x + ', y: ' + this.player.direction.y +')'
 			]);
+		this.drawUI();
 
 		this.screen.rect(0-this.camera.x,0-this.camera.y, this.world.width, this.world.height);
 		this.screen.stroke();
 
 		for (var i = 0, body; i < this.bodies.length; i++ ) {
 			body = this.bodies[i];
-			if (this.isCameraShow(body)) {
+			if (this.camera.isCameraShow(body)) {
 				body.render();
 			}
+			body.renderDebug();
 		}
 	}
 
@@ -103,13 +103,7 @@ class Game {
 
 		this.timer ++;
 
-		this.camera.x = this.camera.target.position.x - this.camera.width/2 + this.camera.target.size.width/2;
-		this.camera.y = this.camera.target.position.y - this.camera.height/2 + this.camera.target.size.height/2;
-
-		this.camera.x += (this.point.x - this.camera.width/2)*this.camera.stretch;
-		this.camera.y += (this.point.y - this.camera.height/2)*this.camera.stretch;
-
-
+		this.camera.update();
 		this.playerControl.update();
 
 		for (var i = 0, body; i < this.bodies.length; i++ ) {
@@ -119,6 +113,7 @@ class Game {
 				i--;
 				continue;
 			}
+
 			body.update();
 		}
 	}
@@ -144,11 +139,15 @@ class Game {
 	}
 
 	debug(msg) {
-		this.screen.fillStyle="#000";
+		this.screen.fillStyle="orange";
 		for(var i = 0; i<msg.length; i++) {
 			this.screen.fillText(msg[i],10, (i+1)*18);
 		}
+	}
 
+	drawUI() {
+		this.screen.fillStyle="black";
+		this.screen.strokeStyle = 'black';
 		this.screen.fillText('W', 40, this.camera.height - 40);
 		this.screen.fillText('S', 40, this.camera.height - 20);
 		this.screen.fillText('A', 20, this.camera.height - 20);
@@ -166,12 +165,7 @@ class Game {
 		this.screen.lineTo(35, this.camera.height - 55);
 		this.screen.stroke();
 	}
-	isCameraShow(body) {
-		return !(body.position.x + body.size.width < this.camera.x &&
-				body.position.x > this.camera.width &&
-				body.position.y + body.size.height < this.camera.y &&
-				body.position.y > this.camera.width)
-	}
+	
 	modeToggler() {
 		var game = this;
 		document.addEventListener('keydown', function(e) {

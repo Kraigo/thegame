@@ -2,10 +2,10 @@
 class Bullet extends Basis {
 	constructor(game, params, owner) {
 		super(game);
-		this.size.width = 24;
-		this.size.height = 24;
-		this.position.x = params.x - this.size.width/2;
-		this.position.y = params.y - this.size.height/2;
+		this.view.width = 24;
+		this.view.height = 24;
+		this.view.x = params.x - this.view.width/2;
+		this.view.y = params.y - this.view.height/2;
 		this.direction = params.direction;
 		this.speed = 5;
 		this.animation.name = 'bullet';
@@ -33,8 +33,8 @@ class Bullet extends Basis {
 				body.hit(this.attack.damage);
 			}
 		}
-		this.position.x += this.direction.x * this.speed;
-		this.position.y += this.direction.y * this.speed;
+		this.view.x += this.direction.x * this.speed;
+		this.view.y += this.direction.y * this.speed;
 
 
 		if (this.faceBarrier()) {
@@ -50,14 +50,14 @@ class Bullet extends Basis {
 	render() {
 
 		// this.game.screen.beginPath();
-		// this.game.screen.rect(this.position.x - this.game.camera.x, this.position.y - this.game.camera.y, this.size.width, this.size.height);
+		// this.game.screen.rect(this.view.x - this.game.camera.x, this.view.y - this.game.camera.y, this.view.width, this.view.height);
 		// this.game.screen.stroke();
 
 
 
 		var angle = this.vectorAngle(
-			{x: this.position.x - this.game.camera.x, y: this.position.y - this.game.camera.y},
-			{x: this.position.x - this.game.camera.x + this.direction.x * this.speed, y: this.position.y - this.game.camera.y + this.direction.y * this.speed});
+			{x: this.view.x - this.game.camera.x, y: this.view.y - this.game.camera.y},
+			{x: this.view.x - this.game.camera.x + this.direction.x * this.speed, y: this.view.y - this.game.camera.y + this.direction.y * this.speed});
 		this.game.sprite.draw(this, angle);
 
 		//this.faceBarrier(true);

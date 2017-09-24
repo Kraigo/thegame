@@ -1,7 +1,7 @@
 'use strict';
-class Point {
+class Mouse {
 	constructor(canvas) {
-		var point = this;
+		var mause = this;
 		var state = {};
 		var BUTTONS = {
 			LEFT: 0,
@@ -11,8 +11,8 @@ class Point {
 		this.x = 0;
 		this.y = 0;
 		canvas.addEventListener('mousemove', function(e) {
-			point.x = e.clientX;
-			point.y = e.clientY;
+			mause.x = e.clientX;
+			mause.y = e.clientY;
 		});
 		canvas.addEventListener('mousedown', function(e) {
 			e.preventDefault();
