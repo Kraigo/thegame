@@ -19,7 +19,7 @@ class Game {
 			width: 792,
 			height: 792
 		};
-		this.player = new Unit(game, {view: {x: 300, y: 300, width: 48, height: 48}});
+		this.player = new Player(game, {view: {x: 300, y: 300, width: 48, height: 48}});
 		this.playerControl = new PlayerControl(game);
 		// this.socket = new Socket(game);
 		// Create GAME EVENTS to catch and sync with server
@@ -80,11 +80,12 @@ class Game {
 		this.drawDebug([
 			'FPS: '+ fps,
 			'Obj count: '+this.bodies.length,
-				'Stage count: '+this.stage.level.length,
+			'Stage count: '+this.stage.level.length,
 			'Camera (x: '+this.camera.x.toFixed()+', y: '+this.camera.y.toFixed()+')',
 			'Player (x: '+this.player.view.x.toFixed()+', y: '+this.player.view.y.toFixed()+')',
-				'Player dir(x: ' + this.player.direction.x + ', y: ' + this.player.direction.y +')'
-			]);
+			'Player dir(x: ' + this.player.direction.x + ', y: ' + this.player.direction.y +')',
+			'Bonuses [' + this.player.bonuses.map(b => b.title).join(', ') + ']'
+		]);
 		this.drawUI();
 
 		this.screen.rect(0-this.camera.x,0-this.camera.y, this.world.width, this.world.height);
@@ -182,5 +183,10 @@ class Game {
 				game.addBody(game.builder);
 			}
 		})
+	}
+
+	evalBody(data) {		
+		let model = eval(data.model);
+		this.addBody(new model(this, data));
 	}
 }

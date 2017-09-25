@@ -54,6 +54,14 @@ class Stage {
                 collider: {
                     r: 5
                 }
+            },
+            {
+                model: "Spawn",
+                view: {
+                    x: 63,
+                    y: 312
+                },
+                populationModel: "BonusSpeedUp"
             }
         ]
 
@@ -215,8 +223,7 @@ class Stage {
                     }
 
                     for (let i = 0; i < self.levelBodies.length; i++) {
-                        let model = eval(self.levelBodies[i].model);
-                        self.game.addBody(new model(self.game, self.levelBodies[i]));
+                        self.game.evalBody(self.levelBodies[i]);
                     }
                     // self.simplifySolid();
                 }

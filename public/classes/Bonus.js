@@ -7,8 +7,16 @@ class Bonus extends Basis {
         this.time = 1000;
     }
 
+    canApply() {
+        return true;
+    }
+
     onEnter(body) {
-        body.addBonus(this);
-        this.game.removeBody(this);
+        if (body instanceof Player) {
+            if (!body.bonuses.some(b => b.constructor.name === this.constructor.name) && this.canApply(body)) {
+                body.addBonus(this);
+                this.game.removeBody(this);
+            }
+        }
     } 
 }

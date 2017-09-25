@@ -18,7 +18,6 @@ class Unit extends Basis {
 			damageMax: 10,
 			range: 10
 		};
-		this.contacts = [];
 		this.animation.name = 'player';
 	}
 	render() {
@@ -41,22 +40,7 @@ class Unit extends Basis {
 
 		this.shot();
 		this.move();
-
-		let enterContacts = this.faceBodies();
-
-		for(var i = 0; i < enterContacts.length; i++) {
-			enterContacts[i].body.onEnter(this, enterContacts[i].response);
-		}
-
-		let leaveContacts = this.contacts.filter(c => !enterContacts.some(e => e.body == c));
-
-		for (var i = 0; i < leaveContacts.length; i++) {
-			leaveContacts[i].onLeave(this);
-		}
-
-		this.contacts = enterContacts.map(c => c.body);
-
-
+		this.contact();
 	}
 	move() {
 		if (this.direction.x || this.direction.y) {
