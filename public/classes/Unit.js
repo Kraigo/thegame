@@ -5,6 +5,7 @@ class Unit extends Basis {
 		super(game, params);
 		this.id = null;
 		this.speed = 3;
+		this.index = 1;
 
 		this.shooting = {
 			start: false,
@@ -44,7 +45,7 @@ class Unit extends Basis {
 		let enterContacts = this.faceBodies();
 
 		for(var i = 0; i < enterContacts.length; i++) {
-			enterContacts[i].body.onEnter(this);
+			enterContacts[i].body.onEnter(this, enterContacts[i].response);
 		}
 
 		let leaveContacts = this.contacts.filter(c => !enterContacts.some(e => e.body == c));

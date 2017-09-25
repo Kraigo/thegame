@@ -5,15 +5,13 @@ class Teleport extends Basis {
         super(game, params);
         this.pairId = params.pairId || Math.random();
         this.active = true;
+        this.animation.name = 'teleport';
     }
 
     render() {
-        this.game.screen.beginPath();
-        this.game.screen.strokeStyle = 'blue';
-		this.game.screen.rect(this.view.x - this.game.camera.x, this.view.y - this.game.camera.y, this.view.width, this.view.height);
-		this.game.screen.stroke();
+        this.game.sprite.draw(this, 0);
     }
-    onEnter(body) {
+    onEnter(body, response) {
         if (this.active) {
             let pairTeleport = this.game.bodies.find(b => b instanceof Teleport && b !== this && b.pairId === this.pairId);
             pairTeleport.active = false;

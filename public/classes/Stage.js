@@ -21,7 +21,12 @@ class Stage {
                 model: "Teleport",
                 view: {
                     x: 315,
-                    y: 57
+                    y: 57,
+                    width: 52,
+                    height: 52
+                },
+                collider: {
+                    r: 5
                 },
                 pairId: 'A'
             },
@@ -29,9 +34,26 @@ class Stage {
                 model: "Teleport",
                 view: {
                     x: 348,
-                    y: 574
+                    y: 574,
+                    width: 52,
+                    height: 52
+                },
+                collider: {
+                    r: 5
                 },
                 pairId: 'A'
+            },
+            {
+                model: "BonusSpeedUp",
+                view: {
+                    x: 360,
+                    y: 267,
+                    width: 24,
+                    height: 24
+                },
+                collider: {
+                    r: 5
+                }
             }
         ]
 
@@ -98,7 +120,9 @@ class Stage {
             }
         }
 
-        this.renderSolid();
+        if (this.game.debug) {
+            this.renderSolid();
+        }
     }
 
     renderSolid() {

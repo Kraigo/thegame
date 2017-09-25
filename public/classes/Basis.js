@@ -2,6 +2,7 @@
 class Basis {
 	constructor(game, params) {
 		params = params || {};
+		params.collider = params.collider || {};
 		this.game = game;
 		this.view = Object.assign({
 			width: 16,
@@ -9,7 +10,10 @@ class Basis {
 			x: 0,
 			y: 0
 		}, params.view);
-		this.collider = new SAT.Circle(new SAT.Vector(this.view.x + this.view.width / 2, this.view.y + this.view.height / 2), this.view.width / 2);
+		this.collider = new SAT.Circle(new SAT.Vector(
+			params.collider.x || this.view.x + this.view.width / 2,
+			params.collider.y || this.view.y + this.view.height / 2),
+			params.collider.r || this.view.width / 2);
 		this.direction = {x: 0, y: 0};
 		this.look = {x: 0, y: 0}
 		this.lookAngel = 0;
@@ -38,6 +42,7 @@ class Basis {
 		this.willAttack = false;
 		this.rotationSpeed = 0.05;
 		this.density = 0;
+		this.bonuses = [];
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -80,6 +85,30 @@ class Basis {
 	onLeave() {
 		//Void
 	}
+	addBonus(bonus) {
+		if (bonus instanceof Bonus) {
+			for (var i in bonus.effect) {
+				this[i] += bonus.effect[i];
+			}
+			this.bonuses.push(bonus);
+
+			if (bonus.time) {
+				setTimeout(() => {
+					this.removeBonus(bonus);
+				}, bonus.time)
+			}
+		}
+	}
+
+	removeBonus(bonus) {
+		for (var i in bonus.effect) {
+			this[i] -= bonus.effect[i];
+		}
+		
+		this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
+	}
+
+
 	colliding(b1, b2) {
 		var dx = b1.x - b2.x;
 		var dy = b1.y - b2.y;

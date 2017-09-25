@@ -10,6 +10,7 @@ class Game {
 		this.canvas.height = document.body.offsetHeight-10;
 		
 		this.bodies = [];
+		this.debug = false;
 
 		this.screen = this.canvas.getContext('2d');
 		this.screen.imageSmoothingEnabled = false;
@@ -76,7 +77,7 @@ class Game {
 
 		this.stage.render();
 
-		this.debug([
+		this.drawDebug([
 			'FPS: '+ fps,
 			'Obj count: '+this.bodies.length,
 				'Stage count: '+this.stage.level.length,
@@ -94,7 +95,9 @@ class Game {
 			if (this.camera.isCameraShow(body)) {
 				body.render();
 			}
-			body.renderDebug();
+			if (this.debug) {
+				body.renderDebug();
+			}
 		}
 	}
 
@@ -120,25 +123,27 @@ class Game {
 
 	addBody(body) {
 		this.bodies.push(body);
+		this.bodies.sort(b => b.index);
 	}
 
-	removeBody(items) {
+	removeBody(body) {
+		//@items
+		// if (!Array.isArray(items)) {
+		// 	items = [items];
+		// }
 
-		if (!Array.isArray(items)) {
-			items = [items];
-		}
-
-		for (var i = 0; i < items.length; i++) {
-			for (var b = 0; b < this.bodies.length; b++) {
-				if (items[i] == this.bodies[b]) {
-					this.bodies.splice(b, 1);
-					b--;
-				}
-			}
-		}
+		// for (var i = 0; i < items.length; i++) {
+		// 	for (var b = 0; b < this.bodies.length; b++) {
+		// 		if (items[i] == this.bodies[b]) {
+		// 			this.bodies.splice(b, 1);
+		// 			b--;
+		// 		}
+		// 	}
+		// }
+		this.bodies.splice(this.bodies.indexOf(body), 1);
 	}
 
-	debug(msg) {
+	drawDebug(msg) {
 		this.screen.fillStyle="orange";
 		for(var i = 0; i<msg.length; i++) {
 			this.screen.fillText(msg[i],10, (i+1)*18);
