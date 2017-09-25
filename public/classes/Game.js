@@ -10,7 +10,7 @@ class Game {
 		this.canvas.height = document.body.offsetHeight-10;
 		
 		this.bodies = [];
-		this.debug = false;
+		this.debug = true;
 
 		this.screen = this.canvas.getContext('2d');
 		this.screen.imageSmoothingEnabled = false;
@@ -112,7 +112,7 @@ class Game {
 
 		for (var i = 0, body; i < this.bodies.length; i++ ) {
 			body = this.bodies[i];
-			if (body.willDie && body.animation.end) {
+			if ((body.willDie || body.health.current === 0) && body.animation.end ) {
 				this.removeBody(body);
 				i--;
 				continue;

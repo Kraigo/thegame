@@ -28,6 +28,18 @@ class Sprite {
 			},
 			teleport: {
 				stand: [{x:0, y: 384, w: 52, h: 52}, {x:52, y: 384, w: 52, h: 52}, {x:104, y: 384, w: 52, h: 52}]
+			},
+			bonusSpeed: {
+				stand: [{x: 0, y: 436, w: 48, h: 48}]
+			},
+			bonusHealth: {
+				stand: [{x: 48, y: 436, w: 48, h: 48}]
+			},
+			bonusAmmo: {
+				stand: [{x: 96, y: 436, w: 48, h: 48}]
+			},
+			bonusFire: {
+				stand: [{x: 144, y: 436, w: 48, h: 48}]
 			}
 		};
 	}

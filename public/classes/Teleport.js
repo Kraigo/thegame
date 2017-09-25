@@ -6,10 +6,16 @@ class Teleport extends Basis {
         this.pairId = params.pairId || Math.random();
         this.active = true;
         this.animation.name = 'teleport';
+        this.view.width = 52;
+        this.view.height = 52;
+        this.collider = {
+            r: 5
+        }
+        this.createCollider();
     }
 
     render() {
-        this.game.sprite.draw(this, 0);
+        this.game.sprite.draw(this, this.lookAngel);
     }
     onEnter(body, response) {
         if (this.active) {

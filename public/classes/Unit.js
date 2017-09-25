@@ -6,6 +6,7 @@ class Unit extends Basis {
 		this.id = null;
 		this.speed = 3;
 		this.index = 1;
+		this.health.current = 90;
 
 		this.shooting = {
 			start: false,
@@ -19,6 +20,7 @@ class Unit extends Basis {
 			range: 10
 		};
 		this.animation.name = 'player';
+		this.createCollider();
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -63,24 +65,21 @@ class Unit extends Basis {
 		if(this.shooting.bullet && this.shooting.start) {
 			this.shooting.bullet = 0;
 
-
-			var bulletParams = {
+			let bulletParams = {
 				x: this.view.x + this.view.width/2,
 				y: this.view.y + this.view.height/2,
 				direction: this.directionTo({
-					view: {
-						x: this.game.mouse.x + this.game.camera.x,
-						y: this.game.mouse.y + this.game.camera.y
-					},
-					view: {
-						width: 0,
-						height: 0
-					}
+					x: this.game.mouse.x + this.game.camera.x,
+					y: this.game.mouse.y + this.game.camera.y,
+					width: 0,
+					height: 0
 				}),
-				damage: this.getRandomInt(this.attack.damageMin, this.attack.damageMax)
-			};
+				damage: this.getRandomInt(this.attack.damageMin, this.attack.damageMax),
+				owner: this.game.player
+			}
+			var bullet = new Bullet(this.game, bulletParams);
 
-			this.game.addBody(new Bullet(this.game, bulletParams, this.game.player));
+			this.game.addBody(bullet);
 
 		}
 

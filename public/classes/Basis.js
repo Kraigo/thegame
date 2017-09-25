@@ -2,7 +2,6 @@
 class Basis {
     constructor(game, params) {
         params = params || {};
-        params.collider = params.collider || {};
         this.game = game;
         this.view = Object.assign({
             width: 16,
@@ -10,13 +9,10 @@ class Basis {
             x: 0,
             y: 0
         }, params.view);
-        this.collider = new SAT.Circle(new SAT.Vector(
-                params.collider.x || this.view.x + this.view.width / 2,
-                params.collider.y || this.view.y + this.view.height / 2),
-            params.collider.r || this.view.width / 2);
+        this.collider = null;
         this.direction = { x: 0, y: 0 };
         this.look = { x: 0, y: 0 }
-        this.lookAngel = 0;
+        this.lookAngel = 90;
         this.speed = 0;
         this.velocity = 0;
         this.gravity = 0.5;
@@ -85,26 +81,34 @@ class Basis {
     }
     onLeave() {
         //Void
-    }
-    addBonus(bonus) {
-        if (bonus instanceof Bonus) {
-            for (var i in bonus.effect) {
-                this[i] += bonus.effect[i];
-            }
-            this.bonuses.push(bonus);
+	}
+	
+	createCollider() {
+		let colliderX = this.collider && this.collider.x || this.view.x + this.view.width / 2;
+		let colliderY = this.collider && this.collider.y || this.view.y + this.view.height / 2;
+		let colliderRadius = this.collider && this.collider.r || this.view.width / 2;
 
-            if (bonus.time) {
-                setTimeout(() => {
-                    this.removeBonus(bonus);
-                }, bonus.time)
-            }
+		this.collider = new SAT.Circle(new SAT.Vector(colliderX, colliderY), colliderRadius);
+	}
+    addBonus(bonus) {
+        if (bonus instanceof Bonus && bonus.canApply(this)) {
+
+			bonus.make(this, bonus.effect);
+
+			if (!bonus.permanent) {
+				this.bonuses.push(bonus);
+
+				if (bonus.time) {
+					setTimeout(() => {
+						this.removeBonus(bonus);
+					}, bonus.time)
+				}
+			}
         }
     }
 
     removeBonus(bonus) {
-        for (var i in bonus.effect) {
-            this[i] -= bonus.effect[i];
-        }
+        bonus.make(this, bonus.effect, true);
 
         this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
     }
@@ -129,10 +133,10 @@ class Basis {
     isOuterCamera() {
         return !this.collidingSqr(this)
     }
-    directionTo(body) {
+    directionTo(view) {
         // (x1,y2) ==> (x2, y2)
-        var vx = (body.view.x + body.view.width / 2) - (this.view.x + this.view.width / 2);
-        var vy = (body.view.y + body.view.height / 2) - (this.view.y + this.view.height / 2);
+        var vx = (view.x + view.width / 2) - (this.view.x + this.view.width / 2);
+        var vy = (view.y + view.height / 2) - (this.view.y + this.view.height / 2);
         var dxy = Math.sqrt(vx * vx + vy * vy);
         return { x: vx / dxy, y: vy / dxy }
     }
@@ -159,7 +163,8 @@ class Basis {
         }
     }
     kill() {
-        this.willDie = true;
+		this.willDie = true;
+		this.health.current = 0;
         this.changeAnimation('die');
     }
 

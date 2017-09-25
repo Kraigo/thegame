@@ -6,5 +6,10 @@ class BonusSpeedUp extends Bonus {
         this.effect = {
             speed: 2
         }
+        this.animation.name = 'bonusSpeed';
+    }
+    
+    render() {
+        this.game.sprite.draw(this, this.lookAngel);
     }
 }

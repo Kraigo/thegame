@@ -5,6 +5,7 @@ class Spawn extends Basis {
         this.populationModel = params.populationModel;
         this.time = params.time || 1000;
         this.interval = null;
+        this.createCollider();
         this.startInterval();
     }
 

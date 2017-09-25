@@ -21,12 +21,7 @@ class Stage {
                 model: "Teleport",
                 view: {
                     x: 315,
-                    y: 57,
-                    width: 52,
-                    height: 52
-                },
-                collider: {
-                    r: 5
+                    y: 57
                 },
                 pairId: 'A'
             },
@@ -34,22 +29,25 @@ class Stage {
                 model: "Teleport",
                 view: {
                     x: 348,
-                    y: 574,
-                    width: 52,
-                    height: 52
-                },
-                collider: {
-                    r: 5
+                    y: 574
                 },
                 pairId: 'A'
             },
             {
-                model: "BonusSpeedUp",
+                model: "BonusHealth",
                 view: {
                     x: 360,
-                    y: 267,
-                    width: 24,
-                    height: 24
+                    y: 267
+                },
+                collider: {
+                    r: 5
+                }
+            },
+            {
+                model: "BonusFireRate",
+                view: {
+                    x: 477,
+                    y: 366
                 },
                 collider: {
                     r: 5
