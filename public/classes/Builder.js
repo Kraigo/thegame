@@ -1,8 +1,8 @@
 'use strict';
 
-class Builder {
+class Builder extends Basis {
 	constructor(game) {
-		//super(game)
+		super(game)
 		this.game = game;
 		this.view = {
 			width: 24,
@@ -106,8 +106,8 @@ class Builder {
 		document.addEventListener('keydown', function(e) {
 
 			if (keyboard.isClicked('SPACE', e.keyCode)) {
-				self.game.stage.addSolid(self.view.sx, self.view.sy);
-				self.game.stage.simplifySolid();
+				self.game.stage.addSolid(self.view.sx, self.view.sy, 24, 24);
+				// self.game.stage.simplifySolid();
 			}
 
 			if (keyboard.isClicked('C', e.keyCode)) {

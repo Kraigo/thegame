@@ -28,6 +28,10 @@ class Spawn extends Basis {
         // this.contact();
     }
 
+    onDie() {
+        clearIntervat(this.interval);
+    }
+
     startInterval() {
         this.interval = setInterval(() => {
             this.contact();

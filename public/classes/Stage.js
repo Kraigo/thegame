@@ -14,6 +14,9 @@ class Stage {
         };
         this.level = [];
         this.levelSolid = [];
+        this.levelGrid = null;
+        this.finder = new PF.BestFirstFinder();
+        // this.finder = new PF.AStarFinder();
 
 
         this.levelBodies = [
@@ -206,10 +209,9 @@ class Stage {
             xobj.onreadystatechange = function () {
                 if (xobj.readyState == 4 && xobj.status == "200") {
                     var levelData = JSON.parse(xobj.responseText);
-
-
                     // self.level = levelData.tiles;
                     // self.levelSolid = levelData.solids;
+                    self.levelGrid = new PF.Grid(self.game.world.width / self.size.width, self.game.world.height / self.size.height);
 
                     for (let i = 0; i < levelData.tiles.length; i++) {
                         self.level.push(levelData.tiles[i]);
@@ -217,7 +219,8 @@ class Stage {
 
                     for (let i = 0; i < levelData.solids.length; i++) {
                         let solid = levelData.solids[i];
-                        self.addSolid(solid.x, solid.y, solid.width, solid.height);
+                        self.addSolid(solid.x, solid.y, solid.w, solid.h);
+                        self.levelGrid.setWalkableAt(solid.x / self.size.width, solid.y / self.size.height, false);
                     }
 
                     for (let i = 0; i < self.levelBodies.length; i++) {
@@ -232,7 +235,14 @@ class Stage {
     logLevel() {
         console.log(JSON.stringify(this.level));
         console.log('==============================');
-        console.log(JSON.stringify(this.levelSolid));
+        console.log(JSON.stringify(this.levelSolida.map(l => {
+            return {
+                x: l.pos.x,
+                y: l.pos.y,
+                w: l.w,
+                h: l.h,
+            }
+        })));
     }
     addSolid(x, y, width, height) {
        this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
@@ -307,5 +317,23 @@ class Stage {
             }
         }
         this.levelSolid = this.levelSolid.filter(function(n){ return !!n });
+    }
+
+    path(a1, a2) {
+
+        if (this.levelGrid) {
+            return this.finder.findPath(
+                this.normalizeForPath(a1.view.x + a1.view.width / 2),
+                this.normalizeForPath(a1.view.y + a1.view.height / 2),
+                this.normalizeForPath(a2.view.x),
+                this.normalizeForPath(a2.view.y),
+                this.levelGrid.clone())
+                .map(p => [p[0] * this.size.width, p[1] * this.size.height]);
+        }
+        return [];
+    }
+
+    normalizeForPath(val) {
+        return (val - (val % this.size.width)) / this.size.width;
     }
 }

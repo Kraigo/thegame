@@ -81,7 +81,10 @@ class Basis {
     }
     onLeave() {
         //Void
-	}
+    }    
+    onDie() {
+        //Void
+    }
 	
 	createCollider() {
 		let colliderX = this.collider && this.collider.x || this.view.x + this.view.width / 2;
@@ -147,6 +150,7 @@ class Basis {
     }
 
     getRandomInt(min, max) {
+        min = min || 0;
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
