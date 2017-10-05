@@ -2,12 +2,12 @@
 class Asteroid extends Unit {
 	constructor(game, params) {
 		super(game, params);
-		this.view = {
-			width: params.width,
-			height: params.height,
-			x: params.x || Math.floor(Math.random()*(this.game.world.width-this.view.width)),
-			y: params.y || Math.floor(Math.random()*(this.game.world.height-this.view.height))
-		};
+		// this.view = {
+		// 	width: params.width,
+		// 	height: params.height,
+		// 	x: params.x || Math.floor(Math.random()*(this.game.world.width-this.view.width)),
+		// 	y: params.y || Math.floor(Math.random()*(this.game.world.height-this.view.height))
+		// };
 
 		this.direction = {
 			x: Math.random(),
@@ -40,20 +40,33 @@ class Asteroid extends Unit {
 	}
 	update() {
 
-
 		if (this.target) {
-			var path = this.game.stage.path(this, this.target);			
+			var path = this.game.stage.path(this, this.target);
 			if (path.length) {
-				this.path = path;
-				var pathNextX = path[0][0];
-				var pathNextY = path[0][1];
-				var direction = this.directionTo({ x: pathNextX, y: pathNextY, width: 0, height: 0});
-				// debugger;
-				if (direction.x || direction.y) {
-					this.stepMove(direction.x * this.speed, direction.y * this.speed);
-				}
-			}
+				for (var i = 0, pointView; i < path.length; i ++) {
+					pointView = {
+						x: path[i][0],
+						y: path[i][1],
+						width: 0,
+						height: 0
+					};
 
+					if (!this.collidingSqr({view: pointView})) {
+						this.direction = this.directionTo(pointView);
+						this.move();
+						this.routeTo(pointView);
+						// if (direction.x || direction.y) {
+						// 	// this.stepMove(direction.x * this.speed, direction.y * this.speed);
+						// 	this.move();
+						// 	this.routeTo(pointView);
+						// }
+						break;
+
+					}
+
+				}
+
+			} 
 		}
 		//this.bounceWorld();
 		// this.brotherColliding();
@@ -97,6 +110,12 @@ class Asteroid extends Unit {
 
 	}
 
+	routeTo(view) {
+		var direction = this.directionTo(view);
+		this.look.x += (direction.x - this.look.x) * this.rotationSpeed;
+		this.look.y += (direction.y - this.look.y) * this.rotationSpeed;
+	}
+
 	routeToTarget() {
 		var direction = this.directionTo({
 			view: {
@@ -115,16 +134,19 @@ class Asteroid extends Unit {
 		this.look.y += (direction.y - this.look.y) * this.rotationSpeed;
 	}
 
+
 	renderPath() {
-		for(var i =0; i < this.path.length; i++) {
-			let x = this.path[i][0];
-			let y = this.path[i][1];
-			this.game.screen.fillStyle = 'yellow';
-			this.game.screen.fillRect(
-                x - this.game.camera.x,
-                y - this.game.camera.y,
-                this.game.stage.size.width,
-                this.game.stage.size.height)
+		if (this.path.length) {
+			for(var i = 0; i < this.path.length; i++) {
+				let x = this.path[i][0];
+				let y = this.path[i][1];
+				this.game.screen.fillStyle = 'yellow';
+				this.game.screen.fillRect(
+					x - this.game.camera.x,
+					y - this.game.camera.y,
+					this.game.stage.size.width,
+					this.game.stage.size.height)
+			}
 		}
 	}
 }

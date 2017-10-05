@@ -7,8 +7,12 @@ class Basis {
             width: 16,
             height: 16,
             x: 0,
-            y: 0
+            y: 0,
+            get cx() { return this.x + (this.width / 2)},
+            get cy() { return this.y + (this.height / 2)}
+
         }, params.view);
+        this.cy = 
         this.collider = null;
         this.direction = { x: 0, y: 0 };
         this.look = { x: 0, y: 0 }

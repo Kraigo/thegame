@@ -35,7 +35,7 @@ class Game {
 		this.addBody(this.player);
 
 		for (var i = 0; i < 1; i++) {
-			game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: 450, y: 500}));
+			game.addBody(new Asteroid(game, {target: game.player, view: {width: 48, height: 48, x: 450, y: 500}}));
 		}
 
 		// setInterval(function() {

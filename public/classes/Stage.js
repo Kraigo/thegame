@@ -323,10 +323,10 @@ class Stage {
 
         if (this.levelGrid) {
             return this.finder.findPath(
-                this.normalizeForPath(a1.view.x + a1.view.width / 2),
-                this.normalizeForPath(a1.view.y + a1.view.height / 2),
-                this.normalizeForPath(a2.view.x),
-                this.normalizeForPath(a2.view.y),
+                this.normalizeForPath(a1.view.cx),
+                this.normalizeForPath(a1.view.cy),
+                this.normalizeForPath(a2.view.cx),
+                this.normalizeForPath(a2.view.cy),
                 this.levelGrid.clone())
                 .map(p => [p[0] * this.size.width, p[1] * this.size.height]);
         }
