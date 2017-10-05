@@ -2,14 +2,18 @@ var server_port = process.env.PORT || 8080;
 
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app).listen(server_port);
+var server = require('http');
 var io = require('socket.io')(server);
 
 var game = require('./game');
 
 app.use(express.static('public'));
 
+server.createServer(app).listen(server_port, function() {
+    console.log(`server started at port ${server_port}`)
+})
 
-io.sockets.on('connection', function(socket) {
-    game.init(io, socket);
-});
+
+// io.sockets.on('connection', function(socket) {
+//     game.init(io, socket);
+// });

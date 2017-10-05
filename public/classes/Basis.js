@@ -1,249 +1,264 @@
 'use strict';
 class Basis {
-	constructor(game) {
-		this.game = game;
-		this.size = {
-			width: 16,
-			height: 16,
-			radius: 16
-		};
-		this.position = {x: 0, y: 0};
-		this.direction = {x: 0, y: 0};
-		this.look = {x: 0, y: 0}
-		this.lookAngel = 0;
-		this.speed = 0;
-		this.velocity = 0;
-		this.gravity = 0.5;
-		this.animation = {
-			name: null,
-			state: 'stand',
-			keyframe: 0,
-			rate: 5,
-			end: false
-		};
-		this.health = {
-			max: 100,
-			current: 100
-		};
+    constructor(game, params) {
+        params = params || {};
+        this.game = game;
+        this.view = Object.assign({
+            width: 16,
+            height: 16,
+            x: 0,
+            y: 0
+        }, params.view);
+        this.collider = null;
+        this.direction = { x: 0, y: 0 };
+        this.look = { x: 0, y: 0 }
+        this.lookAngel = 90;
+        this.speed = 0;
+        this.velocity = 0;
+        this.gravity = 0.5;
+        this.animation = {
+            name: null,
+            state: 'stand',
+            keyframe: 0,
+            rate: 5,
+            end: false
+        };
+        this.health = {
+            max: 100,
+            current: 100
+        };
 
-		this.attack = {
-			damageMin: 1,
-			damageMax: 2,
-			range: 0
-		};
+        this.attack = {
+            damageMin: 1,
+            damageMax: 2,
+            range: 0
+        };
 
-		this.willDie = false;
-		this.willAttack = false;
-		this.rotationSpeed = 0.05;
-		this.density = 0;
-	}
-	render() {
-		this.game.screen.beginPath();
-		this.game.screen.rect(this.position.x - this.game.camera.x, this.position.y - this.game.camera.y, this.size.width, this.size.height);
-		this.game.screen.stroke();
-	}
-	healthBar() {
-		var healthBar = {
-			x: this.position.x - this.game.camera.x,
-			y: this.position.y - this.game.camera.y-5,
-			height: 3,
-			width: this.size.width * (this.health.current / this.health.max)
-		};
-		this.game.screen.beginPath();
-		this.game.screen.rect(healthBar.x, healthBar.y, this.size.width, healthBar.height);
-		this.game.screen.fillStyle = 'red';
-		this.game.screen.fillRect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
-		this.game.screen.stroke();
-	}
-	update() {
-	}
-	colliding(b1, b2) {
-		var dx = b1.x - b2.x;
-		var dy = b1.y - b2.y;
-		var distance = Math.sqrt(dx * dx + dy * dy);
+        this.willDie = false;
+        this.willAttack = false;
+        this.rotationSpeed = 0.05;
+        this.density = 0;
+		this.bonuses = [];		
+		this.contacts = [];
+    }
+    render() {
+        this.game.screen.beginPath();
+        this.game.screen.rect(this.view.x - this.game.camera.x, this.view.y - this.game.camera.y, this.view.width, this.view.height);
+        this.game.screen.stroke();
+    }
+    renderDebug() {
+        this.game.screen.beginPath();
+        this.game.screen.strokeStyle = 'green';
+        this.game.screen.rect(this.view.x - this.game.camera.x, this.view.y - this.game.camera.y, this.view.width, this.view.height);
+        this.game.screen.stroke();
 
-		return (distance < b1.r + b2.r);
+        if (this.collider) {
+            this.game.screen.beginPath();
+            this.game.screen.strokeStyle = 'purple';
+            this.game.screen.arc(this.collider.pos.x - this.game.camera.x, this.collider.pos.y - this.game.camera.y, this.collider.r, 0, 2 * Math.PI);
+            this.game.screen.stroke();
+        }
+    }
+    healthBar() {
+        var healthBar = {
+            x: this.view.x - this.game.camera.x,
+            y: this.view.y - this.game.camera.y - 5,
+            height: 3,
+            width: this.view.width * (this.health.current / this.health.max)
+        };
+        this.game.screen.beginPath();
+        this.game.screen.rect(healthBar.x, healthBar.y, this.view.width, healthBar.height);
+        this.game.screen.fillStyle = 'red';
+        this.game.screen.fillRect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
+        this.game.screen.stroke();
+    }
+    update() {
+        //Void
+    }
+
+    onEnter() {
+        //Void
+    }
+    onLeave() {
+        //Void
+    }    
+    onDie() {
+        //Void
+    }
+	
+	createCollider() {
+		let colliderX = this.collider && this.collider.x || this.view.x + this.view.width / 2;
+		let colliderY = this.collider && this.collider.y || this.view.y + this.view.height / 2;
+		let colliderRadius = this.collider && this.collider.r || this.view.width / 2;
+
+		this.collider = new SAT.Circle(new SAT.Vector(colliderX, colliderY), colliderRadius);
 	}
-	collidingSqr(body) {
-		return !(this.position.x + this.size.width < body.position.x ||
-			this.position.y + this.size.height < body.position.y ||
-			this.position.x > body.position.x + body.size.width ||
-			this.position.y > body.position.y + body.size.height);
-	}
-	collidingBody(body) {
-		return (this != body && this.colliding(
-					{x: this.position.x, y: this.position.y, r: this.size.width/2},
-					{x: body.position.x, y: body.position.y, r: body.size.width/2})
-				);
-	}
-	brotherColliding() {
-		var inst = this.constructor;
+    addBonus(bonus) {
+        if (bonus instanceof Bonus && bonus.canApply(this)) {
 
-		for (var i=0, body; i<this.game.bodies.length; i++) {
-			body = this.game.bodies[i];
-			if (body instanceof inst && this.collidingBody(body)) {
+			bonus.make(this, bonus.effect);
 
+			if (!bonus.permanent) {
+				this.bonuses.push(bonus);
 
-				//var dirTo = this.directionTo(body);
-				//var range = this.size.width/2 + body.size.width/2;
-                //
-				//this.position.x += -dirTo.x * range * body.density;
-				//this.position.y += -dirTo.y * range * body.density;
-				//body.position.x -= -dirTo.x * range * this.density;
-				//body.position.y -= -dirTo.y * range * this.density;
-                //
-				//return;
-
-				if (this.position.x < body.position.x) {
-					var diff = (this.position.x + this.size.width - body.position.x ) / 2 * body.density;
-					this.position.x -= diff;
-					body.position.x += diff;
-				} else if (this.position.x > body.position.x) {
-					var diff = (body.position.x - this.position.x + this.size.width) / 2 * body.density;
-					this.position.x += diff;
-					body.position.x -= diff;
+				if (bonus.time) {
+					setTimeout(() => {
+						this.removeBonus(bonus);
+					}, bonus.time)
 				}
-
-
-				if (this.position.y < body.position.y) {
-					var diff = (this.position.y + this.size.height - body.position.y ) / 2 * body.density;
-					this.position.y -= diff;
-					body.position.y += diff;
-				} else if (this.position.y > body.position.y) {
-					var diff = (body.position.y - this.position.y + this.size.height) / 2 * body.density;
-					this.position.y += diff;
-					body.position.y -= diff;
-				}
-
 			}
-		}
-	}
-	isOuterCamera() {
-		return !this.collidingSqr(this)
-	}
-	fixStuckWorld() {
-		if (this.position.x < 0) {
-			this.position.x = 0;
-			if (this.direction.x < 0) {
-				this.direction.x = - this.direction.x;
-			}
-		} else if (this.position.x + this.size.width > this.game.world.width) {
-			this.position.x = this.game.world.width - this.size.width;
-			if (this.direction.x > 0) {
-				this.direction.x = - this.direction.x;
-			}
-		}
+        }
+    }
 
-		if (this.position.y < 0) {
-			this.position.y = 0;
-			if (this.direction.y < 0) {
-				this.direction.y = - this.direction.y;
-			}
-		} else if (this.position.y + this.size.height > this.game.world.height) {
-			this.position.y = this.game.world.height - this.size.height;
-			if (this.direction.y > 0) {
-				this.direction.y = - this.direction.y;
-			}
-		}
-	}
-	directionTo(body) {
-		// (x1,y2) ==> (x2, y2)
-		var vx = (body.position.x + body.size.width/2) - (this.position.x + this.size.width/2);
-		var vy = (body.position.y + body.size.height/2) - (this.position.y + this.size.height/2);
-		var dxy = Math.sqrt(vx*vx + vy*vy);
-		return {x: vx/dxy, y: vy/dxy}
-	}
+    removeBonus(bonus) {
+        bonus.make(this, bonus.effect, true);
 
-	vectorAngle(p1, p2) {
-		var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-	}
+        this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
+    }
 
-	getRandomInt(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
 
-	//vectorAngle(vector) {
-	//	var angleRad = Math.acos( vector.x / Math.sqrt(vector.x*vector.x + vector.y*vector.y) );
-	//	return angleRad * 180 / Math.PI;
-	//}
+    colliding(b1, b2) {
+        var dx = b1.x - b2.x;
+        var dy = b1.y - b2.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
 
-	changeAnimation(animName) {
-		if (this.animation.state != animName) {
-			this.animation.state = animName;
-			this.animation.keyframe = 0;
-			this.animation.end = false;
-		}
-	}
-	kill() {
+        return (distance < b1.r + b2.r);
+    }
+    collidingSqr(body) {
+        return !(this.view.x + this.view.width < body.view.x ||
+            this.view.y + this.view.height < body.view.y ||
+            this.view.x > body.view.x + body.view.width ||
+            this.view.y > body.view.y + body.view.height);
+    }
+    collidingBody(body) {
+        return (this != body && this.colliding({ x: this.view.x, y: this.view.y, r: this.view.width / 2 }, { x: body.view.x, y: body.view.y, r: body.view.width / 2 }));
+    }
+    isOuterCamera() {
+        return !this.collidingSqr(this)
+    }
+    directionTo(view) {
+        // (x1,y2) ==> (x2, y2)
+        var vx = (view.x + view.width / 2) - (this.view.x + this.view.width / 2);
+        var vy = (view.y + view.height / 2) - (this.view.y + this.view.height / 2);
+        var dxy = Math.sqrt(vx * vx + vy * vy);
+        return { x: vx / dxy, y: vy / dxy }
+    }
+
+    vectorAngle(p1, p2) {
+        var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+        return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+    }
+
+    getRandomInt(min, max) {
+        min = min || 0;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    //vectorAngle(vector) {
+    //	var angleRad = Math.acos( vector.x / Math.sqrt(vector.x*vector.x + vector.y*vector.y) );
+    //	return angleRad * 180 / Math.PI;
+    //}
+
+    changeAnimation(animName) {
+        if (this.animation.state != animName) {
+            this.animation.state = animName;
+            this.animation.keyframe = 0;
+            this.animation.end = false;
+        }
+    }
+    kill() {
 		this.willDie = true;
-		this.changeAnimation('die');
-	}
+		this.health.current = 0;
+        this.changeAnimation('die');
+    }
 
-	hit(damage) {
-		this.health.current -= damage;
-		if (this.health.current <= 0) {
-			this.health.current = 0;
-			this.kill();
-		}
-	}
+    hit(damage) {
+        this.health.current -= damage;
+        if (this.health.current <= 0) {
+            this.health.current = 0;
+            this.kill();
+        }
+    }
 
-	//isReach(body) {
-	//	return (this != body && this.colliding(
-	//			{x: this.position.x, y: this.position.y, r: this.size.width/2},
-	//			{x: body.position.x, y: body.position.y, r: this.attack.range + this.size.width/2}));
-	//}
-	faceBarrier() {
-		var originalPositionX = this.position.x;
-		var originalPositionY = this.position.y;
-		var nextPositionX = this.position.x + this.direction.x * this.speed;
-		var nextPositionY = this.position.y + this.direction.y * this.speed;
+    isReach(body) {
+        return (this != body && this.colliding({ x: this.view.x, y: this.view.y, r: this.view.width / 2 }, { x: body.view.x, y: body.view.y, r: this.attack.range + this.view.width / 2 }));
+    }
 
-		for (var i = 0, item; i < this.game.stage.levelSolid.length; i++) {
+    stepMove(x, y) {
+        this.view.x += x;
+        this.view.y += y;
+        if (this.collider) {
+            this.collider.pos.x += x;
+            this.collider.pos.y += y;
+        }
+    }
 
-			item = {
-				position: {
-					x: this.game.stage.levelSolid[i].x,
-					y: this.game.stage.levelSolid[i].y
-				},
-				size: {
-					width: this.game.stage.levelSolid[i].width,
-					height: this.game.stage.levelSolid[i].height
-				}
-			};
+    teleport(x, y) {
+        this.view.x = x;
+        this.view.y = y;
+        if (this.collider) {
+            this.collider.pos.x = x + this.view.width / 2;
+            this.collider.pos.y = y + this.view.width / 2;
+        }
+    }
 
-			var collided = false;
+    faceBarrier() {
+        let response = new SAT.Response();
 
-			this.position.x = nextPositionX;
-			this.position.y = nextPositionY;
+        for (let i = 0, barrier; i < this.game.stage.levelSolid.length; i++) {
+            response.clear();
+            barrier = this.game.stage.levelSolid[i];
+            if (barrier instanceof SAT.Box) {
+                barrier = barrier.toPolygon();
+            }
+            let collided = SAT.testCirclePolygon(this.collider, barrier, response);
+            if (collided && response.overlap) {
+                return { collided, response, barrier };
+            }
+        }
+    }
 
-			if (this.collidingSqr(item)) {
+    faceBodies() {
+        let response = new SAT.Response();
+        let collestion = [];
 
-				collided = true;
+        for (let i = 0, body; i < this.game.bodies.length; i++) {
+            body = this.game.bodies[i];
+            if (this != body) {
+                response.clear();
+                let collided = SAT.testCircleCircle(this.collider, body.collider, response);
+                if (collided && response.overlap) {
+                    console.log(`this collided with body ${body.constructor.name}`);
+                    collestion.push({ collided, response, body });
+                }
+            }
+        }
+        return collestion;
+    }
 
-				this.position.x = originalPositionX;
-				this.position.y = nextPositionY;
+    fixStuck() {
+        let collision = this.faceBarrier();
+        if (collision) {
+            collision.response.overlapV.reverse();
+            this.stepMove(collision.response.overlapV.x, collision.response.overlapV.y);
+        }
+    }
 
-				if (this.collidingSqr(item)) {
-					this.direction.y = 0;
-				}
+    contact() {
 
+        let enterContacts = this.faceBodies();
 
-				this.position.x = nextPositionX;
-				this.position.y = originalPositionY;
+        for (var i = 0; i < enterContacts.length; i++) {
+            enterContacts[i].body.onEnter(this, enterContacts[i].response);
+        }
 
-				if (this.collidingSqr(item)) {
-					this.direction.x = 0;
-				}
+        let leaveContacts = this.contacts.filter(c => !enterContacts.some(e => e.body == c));
 
-				break;
-			}
+        for (var i = 0; i < leaveContacts.length; i++) {
+            leaveContacts[i].onLeave(this);
+        }
 
-		}
-
-		this.position.x = originalPositionX;
-		this.position.y = originalPositionY;
-		return collided;
-	}
+        this.contacts = enterContacts.map(c => c.body);
+    }
 
 }

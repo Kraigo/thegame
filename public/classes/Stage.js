@@ -14,6 +14,57 @@ class Stage {
         };
         this.level = [];
         this.levelSolid = [];
+        this.levelGrid = null;
+        this.finder = new PF.BestFirstFinder();
+        // this.finder = new PF.AStarFinder();
+
+
+        this.levelBodies = [
+            {
+                model: "Teleport",
+                view: {
+                    x: 315,
+                    y: 57
+                },
+                pairId: 'A'
+            },
+            {
+                model: "Teleport",
+                view: {
+                    x: 348,
+                    y: 574
+                },
+                pairId: 'A'
+            },
+            {
+                model: "BonusHealth",
+                view: {
+                    x: 360,
+                    y: 267
+                },
+                collider: {
+                    r: 5
+                }
+            },
+            {
+                model: "BonusFireRate",
+                view: {
+                    x: 477,
+                    y: 366
+                },
+                collider: {
+                    r: 5
+                }
+            },
+            {
+                model: "Spawn",
+                view: {
+                    x: 63,
+                    y: 312
+                },
+                populationModel: "BonusSpeedUp"
+            }
+        ]
 
 
 
@@ -34,7 +85,7 @@ class Stage {
         //    }
         //}
 
-        this.loadLevel('1');
+         this.loadLevel('1');
 
         return;
         this.build(['wall_1', 0, 0]);
@@ -74,6 +125,32 @@ class Stage {
                 this.game.screen.beginPath();
                 this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
                 this.game.screen.fillRect(this.levelSolid[i].x + 2 - this.game.camera.x, this.levelSolid[i].y + 2 - this.game.camera.y, this.levelSolid[i].width - 4, this.levelSolid[i].height - 4);
+                this.game.screen.stroke();
+            }
+        }
+
+        if (this.game.debug) {
+            this.renderSolid();
+        }
+    }
+
+    renderSolid() {
+        for (var i=0; i<this.levelSolid.length; i++) {
+            let collider = this.levelSolid[i];
+            this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
+            if (collider instanceof SAT.Box) {
+                this.game.screen.fillRect(
+                collider.pos.x - this.game.camera.x + 1,
+                collider.pos.y - this.game.camera.y + 1,
+                collider.w - 2,
+                collider.h - 2);
+            } else if (collider instanceof SAT.Polygon) {
+                this.game.screen.beginPath();
+                this.game.screen.moveTo(collider.points[0].x - this.game.camera.x, collider.points[0].y - this.game.camera.y);
+                for (var p = 1; p < collider.points.length; p++) {
+                    this.game.screen.lineTo(collider.points[p].x - this.game.camera.x, collider.points[p].y - this.game.camera.y);
+                }
+                this.game.screen.lineTo(collider.points[collider.points.length - 1].x - this.game.camera.x, collider.points[collider.points.length - 1].y - this.game.camera.y);
                 this.game.screen.stroke();
             }
         }
@@ -128,21 +205,28 @@ class Stage {
             var xobj = new XMLHttpRequest();
             var self = this;
             xobj.overrideMimeType("application/json");
-            xobj.open('GET', '/levels/level_'+lvl+'.json', true);
+            xobj.open('GET', 'levels/level_'+lvl+'.json', true);
             xobj.onreadystatechange = function () {
                 if (xobj.readyState == 4 && xobj.status == "200") {
                     var levelData = JSON.parse(xobj.responseText);
+                    // self.level = levelData.tiles;
+                    // self.levelSolid = levelData.solids;
+                    self.levelGrid = new PF.Grid(self.game.world.width / self.size.width, self.game.world.height / self.size.height);
 
+                    for (let i = 0; i < levelData.tiles.length; i++) {
+                        self.level.push(levelData.tiles[i]);
+                    }
 
-                    self.level = levelData.tiles;
-                    self.levelSolid = levelData.solids;
-                    //for (var i = 0; i < levelData.length; i++) {
-                    //    self.level.push(levelData[i]);
-                    //
-                    //    if (levelData[i].solid) {
-                    //        self.addSolid(levelData[i].x, levelData[i].y);
-                    //    }
-                    //}
+                    for (let i = 0; i < levelData.solids.length; i++) {
+                        let solid = levelData.solids[i];
+                        self.addSolid(solid.x, solid.y, solid.w, solid.h);
+                        self.levelGrid.setWalkableAt(solid.x / self.size.width, solid.y / self.size.height, false);
+                    }
+
+                    for (let i = 0; i < self.levelBodies.length; i++) {
+                        self.game.evalBody(self.levelBodies[i]);
+                    }
+                    // self.simplifySolid();
                 }
             };
             xobj.send(null);
@@ -151,18 +235,40 @@ class Stage {
     logLevel() {
         console.log(JSON.stringify(this.level));
         console.log('==============================');
-        console.log(JSON.stringify(this.levelSolid));
+        console.log(JSON.stringify(this.levelSolida.map(l => {
+            return {
+                x: l.pos.x,
+                y: l.pos.y,
+                w: l.w,
+                h: l.h,
+            }
+        })));
     }
-    addSolid(x, y) {
-       this.levelSolid.push({
-           x: x,
-           y: y,
-           width: this.size.width,
-           height: this.size.height
-       })
+    addSolid(x, y, width, height) {
+       this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
+    }
+    simplifySolid() {
+        this.levelSolid = this.levelSolid.map(b => b.toPolygon());
+
+        for(var i = 0; i < this.levelSolid.length; i++) {
+            let collider = this.levelSolid[i];
+            let response = new SAT.Response();
+            for (var j = 0; j < this.levelSolid.length; j++) {
+                if (collider != this.levelSolid) {
+                    response.clear();
+                    // debugger;
+                    let collided = SAT.testPolygonPolygon(collider, this.levelSolid[j], response);
+                    if(collided) {
+                        this.levelSolid[i] = new SAT.Polygon(new SAT.Vector(collider.pos.x, collider.pos.y), collider.points.concat(this.levelSolid[j].points));
+                        this.levelSolid.splice(j, 1);
+                        // j--;
+                    }
+                }
+            }
+        }
     }
 
-    simplifySolid() {
+    simplifySolid__old() {
         console.log('before simplify', this.levelSolid.length);
         for (var i = 0, item; i < this.levelSolid.length; i++) {
             item = this.levelSolid[i];
@@ -211,5 +317,23 @@ class Stage {
             }
         }
         this.levelSolid = this.levelSolid.filter(function(n){ return !!n });
+    }
+
+    path(a1, a2) {
+
+        if (this.levelGrid) {
+            return this.finder.findPath(
+                this.normalizeForPath(a1.view.x + a1.view.width / 2),
+                this.normalizeForPath(a1.view.y + a1.view.height / 2),
+                this.normalizeForPath(a2.view.x),
+                this.normalizeForPath(a2.view.y),
+                this.levelGrid.clone())
+                .map(p => [p[0] * this.size.width, p[1] * this.size.height]);
+        }
+        return [];
+    }
+
+    normalizeForPath(val) {
+        return (val - (val % this.size.width)) / this.size.width;
     }
 }

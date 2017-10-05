@@ -5,7 +5,7 @@ class Sprite {
 		this.dir = '/sprites/sprite.png';
 		this.image = new Image();
 		this.image.src = this.dir;
-		this.size = {
+		this.view = {
 			width: 48,
 			height: 48
 		};
@@ -25,13 +25,28 @@ class Sprite {
 			bullet: {
 				stand: [{x:0, y: 96, w: 24, h:24}],
 				die: [{x:0, y: 120, w: 24, h:24},{x:24, y: 120, w: 24, h:24}]
+			},
+			teleport: {
+				stand: [{x:0, y: 384, w: 52, h: 52}, {x:52, y: 384, w: 52, h: 52}, {x:104, y: 384, w: 52, h: 52}]
+			},
+			bonusSpeed: {
+				stand: [{x: 0, y: 436, w: 48, h: 48}]
+			},
+			bonusHealth: {
+				stand: [{x: 48, y: 436, w: 48, h: 48}]
+			},
+			bonusAmmo: {
+				stand: [{x: 96, y: 436, w: 48, h: 48}]
+			},
+			bonusFire: {
+				stand: [{x: 144, y: 436, w: 48, h: 48}]
 			}
 		};
 	}
 
 	draw(body, angle) {
-		var x = body.position.x + body.size.width/2 - this.game.camera.x;
-		var y = body.position.y + body.size.height/2 - this.game.camera.y;
+		var x = body.view.x + body.view.width/2 - this.game.camera.x;
+		var y = body.view.y + body.view.height/2 - this.game.camera.y;
 		angle = angle - 90 % 360;
 
 		var frame = this.getFrame(body.animation);
@@ -44,12 +59,12 @@ class Sprite {
 			this.image,
 			frame.x,
 			frame.y,
-			frame.w || this.size.width,
-			frame.h || this.size.height,
-			-body.size.width/2,
-			-body.size.width/2,
-			body.size.width,
-			body.size.height
+			frame.w || this.view.width,
+			frame.h || this.view.height,
+			-body.view.width/2,
+			-body.view.width/2,
+			body.view.width,
+			body.view.height
 		);
 		this.game.screen.translate(-x, -y);
 		this.game.screen.rotate(-angle*Math.PI/180);
