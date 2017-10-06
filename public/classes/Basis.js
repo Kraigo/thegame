@@ -76,6 +76,7 @@ class Basis {
         this.game.screen.fillRect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
         this.game.screen.stroke();
     }
+    
     update() {
         //Void
     }

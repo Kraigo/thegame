@@ -64,10 +64,6 @@ class Game {
 		this.modeToggler();
 	}
 
-	static Teleport() {
-		
-	}
-
 	render() {
 		this.screen.clearRect(0,0, this.camera.width, this.camera.height);
 

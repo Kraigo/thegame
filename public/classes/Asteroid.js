@@ -55,11 +55,6 @@ class Asteroid extends Unit {
 						this.direction = this.directionTo(pointView);
 						this.move();
 						this.routeTo(pointView);
-						// if (direction.x || direction.y) {
-						// 	// this.stepMove(direction.x * this.speed, direction.y * this.speed);
-						// 	this.move();
-						// 	this.routeTo(pointView);
-						// }
 						break;
 
 					}
@@ -68,6 +63,8 @@ class Asteroid extends Unit {
 
 			} 
 		}
+
+		this.contact();
 		//this.bounceWorld();
 		// this.brotherColliding();
 		//this.fixStuckWorld();
