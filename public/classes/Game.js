@@ -113,8 +113,13 @@ class Game {
 				i--;
 				continue;
 			}
-
-			body.update();
+			if (!body.willDie) {
+				body.update();
+			} else {
+				body.speed = 0;
+				body.direction.x = 0;
+				body.direction.y = 0;
+			}
 		}
 	}
 

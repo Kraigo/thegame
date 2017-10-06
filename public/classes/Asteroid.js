@@ -16,7 +16,7 @@ class Asteroid extends Unit {
 		this.attack.range = 5;
 
 		this.speed = Math.random() * 2;
-		this.speed = 3;
+		this.speed = 2;
 		this.animation.name = 'monster';
 		this.target = params.target || null;
 		this.density = 0.03;
@@ -41,17 +41,12 @@ class Asteroid extends Unit {
 	update() {
 
 		if (this.target) {
-			var path = this.game.stage.path(this, this.target);
-			if (path.length) {
-				for (var i = 0, pointView; i < path.length; i ++) {
-					pointView = {
-						x: path[i][0],
-						y: path[i][1],
-						width: 0,
-						height: 0
-					};
+			this.path = this.game.stage.path(this, this.target);
+			if (this.path.length) {
+				for (var i = 0, pointView; i < this.path.length; i ++) {
+					pointView = this.path[i];
 
-					if (!this.collidingSqr({view: pointView})) {
+					if (!this.collidingView(pointView)) {
 						this.direction = this.directionTo(pointView);
 						this.move();
 						this.routeTo(pointView);
@@ -62,9 +57,11 @@ class Asteroid extends Unit {
 				}
 
 			} 
+		} else {
+			this.path = [];
 		}
 
-		this.contact();
+		this.faceContacts();
 		//this.bounceWorld();
 		// this.brotherColliding();
 		//this.fixStuckWorld();
@@ -134,16 +131,20 @@ class Asteroid extends Unit {
 
 	renderPath() {
 		if (this.path.length) {
+			this.game.screen.strokeStyle = 'yellow';
+			this.game.screen.beginPath();
 			for(var i = 0; i < this.path.length; i++) {
-				let x = this.path[i][0];
-				let y = this.path[i][1];
-				this.game.screen.fillStyle = 'yellow';
-				this.game.screen.fillRect(
-					x - this.game.camera.x,
-					y - this.game.camera.y,
-					this.game.stage.size.width,
-					this.game.stage.size.height)
+				let x = this.path[i].x - this.game.camera.x;
+				let y = this.path[i].y - this.game.camera.y;
+
+				if (i === 0) {
+					this.game.screen.moveTo(x, y);
+				} else{							
+					this.game.screen.lineTo(x, y);
+				}
 			}
+			
+			this.screen.stroke();
 		}
 	}
 }

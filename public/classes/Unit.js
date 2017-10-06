@@ -33,7 +33,7 @@ class Unit extends Basis {
 
 		this.shot();
 		this.move();
-		this.contact();
+		this.faceContacts();
 	}
 	move() {
 		if (this.direction.x || this.direction.y) {

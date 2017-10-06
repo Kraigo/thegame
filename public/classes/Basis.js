@@ -3,6 +3,8 @@ class Basis {
     constructor(game, params) {
         params = params || {};
         this.game = game;
+        this.screen = game.screen;
+        this.stage = game.stage;
         this.view = Object.assign({
             width: 16,
             height: 16,
@@ -129,17 +131,19 @@ class Basis {
 
         return (distance < b1.r + b2.r);
     }
-    collidingSqr(body) {
-        return !(this.view.x + this.view.width < body.view.x ||
-            this.view.y + this.view.height < body.view.y ||
-            this.view.x > body.view.x + body.view.width ||
-            this.view.y > body.view.y + body.view.height);
+    collidingView(view) {
+        view.width = view.width || 0;
+        view.height = view.height || 0;
+        return !(this.view.x + this.view.width < view.x ||
+            this.view.y + this.view.height < view.y ||
+            this.view.x > view.x + view.width ||
+            this.view.y > view.y + view.height);
     }
     collidingBody(body) {
         return (this != body && this.colliding({ x: this.view.x, y: this.view.y, r: this.view.width / 2 }, { x: body.view.x, y: body.view.y, r: body.view.width / 2 }));
     }
     isOuterCamera() {
-        return !this.collidingSqr(this)
+        return !this.collidingView(this.view);
     }
     directionTo(view) {
         // (x1,y2) ==> (x2, y2)
@@ -181,7 +185,13 @@ class Basis {
         this.health.current -= damage;
         if (this.health.current <= 0) {
             this.health.current = 0;
-            this.kill();
+        }
+    }
+
+    heal(value) {
+        this.health.current += value;
+        if (this.health.current > this.health.max) {
+            this.health.current = this.health.max;
         }
     }
 
@@ -225,7 +235,7 @@ class Basis {
 
     faceBodies() {
         let response = new SAT.Response();
-        let collestion = [];
+        let collisions = [];
 
         for (let i = 0, body; i < this.game.bodies.length; i++) {
             body = this.game.bodies[i];
@@ -233,12 +243,12 @@ class Basis {
                 response.clear();
                 let collided = SAT.testCircleCircle(this.collider, body.collider, response);
                 if (collided && response.overlap) {
-                    console.log(`this collided with body ${body.constructor.name}`);
-                    collestion.push({ collided, response, body });
+                    // console.log(`this collided with body ${body.constructor.name}`);
+                    collisions.push({ collided, response, body });
                 }
             }
         }
-        return collestion;
+        return collisions;
     }
 
     fixStuck() {
@@ -249,12 +259,14 @@ class Basis {
         }
     }
 
-    contact() {
+    faceContacts() {
 
         let enterContacts = this.faceBodies();
 
         for (var i = 0; i < enterContacts.length; i++) {
-            enterContacts[i].body.onEnter(this, enterContacts[i].response);
+            if(!enterContacts[i].body.willDie) {
+                enterContacts[i].body.onEnter(this, enterContacts[i].response);
+            }
         }
 
         let leaveContacts = this.contacts.filter(c => !enterContacts.some(e => e.body == c));
@@ -264,6 +276,7 @@ class Basis {
         }
 
         this.contacts = enterContacts.map(c => c.body);
+        return this.contacts;
     }
 
 }

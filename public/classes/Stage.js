@@ -15,8 +15,8 @@ class Stage {
         this.level = [];
         this.levelSolid = [];
         this.levelGrid = null;
-        this.finder = new PF.BestFirstFinder();
-        // this.finder = new PF.AStarFinder();
+        // this.finder = new PF.BestFirstFinder({dontCrossCorners: false});
+        this.finder = new PF.AStarFinder({dontCrossCorners: false});
 
 
         this.levelBodies = [
@@ -328,7 +328,12 @@ class Stage {
                 this.normalizeForPath(a2.view.cx),
                 this.normalizeForPath(a2.view.cy),
                 this.levelGrid.clone())
-                .map(p => [p[0] * this.size.width, p[1] * this.size.height]);
+                .map(p => {
+                    return {
+                        x: p[0] * this.size.width + this.size.width / 2,
+                        y: p[1] * this.size.height + this.size.height / 2
+                    }
+                });
         }
         return [];
     }

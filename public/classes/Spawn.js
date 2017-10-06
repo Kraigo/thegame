@@ -34,7 +34,7 @@ class Spawn extends Basis {
 
     startInterval() {
         this.interval = setInterval(() => {
-            this.contact();
+            this.faceContacts();
 
             if (!this.contacts.some(c => c.constructor.name === this.populationModel)) {
                 this.spawnItem();

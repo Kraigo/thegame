@@ -10,6 +10,8 @@ class Bullet extends Basis {
 		this.speed = 5;
 		this.animation.name = 'bullet';
 		this.attack.damage = params.damage;
+		
+		this.attack.damage = 10;
 		this.owner = params.owner;
 		this.timer = this.game.timer;
 		this.createCollider();
@@ -18,6 +20,8 @@ class Bullet extends Basis {
 		if (this.isOuterCamera()) {
 			this.game.removeBody(this);
 		}
+		// this.faceContacts();
+
 		
 		// for (var i=0, body; i<this.game.bodies.length; i++) {
 		// 	body = this.game.bodies[i];
@@ -59,5 +63,14 @@ class Bullet extends Basis {
 		this.game.sprite.draw(this, angle);
 
 		//this.faceBarrier(true);
+	}
+
+	onEnter(body) {
+		// debugger;
+		if (body instanceof Unit && body != this.owner) {
+			body.hit(this.attack.damage);
+			this.kill();
+			this.speed = 0;
+		}
 	}
 }
