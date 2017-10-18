@@ -14,6 +14,8 @@ class Asteroid extends Unit {
 			y: Math.random()
 		};
 		this.attack.range = 5;
+		this.view.width = 48;
+		this.view.height = 48;
 
 		this.speed = Math.random() * 2;
 		this.speed = 2;
@@ -21,6 +23,7 @@ class Asteroid extends Unit {
 		this.target = params.target || null;
 		this.density = 0.03;
 		this.path = [];
+		this.createCollider();
 	}
 	render() {
 		this.game.screen.beginPath();
@@ -70,26 +73,27 @@ class Asteroid extends Unit {
 		// if (this.willDie) {
 
 		// }
-		// else if (this.willAttack || this.isReach(this.target)) {
-		// 	this.willAttack = true;
-		// 	this.changeAnimation('attack');
+		// else 
+		if (this.willAttack || this.isReach(this.target)) {
+			this.willAttack = true;
+			this.changeAnimation('attack');
 
-		// 	if (this.animation.end) {
-		// 		this.willAttack = false;
+			if (this.animation.end) {
+				this.willAttack = false;
 
-		// 		if (this.isReach(this.target)) {
-		// 			console.log('hit you');
-		// 			this.target.hit(this.getRandomInt(this.attack.damageMin, this.attack.damageMax));
-		// 		}
+				if (this.isReach(this.target)) {
+					console.log('hit you');
+					this.target.hit(this.getRandomInt(this.attack.damageMin, this.attack.damageMax));
+				}
 
-		// 		this.changeAnimation('stand');
-		// 	}
-		// }
-		// else if (this.speed) {
+				this.changeAnimation('stand');
+			}
+		}
+		else if (this.speed) {
 		// 	if (this.target) {
 		// 		this.routeToTarget();
 		// 	}
-		// 	this.changeAnimation('walk');
+			this.changeAnimation('walk');
 
 		// 	this.faceBarrier();
 		// 	this.view.x += this.direction.x * this.speed;
@@ -97,10 +101,10 @@ class Asteroid extends Unit {
 
 
 
-		// }
-		// else {
-		// 	this.changeAnimation('stand');
-		// }
+		}
+		else {
+			this.changeAnimation('stand');
+		}
 
 	}
 

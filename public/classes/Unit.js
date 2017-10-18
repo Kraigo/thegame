@@ -20,7 +20,6 @@ class Unit extends Basis {
 			range: 10
 		};
 		this.animation.name = 'player';
-		this.createCollider();
 	}
 	update() {
 

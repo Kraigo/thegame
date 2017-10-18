@@ -34,7 +34,7 @@ class Game {
 		this.camera.setTarget(this.player);
 		this.addBody(this.player);
 
-		for (var i = 0; i < 1; i++) {
+		for (var i = 0; i < 0; i++) {
 			game.addBody(new Asteroid(game, {target: game.player, view: {width: 48, height: 48, x: 450, y: 500}}));
 		}
 
@@ -186,8 +186,8 @@ class Game {
 		})
 	}
 
-	evalBody(data) {		
-		let model = eval(data.model);
-		this.addBody(new model(this, data));
+	evalBody(modelName, params) {		
+		let model = eval(modelName);
+		return new model(this, params);
 	}
 }

@@ -73,8 +73,9 @@ class Basis {
             width: this.view.width * (this.health.current / this.health.max)
         };
         this.game.screen.beginPath();
-        this.game.screen.rect(healthBar.x, healthBar.y, this.view.width, healthBar.height);
         this.game.screen.fillStyle = 'red';
+        this.game.screen.strokeStyle = 'red';
+        this.game.screen.rect(healthBar.x, healthBar.y, this.view.width, healthBar.height);
         this.game.screen.fillRect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
         this.game.screen.stroke();
     }
@@ -239,7 +240,7 @@ class Basis {
 
         for (let i = 0, body; i < this.game.bodies.length; i++) {
             body = this.game.bodies[i];
-            if (this != body) {
+            if (this != body && body.collider) {
                 response.clear();
                 let collided = SAT.testCircleCircle(this.collider, body.collider, response);
                 if (collided && response.overlap) {

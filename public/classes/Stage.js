@@ -16,53 +16,92 @@ class Stage {
         this.levelSolid = [];
         this.levelGrid = null;
         // this.finder = new PF.BestFirstFinder({dontCrossCorners: false});
-        this.finder = new PF.AStarFinder({dontCrossCorners: false});
+        this.finder = new PF.AStarFinder({
+            allowDiagonal: true,
+            dontCrossCorners: true
+        });
 
 
         this.levelBodies = [
             {
                 model: "Teleport",
-                view: {
-                    x: 315,
-                    y: 57
-                },
-                pairId: 'A'
+                params: {
+                    view: {
+                        x: 315,
+                        y: 57
+                    },
+                    pairId: 'A'
+                }
             },
             {
                 model: "Teleport",
-                view: {
-                    x: 348,
-                    y: 574
-                },
-                pairId: 'A'
+                params: {
+                    view: {
+                        x: 348,
+                        y: 574
+                    },
+                    pairId: 'A'
+                }
             },
             {
                 model: "BonusHealth",
-                view: {
-                    x: 360,
-                    y: 267
-                },
-                collider: {
-                    r: 5
+                params: {
+                    view: {
+                        x: 360,
+                        y: 267
+                    },
+                    collider: {
+                        r: 5
+                    }
                 }
             },
             {
                 model: "BonusFireRate",
-                view: {
-                    x: 477,
-                    y: 366
-                },
-                collider: {
-                    r: 5
+                params: {
+                    view: {
+                        x: 477,
+                        y: 366
+                    },
+                    collider: {
+                        r: 5
+                    }
                 }
             },
             {
                 model: "Spawn",
-                view: {
-                    x: 63,
-                    y: 312
-                },
-                populationModel: "BonusSpeedUp"
+                params: {
+                    view: {
+                        x: 63,
+                        y: 312
+                    },
+                    populationModel: "BonusSpeedUp"
+                }
+            },
+            {
+                model: "Spawn",
+                params: {
+                    view: {
+                        x: 700,
+                        y: 160
+                    },
+                    populationModel: "Asteroid",
+                    populationParams: {
+                        target: this.game.player
+                    }
+                }
+            },
+            {
+                model: "Spawn",
+                params: {
+                    view: {
+                        x: 50,
+                        y: 670
+                    },
+                    populationModel: "Asteroid",
+                    populationParams: {
+                        target: this.game.player
+                    }
+                }
             }
         ]
 
@@ -224,7 +263,8 @@ class Stage {
                     }
 
                     for (let i = 0; i < self.levelBodies.length; i++) {
-                        self.game.evalBody(self.levelBodies[i]);
+                        let body = self.game.evalBody(self.levelBodies[i].model, self.levelBodies[i].params);
+                        self.game.addBody(body);
                     }
                     // self.simplifySolid();
                 }

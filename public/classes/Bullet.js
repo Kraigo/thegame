@@ -20,7 +20,7 @@ class Bullet extends Basis {
 		if (this.isOuterCamera()) {
 			this.game.removeBody(this);
 		}
-		// this.faceContacts();
+		this.faceContacts();
 
 		
 		// for (var i=0, body; i<this.game.bodies.length; i++) {
@@ -44,7 +44,20 @@ class Bullet extends Basis {
 
 		let collided = this.faceBarrier();
 		if (collided) {
-			// console.log(collided.response);
+			console.log(this.direction);
+			console.log(collided.response.overlapN);
+			let reflectVector = collided.response.overlapN;
+
+			if (reflectVector.x != 0) {
+				this.direction.x = -this.direction.x;
+			}
+			
+			if (reflectVector.y != 0) {
+				this.direction.y = -this.direction.y;
+			}
+			// this.direction.x = -reflectVector.x;
+			
+			// this.direction.y = -reflectVector.y;
 			// let reflectVector = collided.response.overlapV.normalize();
 			// this.direction.x = (-reflectVector.x * this.speed);
 			// this.direction.y = (-reflectVector.y * this.speed);
@@ -66,7 +79,6 @@ class Bullet extends Basis {
 	}
 
 	onEnter(body) {
-		// debugger;
 		if (body instanceof Unit && body != this.owner) {
 			body.hit(this.attack.damage);
 			this.kill();
