@@ -43,68 +43,65 @@ class Asteroid extends Unit {
 	}
 	update() {
 
-		if (this.target) {
-			this.path = this.game.stage.path(this, this.target);
-			if (this.path.length) {
-				for (var i = 0, pointView; i < this.path.length; i ++) {
-					pointView = this.path[i];
-
-					if (!this.collidingView(pointView)) {
-						this.direction = this.directionTo(pointView);
-						this.move();
-						this.routeTo(pointView);
-						break;
-
-					}
-
-				}
-
-			} 
-		} else {
-			this.path = [];
-		}
+		
 
 		this.faceContacts();
-		//this.bounceWorld();
-		// this.brotherColliding();
-		//this.fixStuckWorld();
+
+		let collisions = this.faceBodies();
+
+		if (collisions.length) {
+			for (var i = 0, collision; i < collisions.length; i++) {
+				collision = collisions[i];
+				if (collision.body instanceof Unit) {					
+					this.stepMove(-collision.response.overlapV.x * 0.3, -collision.response.overlapV.y * 0.3);
+				}
+			}
+		}
 
 
-		// if (this.willDie) {
-
-		// }
-		// else 
-		if (this.willAttack || this.isReach(this.target)) {
+		if (this.willAttack || this.canAttack(this.target)) {
 			this.willAttack = true;
 			this.changeAnimation('attack');
 
 			if (this.animation.end) {
 				this.willAttack = false;
 
-				if (this.isReach(this.target)) {
+				if (this.canAttack(this.target)) {
 					console.log('hit you');
 					this.target.hit(this.getRandomInt(this.attack.damageMin, this.attack.damageMax));
 				}
 
 				this.changeAnimation('stand');
 			}
-		}
-		else if (this.speed) {
-		// 	if (this.target) {
-		// 		this.routeToTarget();
-		// 	}
-			this.changeAnimation('walk');
+		}			
+		else if (this.target) {
+				this.path = this.game.stage.path(this, this.target);
+				if (this.path.length) {
+					for (var i = 0, pointView; i < this.path.length; i ++) {
+						pointView = this.path[i];
 
-		// 	this.faceBarrier();
-		// 	this.view.x += this.direction.x * this.speed;
-		// 	this.view.y += this.direction.y * this.speed;
+						if (!this.collidingView(pointView)) {
+							this.direction = this.directionTo(pointView);
+							this.move();
+							this.routeTo(pointView);
+							this.changeAnimation('walk');
+							break;
+
+						}
+
+					}
+
+				} 
+			} else {
+				this.path = [];
+				this.changeAnimation('stand');
+			}
 
 
-
-		}
-		else {
-			this.changeAnimation('stand');
-		}
+		// }
+		// else {
+		// 	this.changeAnimation('stand');
+		// }
 
 	}
 

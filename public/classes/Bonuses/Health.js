@@ -4,9 +4,7 @@ class BonusHealth extends Bonus {
         this.title = 'Health';
         this.permanent = true;
         this.effect = {
-            health: {
-                current: 20
-            }
+            health: 20
         }
         this.animation.name = 'bonusHealth';
     }
@@ -17,5 +15,9 @@ class BonusHealth extends Bonus {
 
     canApply(body) {
         return body.health.current < body.health.max;
+    }
+
+    applyEffect(body) {
+        body.heal(this.effect.health);
     }
 }

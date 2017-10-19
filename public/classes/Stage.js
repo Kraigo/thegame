@@ -27,8 +27,8 @@ class Stage {
                 model: "Teleport",
                 params: {
                     view: {
-                        x: 315,
-                        y: 57
+                        x: 240,
+                        y: 500
                     },
                     pairId: 'A'
                 }
@@ -37,8 +37,8 @@ class Stage {
                 model: "Teleport",
                 params: {
                     view: {
-                        x: 348,
-                        y: 574
+                        x: 500,
+                        y: 240
                     },
                     pairId: 'A'
                 }
@@ -47,8 +47,8 @@ class Stage {
                 model: "BonusHealth",
                 params: {
                     view: {
-                        x: 360,
-                        y: 267
+                        x: 408,
+                        y: 148
                     },
                     collider: {
                         r: 5
@@ -59,8 +59,8 @@ class Stage {
                 model: "BonusFireRate",
                 params: {
                     view: {
-                        x: 477,
-                        y: 366
+                        x: 360,
+                        y: 600
                     },
                     collider: {
                         r: 5
@@ -80,6 +80,7 @@ class Stage {
             {
                 model: "Spawn",
                 params: {
+                    time: 5000,
                     view: {
                         x: 700,
                         y: 160
@@ -93,6 +94,7 @@ class Stage {
             {
                 model: "Spawn",
                 params: {
+                    time: 5000,
                     view: {
                         x: 50,
                         y: 670

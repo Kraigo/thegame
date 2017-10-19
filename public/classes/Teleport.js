@@ -18,10 +18,12 @@ class Teleport extends Basis {
         this.game.sprite.draw(this, this.lookAngel);
     }
     onEnter(body, response) {
-        if (this.active) {
-            let pairTeleport = this.game.bodies.find(b => b instanceof Teleport && b !== this && b.pairId === this.pairId);
-            pairTeleport.active = false;
-            body.teleport(pairTeleport.view.x, pairTeleport.view.y);
+        if (body instanceof Unit) {
+            if (this.active) {
+                let pairTeleport = this.game.bodies.find(b => b instanceof Teleport && b !== this && b.pairId === this.pairId);
+                pairTeleport.active = false;
+                body.teleport(pairTeleport.view.x, pairTeleport.view.y);
+            }
         }
     }
 

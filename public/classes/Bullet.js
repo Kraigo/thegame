@@ -44,8 +44,8 @@ class Bullet extends Basis {
 
 		let collided = this.faceBarrier();
 		if (collided) {
-			console.log(this.direction);
-			console.log(collided.response.overlapN);
+			// console.log(this.direction);
+			// console.log(collided.response.overlapN);
 			let reflectVector = collided.response.overlapN;
 
 			if (reflectVector.x != 0) {
@@ -61,8 +61,8 @@ class Bullet extends Basis {
 			// let reflectVector = collided.response.overlapV.normalize();
 			// this.direction.x = (-reflectVector.x * this.speed);
 			// this.direction.y = (-reflectVector.y * this.speed);
-			this.kill();
-			this.speed = 0;
+			// this.kill();
+			// this.speed = 0;
 		} else if (this.game.timer > this.timer + 100) {
 			this.kill();
 			this.speed = 0;

@@ -102,7 +102,7 @@ class Basis {
 		this.collider = new SAT.Circle(new SAT.Vector(colliderX, colliderY), colliderRadius);
 	}
     addBonus(bonus) {
-        if (bonus instanceof Bonus && bonus.canApply(this)) {
+        if (bonus instanceof Bonus) {
 
 			bonus.make(this, bonus.effect);
 
@@ -196,7 +196,7 @@ class Basis {
         }
     }
 
-    isReach(body) {
+    canAttack(body) {
         return (this != body && this.colliding({ x: this.view.x, y: this.view.y, r: this.view.width / 2 }, { x: body.view.x, y: body.view.y, r: this.attack.range + this.view.width / 2 }));
     }
 

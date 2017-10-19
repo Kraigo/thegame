@@ -6,7 +6,7 @@ const concat = require('gulp-concat');
 
 gulp.task('babel', function() {
 	return gulp
-			.src(['public/classes/Basis.js', 'public/classes/*.js'])
+			.src(['public/classes/Basis.js', 'public/classes/Unit.js', 'public/classes/**/*.js'])
 			.pipe(babel({presets: ['es2015']}))
 			.pipe(concat('thegame.min.js'))
 			.pipe(uglify())

@@ -32,11 +32,14 @@ class Bonus extends Basis {
     canApply() {
         return true;
     }
+    applyEffect() {
+        // ...
+    }
 
     onEnter(body) {
         if (body instanceof Player) {
             if (!body.bonuses.some(b => b.constructor.name === this.constructor.name) && this.canApply(body)) {
-                body.addBonus(this);
+                this.applyEffect(body);
                 this.game.removeBody(this);
             }
         }
