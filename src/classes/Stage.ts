@@ -41,26 +41,13 @@ export class Stage {
         this.levelGrid = null;
         // this.finder = new PF.BestFirstFinder({dontCrossCorners: false});
         this.finder = new PF.AStarFinder({
+            diagonalMovement: PF.DiagonalMovement.OnlyWhenNoObstacles
             // allowDiagonal: true,
             // dontCrossCorners: true
         });
 
 
         this.levelBodies = [
-            new Teleport(this.game, {
-                view: {
-                    x: 240,
-                    y: 500
-                },
-                pairId: 'A',
-            }),
-            new Teleport(this.game, {
-                view: {
-                    x: 500,
-                    y: 240
-                },
-                pairId: 'A',
-            }),
 
             new BonusHealth(this.game, {
                 view: {
@@ -264,20 +251,23 @@ export class Stage {
             this.game.world.width / this.size.width,
             this.game.world.height / this.size.height);
 
-        for (let i = 0; i < levelData.tiles.length; i++) {
-            this.level.push(levelData.tiles[i]);
+        for (const tile of levelData.tiles) {
+            this.level.push(tile);
         }
 
-        for (let i = 0; i < levelData.solids.length; i++) {
-            let solid = levelData.solids[i];
+        for (const solid of levelData.solids) {
             this.addSolid(solid.x, solid.y, solid.w, solid.h);
             this.levelGrid.setWalkableAt(
                 solid.x / this.size.width,
                 solid.y / this.size.height, false);
         }
+        for (const meta of levelData.bodies) {
+            const body = this.parseBody(meta);
+            this.game.addBody(body);
+        }
 
-        for (let i = 0; i < this.levelBodies.length; i++) {
-            this.game.addBody(this.levelBodies[i]);
+        for (const body of this.levelBodies) {
+            this.game.addBody(body);
 
             // let body = this.game.evalBody(this.levelBodies[i].model, this.levelBodies[i].params);
             // self.game.addBody(body);
@@ -316,19 +306,34 @@ export class Stage {
     }
 
     logLevel() {
-        console.log(JSON.stringify(this.level));
-        console.log('==============================');
-        console.log(JSON.stringify(this.levelSolid.map(l => {
-            return {
-                x: l.pos.x,
-                y: l.pos.y,
-                w: l.w,
-                h: l.h,
-            }
-        })));
+        const levelData = {
+            tiles: this.level,
+            solids: this.levelSolid.map(l => {
+                return {
+                    x: l.pos.x,
+                    y: l.pos.y,
+                    w: l.w,
+                    h: l.h,
+                }
+            }),
+            bodies: []
+        }
+
+        console.log('===Level===========================');
+        console.log(JSON.stringify(levelData));
     }
     addSolid(x: number, y: number, width: number, height: number) {
        this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
+    }
+    toggleSolid(x: number, y: number, width: number, height: number) {
+        const index = this.levelSolid.findIndex(s => 
+            s.pos.x === x && s.pos.y === y
+        );
+        if (index === -1) {
+            this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
+        } else {
+            this.levelSolid.splice(index, 1);
+        }
     }
     
     // simplifySolid() {
@@ -424,5 +429,16 @@ export class Stage {
 
     normalizeForPath(val) {
         return (val - (val % this.size.width)) / this.size.width;
+    }
+
+    parseBody(meta) {
+        switch (meta.model) {
+            case "Teleport":
+                return new Teleport(
+                    this.game, {
+                    view: meta.view,
+                    ...meta.params
+                });
+        }
     }
 }

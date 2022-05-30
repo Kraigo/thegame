@@ -1,4 +1,5 @@
 import { Basis } from "./Basis";
+import { KeyboardKey } from "./Keyboard";
 import { ViewPosition } from "./utils/view-position";
 
 export class Builder extends Basis {
@@ -67,15 +68,15 @@ export class Builder extends Basis {
 		var x = this.view.sx;
 		var y = this.view.sy;
 
-		if (this.game.keyboard.isPressed('A')) {
+		if (this.game.keyboard.isPressed(KeyboardKey.A)) {
 			this.view.x -= this.speed;
-		} else if (this.game.keyboard.isPressed('D')) {
+		} else if (this.game.keyboard.isPressed(KeyboardKey.D)) {
 			this.view.x += this.speed;
 		}
 
-		if (this.game.keyboard.isPressed('W')) {
+		if (this.game.keyboard.isPressed(KeyboardKey.W)) {
 			this.view.y -= this.speed;
-		} else if (this.game.keyboard.isPressed('S')) {
+		} else if (this.game.keyboard.isPressed(KeyboardKey.S)) {
 			this.view.y += this.speed;
 		}
 
@@ -106,32 +107,25 @@ export class Builder extends Basis {
 				});
 			}
 		});
+        
+        keyboard.onInput(KeyboardKey.SPACE, () => {
+            this.game.stage.toggleSolid(self.view.sx, self.view.sy, 24, 24);
+        })
+        
+        keyboard.onInput(KeyboardKey.C, () => {
+            this.game.stage.clean();
+        })
+        
+        keyboard.onInput(KeyboardKey.R, () => {
+            this.game.stage.remove(self.view.sx, self.view.sy);
+        })
 
-		document.addEventListener('keydown', function(e) {
+        keyboard.onInput(KeyboardKey.F3, () => {
+            this.game.stage.logLevel();
+        })
 
-			if (keyboard.isClicked('SPACE', e.keyCode)) {
-				self.game.stage.addSolid(self.view.sx, self.view.sy, 24, 24);
-				// self.game.stage.simplifySolid();
-			}
-
-			if (keyboard.isClicked('C', e.keyCode)) {
-				self.game.stage.clean();
-			}
-
-			if (keyboard.isClicked('R', e.keyCode)) {
-				self.game.stage.remove(self.view.sx, self.view.sy);
-			}
-
-			if (keyboard.isClicked('1', e.keyCode)) {
-				// self.game.stage.simplifySolid();
-			}
-
-			if (keyboard.isClicked('F3', e.keyCode)) {
-				self.game.stage.logLevel();
-			}
-			if (keyboard.isClicked('F4', e.keyCode)) {
-				self.game.stage.loadLevel('1');
-			}
-		})
+        keyboard.onInput(KeyboardKey.F4, () => {
+            this.game.stage.loadLevel('1');
+        })
 	}
 }

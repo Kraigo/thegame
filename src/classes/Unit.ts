@@ -2,7 +2,8 @@ import { Basis, BasisParams } from "./Basis";
 import { Bonus } from "./Bonus";
 import { Bullet } from "./Bullet";
 import { Game } from "./Game";
-import { SpriteAnimationName } from "./Sprite";
+import { SpriteAnimationName, SpriteAnimationState } from "./Sprite";
+import { getRandomInt } from "./utils/index";
 import { Shooting } from "./utils/shootings";
 
 export interface UnitParams extends BasisParams {
@@ -51,9 +52,9 @@ export class Unit extends Basis {
 	move() {
 		if (this.direction.x || this.direction.y) {
 			this.stepMove(this.direction.x * this.speed, this.direction.y * this.speed);	
-			this.changeAnimation('walk');
+			this.changeAnimation(SpriteAnimationState.walk);
 		} else {
-			this.changeAnimation('stand');
+			this.changeAnimation(SpriteAnimationState.stand);
 		}
 		this.fixStuck();
 	}
@@ -78,7 +79,7 @@ export class Unit extends Basis {
 					width: 0,
 					height: 0
 				}),
-				damage: this.getRandomInt(this.attack.damageMin, this.attack.damageMax),
+				damage: getRandomInt(this.attack.damageMin, this.attack.damageMax),
 				owner: this.game.player
 			}
 			var bullet = new Bullet(this.game, bulletParams);

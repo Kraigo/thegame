@@ -2,6 +2,7 @@ import { Basis, BasisParams } from "./Basis";
 import { SpriteAnimationName } from "./Sprite";
 import { Unit } from "./Unit";
 import { Direction } from "./utils/direction";
+import { getRandomInt } from "./utils/index";
 
 export interface BulletParams extends BasisParams {
     x: number;
@@ -94,7 +95,7 @@ export class Bullet extends Basis {
 
     onEnter(body) {
         if (body instanceof Unit && body != this.owner) {
-            const damage = this.getRandomInt(this.attack.damageMin, this.attack.damageMax);
+            const damage = getRandomInt(this.attack.damageMin, this.attack.damageMax);
             body.hit(damage);
             this.kill();
             this.speed = 0;

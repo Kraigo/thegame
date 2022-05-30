@@ -2,7 +2,7 @@ import { Asteroid } from "./Asteroid";
 import { Basis } from "./Basis";
 import { Builder } from "./Builder";
 import { Camera } from "./Camera";
-import { Keyboard } from "./Keyboard";
+import { Keyboard, KeyboardKey } from "./Keyboard";
 import { Mouse } from "./Mouse";
 import { Player } from "./Player";
 import { PlayerControl } from "./PlayerControl";
@@ -47,8 +47,8 @@ export class Game {
         this.screen.imageSmoothingEnabled = false;
         this.camera = new Camera(game);
         this.world = {
-            width: 792,
-            height: 792
+            width: 150 * 24,
+            height: 150 * 24
         };
         this.player = new Player(game, {
             view: { x: 300, y: 300, width: 48, height: 48 }
@@ -131,23 +131,20 @@ export class Game {
     }
 
     update() {
-        var self = this;
-
         this.timer++;
 
         this.camera.update();
         this.playerControl.update();
 
-        for (var i = 0, body; i < this.bodies.length; i++) {
-            body = this.bodies[i];
+        for (let body of this.bodies) {
             if ((body.willDie || body.health.current === 0) && body.animation.end) {
-                this.removeBody(body);
-                i--;
-                continue;
+                body.onDie();
+                this.removeBody(body)
             }
-            if (!body.willDie) {
+            else if (!body.willDie) {
                 body.update();
-            } else {
+            }
+            else {
                 body.speed = 0;
                 body.direction.x = 0;
                 body.direction.y = 0;
@@ -207,14 +204,18 @@ export class Game {
 
     modeToggler() {
         var game = this;
-        document.addEventListener('keydown', function (e) {
-            if (e.keyCode == 113) {
-                game.builder = new Builder(game);
-                game.camera.target = game.builder;
-                game.camera.stretch = 0;
-                game.bodies = [];
-                game.addBody(game.builder);
+
+        this.keyboard.onInput(KeyboardKey.F2, () => {
+            game.builder = new Builder(game);
+            game.camera.target = game.builder;
+            game.camera.stretch = 0;
+            for (let body of this.bodies) {
+                body.kill();
+                body.onDie();
             }
+            game.bodies = [];
+            game.addBody(game.builder);
+
         })
     }
 

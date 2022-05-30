@@ -1,6 +1,8 @@
 'use strict';
 
 import { Game } from "./Game";
+import { KeyboardKey } from "./Keyboard";
+import { MouseKey } from "./Mouse";
 
 export class PlayerControl {
 	constructor(
@@ -30,21 +32,21 @@ export class PlayerControl {
 		player.direction.x = 0;
 		player.direction.y = 0;
 
-		if (this.game.keyboard.isPressed('A')) {
+		if (this.game.keyboard.isPressed(KeyboardKey.A)) {
 			player.direction.x = -1;
-		} else if (this.game.keyboard.isPressed('D')) {
+		} else if (this.game.keyboard.isPressed(KeyboardKey.D)) {
 			player.direction.x = 1;
 		}
 
-		if (this.game.keyboard.isPressed('W')) {
+		if (this.game.keyboard.isPressed(KeyboardKey.W)) {
 			player.direction.y = -1;
-		} else if (this.game.keyboard.isPressed('S')) {
+		} else if (this.game.keyboard.isPressed(KeyboardKey.S)) {
 			player.direction.y = 1;
 		}
 
 	}
 	shot() {
-		this.game.player.shooting.start = (this.game.mouse.isPressed('LEFT') || this.game.keyboard.isPressed('SPACE'));
+		this.game.player.shooting.start = (this.game.mouse.isPressed(MouseKey.LEFT) || this.game.keyboard.isPressed(KeyboardKey.SPACE));
 	}
 	rotate() {
 		this.game.player.lookAngel = this.game.player.vectorAngle(

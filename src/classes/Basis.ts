@@ -36,9 +36,8 @@ export class Basis {
 
     constructor(
         public readonly game: Game,
-        params: BasisParams
+        params: BasisParams = {}
     ) {
-        params = params || {};
         this.view = new ViewPosition(params.view);
         this.collider = null;
         this.direction = { x: 0, y: 0 };
@@ -97,6 +96,7 @@ export class Basis {
             this.game.screen.stroke();
         }
     }
+
     healthBar() {
         var healthBar = {
             x: this.view.x - this.game.camera.x,
@@ -168,19 +168,14 @@ export class Basis {
         return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
     }
 
-    getRandomInt(min, max) {
-        min = min || 0;
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     //vectorAngle(vector) {
     //	var angleRad = Math.acos( vector.x / Math.sqrt(vector.x*vector.x + vector.y*vector.y) );
     //	return angleRad * 180 / Math.PI;
     //}
 
-    changeAnimation(animName) {
-        if (this.animation.state != animName) {
-            this.animation.state = animName;
+    changeAnimation(state: SpriteAnimationState) {
+        if (this.animation.state != state) {
+            this.animation.state = state;
             this.animation.keyframe = 0;
             this.animation.end = false;
         }
@@ -188,7 +183,7 @@ export class Basis {
     kill() {
 		this.willDie = true;
 		this.health.current = 0;
-        this.changeAnimation('die');
+        this.changeAnimation(SpriteAnimationState.die);
     }
 
     hit(damage) {

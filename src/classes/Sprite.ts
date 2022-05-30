@@ -11,6 +11,7 @@ export enum SpriteAnimationName {
     bonusHealth = 'bonusHealth',
     bonusAmmo = 'bonusAmmo',
     bonusFire = 'bonusFire',
+    spawner = 'spawner'
 }
 
 export enum SpriteAnimationState {
@@ -73,6 +74,9 @@ const SPRITES = {
     },
     bonusFire: {
         stand: [{x: 144, y: 436, w: 48, h: 48}]
+    },
+    spawner: {
+        stand: [{x: 48, y: 216}]
     }
 };
 

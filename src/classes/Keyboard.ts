@@ -1,61 +1,43 @@
-const KEYS = {
-    SPACE: 32,
-    A: 65,
-    W: 87,
-    D: 68,
-    S: 83,
-
-    0: 48,
-    1: 49,
-    2: 50,
-    3: 51,
-    4: 52,
-    5: 53,
-    6: 54,
-    7: 55,
-    8: 56,
-    9: 57,
-
-    F: 70,
-    G: 71,
-    H: 72,
-    C: 67,
-    R: 82,
-    F2: 113,
-    F3: 114,
-    F4: 115,
-    F5: 116,
-
-    LEFT: 37,
-    UP: 38,
-    RIGHT: 39,
-    DOWN: 40
-};
-
+export enum KeyboardKey {
+    F2 = 'F2',
+    F3 = 'F3',
+    F4 = 'F4',
+    SPACE = 'Space',
+    C = 'KeyC',
+    R = 'KeyR',
+    A = 'KeyA',
+    W = 'KeyW',
+    S = 'KeyS',
+    D = 'KeyD',
+}
 export class Keyboard {
     state = {};
+    private listeners: ((key: KeyboardKey) => void)[] = [];
 
     constructor() {
         document.addEventListener('keydown', (e) => {
             e.preventDefault();
-            this.state[e.keyCode] = true;
+            this.state[e.code] = true;
         });
         document.addEventListener('keyup', (e) => {
-            this.state[e.keyCode] = false;
+            this.state[e.code] = false;
+        });
+
+        document.addEventListener('keydown', (e) => {
+            e.preventDefault();
+            for (let listener of this.listeners) {
+                listener(e.code as KeyboardKey);
+            }
         });
     }
 
-    isPressed(key) {
-        key = key.toUpperCase();
-        return this.state[KEYS[key]];
+    isPressed(key: KeyboardKey) {
+        return this.state[key];
     };
 
-    isClicked(key, code) {
-        return KEYS[key] === code
-    };
-
-    keyCode(key) {
-        key = key.toUpperCase();
-        return KEYS[key];
+    onInput(key: KeyboardKey, cb: () => void) {
+        this.listeners.push((k: KeyboardKey) => {
+            if (k === key) cb();
+        });
     }
 }

@@ -1,7 +1,7 @@
-var BUTTONS = {
-    LEFT: 0,
-    RIGHT: 2,
-    MIDDLE: 1
+export enum MouseKey {
+    LEFT = 0,
+    RIGHT = 2,
+    MIDDLE = 1
 }
 
 export class Mouse {
@@ -30,8 +30,7 @@ export class Mouse {
         });
     }
 
-    isPressed(button) {
-        button = button.toUpperCase();
-        return this.state[BUTTONS[button]]
+    isPressed(button: MouseKey) {
+        return this.state[button]
     }
 }
