@@ -9,6 +9,8 @@ export class Mouse {
     y: number;
     state = {};
 
+    private listeners: ((event: MouseEvent) => void)[] = [];
+
     constructor(
         private canvas: HTMLCanvasElement
     ) {
@@ -23,6 +25,10 @@ export class Mouse {
         canvas.addEventListener('mousedown', (e) => {
             e.preventDefault();
             this.state[e.button] = true;
+
+            for (const listener of this.listeners) {
+                listener(e);
+            }
         });
         canvas.addEventListener('mouseup', (e) => {
             e.preventDefault();
@@ -32,5 +38,9 @@ export class Mouse {
 
     isPressed(button: MouseKey) {
         return this.state[button]
+    }
+
+    onClick(cb: (event: MouseEvent) => void) {
+        this.listeners.push(cb);
     }
 }

@@ -322,16 +322,22 @@ export class Stage {
         console.log('===Level===========================');
         console.log(JSON.stringify(levelData));
     }
-    addSolid(x: number, y: number, width: number, height: number) {
-       this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
+
+    private solidIndex(x: number, y: number): number {
+        return this.levelSolid.findIndex(s => 
+            s.pos.x === x && s.pos.y === y);
     }
-    toggleSolid(x: number, y: number, width: number, height: number) {
-        const index = this.levelSolid.findIndex(s => 
-            s.pos.x === x && s.pos.y === y
-        );
+
+    addSolid(x: number, y: number, width: number, height: number) {
+        const index = this.solidIndex(x, y);
         if (index === -1) {
             this.levelSolid.push(new SAT.Box(new SAT.Vector(x, y), width, height));
-        } else {
+        }
+    }
+
+    removeSolid(x: number, y: number) {
+        const index = this.solidIndex(x, y);
+        if (index > -1) {
             this.levelSolid.splice(index, 1);
         }
     }

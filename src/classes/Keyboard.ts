@@ -9,6 +9,8 @@ export enum KeyboardKey {
     W = 'KeyW',
     S = 'KeyS',
     D = 'KeyD',
+    F = 'KeyF',
+    G = 'KeyG',
 }
 export class Keyboard {
     state = {};
