@@ -3,4 +3,5 @@ export class Shooting {
     bullet: number;
     rate: number;
     reload: number;
+    projections: number;
 }

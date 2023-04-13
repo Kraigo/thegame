@@ -5,6 +5,8 @@ import { ViewPosition } from "./utils/view-position";
 export class Builder extends Basis {
     view: ViewPosition;
     material: { sx: number; sy: number; };
+    viewSx: number;
+    viewSy: number;
 
     constructor(game) {
         super(game, {});
@@ -27,21 +29,21 @@ export class Builder extends Basis {
     }
 
     update() {
-        this.view.sx = (this.game.mouse.x + this.game.camera.x) - (this.game.mouse.x + this.game.camera.x) % this.view.width;
-        this.view.sy = (this.game.mouse.y + this.game.camera.y) - (this.game.mouse.y + this.game.camera.y) % this.view.width;
+        this.viewSx = (this.game.mouse.x + this.game.camera.x) - (this.game.mouse.x + this.game.camera.x) % this.view.width;
+        this.viewSy = (this.game.mouse.y + this.game.camera.y) - (this.game.mouse.y + this.game.camera.y) % this.view.width;
         this.move();
 
 
         const { keyboard } = this.game;
 
         if (keyboard.isPressed(KeyboardKey.R)) {
-            this.game.stage.remove(this.view.sx, this.view.sy);
+            this.game.stage.remove(this.viewSx, this.viewSy);
         }
         if (keyboard.isPressed(KeyboardKey.F)) {
-            this.game.stage.addSolid(this.view.sx, this.view.sy, 24, 24);
+            this.game.stage.addSolid(this.viewSx, this.viewSy, 24, 24);
         }
         if (keyboard.isPressed(KeyboardKey.G)) {
-            this.game.stage.removeSolid(this.view.sx, this.view.sy);
+            this.game.stage.removeSolid(this.viewSx, this.viewSy);
         }
     }
 
@@ -50,7 +52,7 @@ export class Builder extends Basis {
 
         this.game.screen.beginPath();
         this.game.screen.strokeStyle = 'black';
-        this.game.screen.rect(this.view.sx - this.game.camera.x, this.view.sy - this.game.camera.y, this.view.width, this.view.height);
+        this.game.screen.rect(this.viewSx - this.game.camera.x, this.viewSy - this.game.camera.y, this.view.width, this.view.height);
         this.game.screen.stroke();
 
         this.game.screen.beginPath();
@@ -80,8 +82,8 @@ export class Builder extends Basis {
 
 
     move() {
-        var x = this.view.sx;
-        var y = this.view.sy;
+        var x = this.viewSx;
+        var y = this.viewSy;
 
         if (this.game.keyboard.isPressed(KeyboardKey.A)) {
             this.view.x -= this.speed;
@@ -113,8 +115,8 @@ export class Builder extends Basis {
                 console.log(self.material.sx, self.material.sy);
             } else {
                 self.game.stage.build({
-                    x: self.view.sx,
-                    y: self.view.sy,
+                    x: self.viewSx,
+                    y: self.viewSy,
                     sx: self.material.sx,
                     sy: self.material.sy
                 });

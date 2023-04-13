@@ -11,7 +11,8 @@ export enum SpriteAnimationName {
     bonusHealth = 'bonusHealth',
     bonusAmmo = 'bonusAmmo',
     bonusFire = 'bonusFire',
-    spawner = 'spawner'
+    bonusTripleFire = 'bonusTripleFire',
+    spawner = 'spawner',
 }
 
 export enum SpriteAnimationState {
@@ -75,6 +76,9 @@ const SPRITES = {
     bonusFire: {
         stand: [{x: 144, y: 436, w: 48, h: 48}]
     },
+    bonusTripleFire: {
+        stand: [{x: 192, y: 436, w: 48, h: 48}]
+    },
     spawner: {
         stand: [{x: 48, y: 216}]
     }
@@ -104,15 +108,15 @@ export class Sprite {
 	}
 
 	draw(body: Basis, angle: number) {
-		var x = body.view.x + body.view.width/2 - this.game.camera.x;
-		var y = body.view.y + body.view.height/2 - this.game.camera.y;
+		var x = body.view.x + body.view.width / 2 - this.game.camera.x;
+		var y = body.view.y + body.view.height / 2 - this.game.camera.y;
 		angle = angle - 90 % 360;
 
 		var frame = this.getFrame(body.animation);
 
 		this.game.screen.save();
 		this.game.screen.translate(x, y);
-		this.game.screen.rotate(angle*Math.PI/180);
+		this.game.screen.rotate(angle * Math.PI / 180);
 
 		this.game.screen.drawImage(
 			this.image,
@@ -120,13 +124,13 @@ export class Sprite {
 			frame.y,
 			frame.w || this.view.width,
 			frame.h || this.view.height,
-			-body.view.width/2,
-			-body.view.width/2,
+			-body.view.width / 2,
+			-body.view.width / 2,
 			body.view.width,
 			body.view.height
 		);
 		this.game.screen.translate(-x, -y);
-		this.game.screen.rotate(-angle*Math.PI/180);
+		this.game.screen.rotate(-angle * Math.PI / 180);
 		this.game.screen.restore();
 	}
 

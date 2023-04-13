@@ -9,6 +9,8 @@ import { BonusFireRate } from "./Bonuses/FireRate";
 import * as SAT from 'sat';
 import { BonusSpeedUp } from "./Bonuses/SpeedUp";
 import { Asteroid } from "./Asteroid";
+import { TripleFire } from "./Bonuses/TripleFire";
+import { Vector, ViewPosition } from "./utils/index";
 
 type LevelSolid = SAT.Box;
 
@@ -58,6 +60,15 @@ export class Stage {
                     r: 5
                 }
             }),
+            new TripleFire(this.game, {
+                view: {
+                    x: 408 - 48 * 4,
+                    y: 148
+                },
+                collider: {
+                    r: 5
+                }
+            }),
             new BonusFireRate(this.game, {
                 view: {
                     x: 360,
@@ -67,33 +78,34 @@ export class Stage {
                     r: 5
                 }
             }),
-            new Spawn(this.game, {
-                populate: () => new BonusSpeedUp(this.game, {}),
-                view: {
-                    x: 63,
-                    y: 312
-                }
-            }),
-            new Spawn(this.game, {
-                time: 5000,
-                view: {
-                    x: 700,
-                    y: 160
-                },
-                populate: () => new Asteroid(this.game, {
-                    target: this.game.player
-                })
-            }),
-            new Spawn(this.game, {
-                time: 5000,
-                view: {
-                    x: 50,
-                    y: 670
-                },
-                populate: () => new Asteroid(this.game, {
-                    target: this.game.player
-                })
-            })
+            new Spawn(this.game,
+                (view) => new BonusSpeedUp(this.game, { view }),
+                {
+                    view: {
+                        x: 63,
+                        y: 312
+                    }
+                }),
+            // new Spawn(this.game, {
+            //     time: 5000,
+            //     view: {
+            //         x: 700,
+            //         y: 160
+            //     },
+            //     populate: () => new Asteroid(this.game, {
+            //         target: this.game.player
+            //     })
+            // }),
+            // new Spawn(this.game, {
+            //     time: 5000,
+            //     view: {
+            //         x: 50,
+            //         y: 670
+            //     },
+            //     populate: () => new Asteroid(this.game, {
+            //         target: this.game.player
+            //     })
+            // })
         ]
 
 
@@ -115,38 +127,17 @@ export class Stage {
         //    }
         //}
 
-         this.loadLevel('1');
-
-        return;
-        this.build(['wall_1', 0, 0]);
-        this.build(['wall_3', this.game.world.width - this.size.width, 0]);
-        this.build(['wall_7', 0, this.game.world.height - this.size.height]);
-        this.build(['wall_9', this.game.world.width - this.size.width, this.game.world.height - this.size.height]);
-
-        this.build(['wall_10', 288, 120]);
-        this.build(['wall_11', 288, 144]);
-        this.build(['wall_10', 288, 120]);
-        this.build(['wall_11', 288, 144]);
-        this.build(['wall_11', 288, 168]);
-        this.build(['wall_11', 288, 192]);
-        this.build(['wall_11', 288, 216]);
-        this.build(['wall_12', 288, 240]);
-
-        this.build(['wall_13', 288, 336]);
-        this.build(['wall_14', 312, 336]);
-        this.build(['wall_14', 336, 336]);
-        this.build(['wall_15', 360, 336]);
-        //this.clean();
+        this.loadLevel('1');
 
     }
 
     render() {
 
 
-        this.game.screen.fillStyle="#161318";
-        this.game.screen.fillRect(0-this.game.camera.x,0-this.game.camera.y, this.game.world.width, this.game.world.height);
+        this.game.screen.fillStyle = "#161318";
+        this.game.screen.fillRect(0 - this.game.camera.x, 0 - this.game.camera.y, this.game.world.width, this.game.world.height);
 
-        for (var i=0; i<this.level.length; i++) {
+        for (var i = 0; i < this.level.length; i++) {
             this.draw(this.level[i]);
         }
 
@@ -172,15 +163,15 @@ export class Stage {
     }
 
     renderSolid() {
-        for (var i=0; i<this.levelSolid.length; i++) {
+        for (var i = 0; i < this.levelSolid.length; i++) {
             let collider = this.levelSolid[i];
             this.game.screen.fillStyle = 'rgba(255, 0, 0, 0.3)';
             if (collider instanceof SAT.Box) {
                 this.game.screen.fillRect(
-                collider.pos.x - this.game.camera.x + 1,
-                collider.pos.y - this.game.camera.y + 1,
-                collider.w - 2,
-                collider.h - 2);
+                    collider.pos.x - this.game.camera.x + 1,
+                    collider.pos.y - this.game.camera.y + 1,
+                    collider.w - 2,
+                    collider.h - 2);
             }
             // TODO: ??
             // else if (collider instanceof SAT.Polygon) {
@@ -217,21 +208,21 @@ export class Stage {
         this.level.push(item);
     }
     clean() {
-            for (var i = 0, objFirst; i < this.level.length; i++) {
-                objFirst = this.level[i];
-                for (var j = 0, objSecond; j < this.level.length; j++) {
-                    objSecond = this.level[j];
-                    if (objFirst != objSecond && objFirst.x === objSecond.x && objFirst.y === objSecond.y) {
-                        this.level.splice(i, 1);
-                        i--;
-                        break;
-                    }
+        for (var i = 0, objFirst; i < this.level.length; i++) {
+            objFirst = this.level[i];
+            for (var j = 0, objSecond; j < this.level.length; j++) {
+                objSecond = this.level[j];
+                if (objFirst != objSecond && objFirst.x === objSecond.x && objFirst.y === objSecond.y) {
+                    this.level.splice(i, 1);
+                    i--;
+                    break;
                 }
             }
+        }
     }
 
     remove(x, y) {
-        for (var i=0; i<this.level.length; i++) {
+        for (var i = 0; i < this.level.length; i++) {
             if (this.level[i].x === x && this.level[i].y === y) {
                 this.level.splice(i, 1);
                 break;
@@ -242,9 +233,9 @@ export class Stage {
 
     async loadLevel(lvl) {
 
-        const resp = await fetch('levels/level_'+lvl+'.json');
+        const resp = await fetch('levels/level_' + lvl + '.json');
         const levelData = await resp.json();
-        
+
         // self.level = levelData.tiles;
         // self.levelSolid = levelData.solids;
         this.levelGrid = new PF.Grid(
@@ -274,35 +265,35 @@ export class Stage {
         }
 
 
-            // var xobj = new XMLHttpRequest();
-            // var self = this;
-            // xobj.overrideMimeType("application/json");
-            // xobj.open('GET', 'levels/level_'+lvl+'.json', true);
-            // xobj.onreadystatechange = function () {
-            //     if (xobj.readyState == 4 && xobj.status == "200") {
-            //         var levelData = JSON.parse(xobj.responseText);
-            //         // self.level = levelData.tiles;
-            //         // self.levelSolid = levelData.solids;
-            //         self.levelGrid = new PF.Grid(self.game.world.width / self.size.width, self.game.world.height / self.size.height);
+        // var xobj = new XMLHttpRequest();
+        // var self = this;
+        // xobj.overrideMimeType("application/json");
+        // xobj.open('GET', 'levels/level_'+lvl+'.json', true);
+        // xobj.onreadystatechange = function () {
+        //     if (xobj.readyState == 4 && xobj.status == "200") {
+        //         var levelData = JSON.parse(xobj.responseText);
+        //         // self.level = levelData.tiles;
+        //         // self.levelSolid = levelData.solids;
+        //         self.levelGrid = new PF.Grid(self.game.world.width / self.size.width, self.game.world.height / self.size.height);
 
-            //         for (let i = 0; i < levelData.tiles.length; i++) {
-            //             self.level.push(levelData.tiles[i]);
-            //         }
+        //         for (let i = 0; i < levelData.tiles.length; i++) {
+        //             self.level.push(levelData.tiles[i]);
+        //         }
 
-            //         for (let i = 0; i < levelData.solids.length; i++) {
-            //             let solid = levelData.solids[i];
-            //             self.addSolid(solid.x, solid.y, solid.w, solid.h);
-            //             self.levelGrid.setWalkableAt(solid.x / self.size.width, solid.y / self.size.height, false);
-            //         }
+        //         for (let i = 0; i < levelData.solids.length; i++) {
+        //             let solid = levelData.solids[i];
+        //             self.addSolid(solid.x, solid.y, solid.w, solid.h);
+        //             self.levelGrid.setWalkableAt(solid.x / self.size.width, solid.y / self.size.height, false);
+        //         }
 
-            //         for (let i = 0; i < self.levelBodies.length; i++) {
-            //             let body = self.game.evalBody(self.levelBodies[i].model, self.levelBodies[i].params);
-            //             self.game.addBody(body);
-            //         }
-            //         // self.simplifySolid();
-            //     }
-            // };
-            // xobj.send(null);
+        //         for (let i = 0; i < self.levelBodies.length; i++) {
+        //             let body = self.game.evalBody(self.levelBodies[i].model, self.levelBodies[i].params);
+        //             self.game.addBody(body);
+        //         }
+        //         // self.simplifySolid();
+        //     }
+        // };
+        // xobj.send(null);
     }
 
     logLevel() {
@@ -324,7 +315,7 @@ export class Stage {
     }
 
     private solidIndex(x: number, y: number): number {
-        return this.levelSolid.findIndex(s => 
+        return this.levelSolid.findIndex(s =>
             s.pos.x === x && s.pos.y === y);
     }
 
@@ -341,7 +332,7 @@ export class Stage {
             this.levelSolid.splice(index, 1);
         }
     }
-    
+
     // simplifySolid() {
     //     this.levelSolid = this.levelSolid.map(b => b.toPolygon());
 
@@ -376,8 +367,7 @@ export class Stage {
                     item.x <= neighbor.x + neighbor.width &&
                     item.x + item.width >= neighbor.x &&
                     item.y <= neighbor.y + neighbor.height &&
-                    item.height + item.y >= neighbor.y)
-                {
+                    item.height + item.y >= neighbor.y) {
 
                     if ((item.x === neighbor.x && item.width === neighbor.width) ||
                         (item.y === neighbor.y && item.height === neighbor.height)) {
@@ -411,11 +401,10 @@ export class Stage {
                 i--;
             }
         }
-        this.levelSolid = this.levelSolid.filter(function(n){ return !!n });
+        this.levelSolid = this.levelSolid.filter(function (n) { return !!n });
     }
 
-    path(a1, a2) {
-
+    path(a1, a2): ViewPosition[] {
         if (this.levelGrid) {
             return this.finder.findPath(
                 this.normalizeForPath(a1.view.cx),
@@ -424,10 +413,12 @@ export class Stage {
                 this.normalizeForPath(a2.view.cy),
                 this.levelGrid.clone())
                 .map(p => {
-                    return {
-                        x: p[0] * this.size.width + this.size.width / 2,
-                        y: p[1] * this.size.height + this.size.height / 2
-                    }
+                    return new ViewPosition({
+                        x: p[0] * this.size.width,
+                        y: p[1] * this.size.height,
+                        width: this.size.width,
+                        height: this.size.height
+                    })
                 });
         }
         return [];

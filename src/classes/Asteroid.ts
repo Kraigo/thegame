@@ -2,6 +2,8 @@ import { Game } from "./Game";
 import { SpriteAnimationName, SpriteAnimationState } from "./Sprite";
 import { Unit, UnitParams } from "./Unit";
 import { getRandom, getRandomInt } from "./utils/random";
+import { Vector } from "./utils/vector";
+import { ViewPosition } from "./utils/view-position";
 
 export interface AsteroidParams extends UnitParams {
     target?: Unit;
@@ -10,10 +12,18 @@ export interface AsteroidParams extends UnitParams {
 export class Asteroid extends Unit {
     target?: Unit;
 
-    path: any[];
+    path: ViewPosition[];
+    pathInternal = 20;
 
     constructor(game: Game, params: AsteroidParams) {
-        super(game, params);
+        super(game, {
+            ...params,
+            view: {
+                ...params.view,
+                width: 48,
+                height: 48,
+            }
+        });
         // this.view = {
         // 	width: params.width,
         // 	height: params.height,
@@ -21,13 +31,10 @@ export class Asteroid extends Unit {
         // 	y: params.y || Math.floor(Math.random()*(this.game.world.height-this.view.height))
         // };
 
-        this.direction = {
-            x: Math.random(),
-            y: Math.random()
-        };
+        this.direction = new Vector(Math.random(), Math.random());
         this.attack.range = 5;
-        this.view.width = 48;
-        this.view.height = 48;
+        // this.view.width = 48;
+        // this.view.height = 48;
 
         this.speed = Math.random() * 2;
         this.speed = 2;
@@ -37,13 +44,10 @@ export class Asteroid extends Unit {
         this.path = [];
         this.createCollider();
     }
-    render() {
-        this.game.screen.beginPath();
-        this.game.screen.arc(this.view.x + this.view.width / 2 - this.game.camera.x, this.view.y + this.view.height / 2 - this.game.camera.y, (this.view.width + this.view.height) / 6, 0, 2 * Math.PI);
-        this.game.screen.fillStyle = "rgba(0,0,0,0.2)";
-        this.game.screen.fill();
 
-        var angle = this.vectorAngle(
+    render() {
+        this.drawShadow();
+        const angle = this.vectorAngle(
             { x: this.view.x - this.game.camera.x, y: this.view.y - this.game.camera.y },
             { x: this.view.x - this.game.camera.x + this.look.x, y: this.view.y - this.game.camera.y + this.look.y });
         this.game.sprite.draw(this, angle);
@@ -53,6 +57,7 @@ export class Asteroid extends Unit {
             this.renderPath();
         }
     }
+
     update() {
 
 
@@ -68,6 +73,10 @@ export class Asteroid extends Unit {
                     this.stepMove(-collision.response.overlapV.x * 0.3, -collision.response.overlapV.y * 0.3);
                 }
             }
+        }
+
+        if (this.shouldUpdatePath) {
+            this.path = this.game.stage.path(this, this.target);
         }
 
         if (this.willAttack || this.canAttack(this.target)) {
@@ -86,53 +95,52 @@ export class Asteroid extends Unit {
             }
         }
         else if (this.target) {
-            this.path = this.game.stage.path(this, this.target);
-            if (this.path.length) {
-                for (var i = 0, pointView; i < this.path.length; i++) {
-                    pointView = this.path[i];
-
-                    if (!this.collidingView(pointView)) {
-                        this.direction = this.directionTo(pointView);
-                        this.move();
-                        this.routeTo(pointView);
-                        this.changeAnimation(SpriteAnimationState.walk);
-                        break;
-
-                    }
-
+            for (let pointView of this.path) {
+                // if (this.collidingView(pointView)) {
+                //     this.path.splice( this.path.indexOf(pointView),1)
+                // }
+                if (!this.collidingView(pointView)) {
+                    this.direction = this.view.directionToVector(pointView);
+                    this.move();
+                    this.routeTo(pointView);
+                    this.changeAnimation(SpriteAnimationState.walk);
+                    break;
                 }
-
             }
+
+            // if (this.path.length) {
+            //     for (var i = 0, pointView; i < this.path.length; i++) {
+            //         pointView = this.path[i];
+
+            //         if (!this.collidingView(pointView)) {
+            //             this.direction = this.directionTo(pointView) as any;
+            //             this.move();
+            //             this.routeTo(pointView);
+            //             this.changeAnimation(SpriteAnimationState.walk);
+            //             break;
+
+            //         }
+
+            //     }
+
+            // }
+
         } else {
             this.path = [];
             this.changeAnimation(SpriteAnimationState.stand);
         }
     }
 
-    routeTo(view) {
-        var direction = this.directionTo(view);
+    routeTo(view: Vector): void {
+        const direction = this.view.directionToVector(view);
         this.look.x += (direction.x - this.look.x) * this.rotationSpeed;
         this.look.y += (direction.y - this.look.y) * this.rotationSpeed;
     }
 
-    routeToTarget() {
-        var direction = this.directionTo({
-            // view: {
-            // 	x: this.target.view.x,
-            // 	y: this.target.view.y
-            // },
-            // view: {
-            // 	width: this.view.width,
-            // 	height: this.view.height
-            // },
-
-            view: {
-                x: this.target.view.x,
-                y: this.target.view.y,
-                width: this.view.width,
-                height: this.view.height
-            }
-        });
+    routeToTarget(): void {
+        const direction = this.view.directionToView(
+            this.target.view
+        );
 
         this.direction.x += (direction.x - this.direction.x) * this.rotationSpeed;
         this.direction.y += (direction.y - this.direction.y) * this.rotationSpeed;
@@ -146,17 +154,24 @@ export class Asteroid extends Unit {
             this.game.screen.strokeStyle = 'yellow';
             this.game.screen.beginPath();
             for (var i = 0; i < this.path.length; i++) {
-                let x = this.path[i].x - this.game.camera.x;
-                let y = this.path[i].y - this.game.camera.y;
+                const point = this.path[i];
+                let x = point.x - this.game.camera.x;
+                let y = point.y - this.game.camera.y;
 
                 if (i === 0) {
-                    this.game.screen.moveTo(x, y);
+                    this.game.screen.moveTo(x + point.width / 2, y + point.height / 2);
                 } else {
-                    this.game.screen.lineTo(x, y);
+                    this.game.screen.lineTo(x + point.width / 2, y + point.height / 2);
                 }
+                this.screen.fillStyle = 'rgba(255, 208,33, 0.1)';
+                this.screen.fillRect(x, y, point.width, point.height)
             }
 
             this.screen.stroke();
         }
+    }
+
+    get shouldUpdatePath(): boolean {
+        return this.target && this.game.timer % this.pathInternal === 0;
     }
 }

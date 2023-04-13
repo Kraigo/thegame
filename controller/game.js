@@ -10,7 +10,7 @@ function init(io, socket) {
 	var player = {
 		socketId: socket.id,
 		position: startPosition[Math.floor(Math.random() * startPosition.length)],
-		lookAngel: 0
+		lookAngle: 0
 	};
 	gamePlayers[socket.id] = player;
 
@@ -42,12 +42,12 @@ function init(io, socket) {
 	}
 	function move(data) {
 		gamePlayers[socket.id].position = data.position;
-		gamePlayers[socket.id].lookAngel = data.lookAngel;;
+		gamePlayers[socket.id].lookAngle = data.lookAngle;;
 		gamePlayers[socket.id].direction = data.direction;
 		socket.broadcast.emit('move', {
 			socketId: socket.id,
 			position: data.position,
-			lookAngel: data.lookAngel,
+			lookAngle: data.lookAngle,
 			direction: data.direction
 		});
 	}

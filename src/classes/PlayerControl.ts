@@ -49,8 +49,12 @@ export class PlayerControl {
 		this.game.player.shooting.start = (this.game.mouse.isPressed(MouseKey.LEFT) || this.game.keyboard.isPressed(KeyboardKey.SPACE));
 	}
 	rotate() {
-		this.game.player.lookAngel = this.game.player.vectorAngle(
-			{x: this.game.player.view.x - this.game.camera.x + this.game.player.view.width/2, y: this.game.player.view.y - this.game.camera.y + this.game.player.view.width/2},
-			{x: this.game.mouse.x, y: this.game.mouse.y});
+		this.game.player.lookAngle = this.game.player.vectorAngle({
+            x: this.game.player.view.x - this.game.camera.x + this.game.player.view.width/2,
+            y: this.game.player.view.y - this.game.camera.y + this.game.player.view.width/2
+        },{
+            x: this.game.mouse.x,
+            y: this.game.mouse.y
+        });
 	}
 }

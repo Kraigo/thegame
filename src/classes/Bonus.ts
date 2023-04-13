@@ -13,12 +13,17 @@ export class Bonus extends Basis {
     title: string
 
     constructor(game, params: BonusParams = {}) {
-        super(game, params);
+        super(game, {
+            ...params,
+            view: {
+                ...params.view,
+                width: 24,
+                height: 24,
+            },
+        });
         this.bonus = params.bonus;
         this.time = 1000;
         this.title = 'bonus';
-        this.view.width = 24;
-        this.view.height = 24;
         this.effect = null
         this.permanent = false;
         this.createCollider();

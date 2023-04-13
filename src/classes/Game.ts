@@ -41,7 +41,7 @@ export class Game {
         this.canvas.height = document.body.offsetHeight - 10;
 
         this.bodies = [];
-        this.debug = false;
+        this.debug = true;
 
         this.screen = this.canvas.getContext('2d');
         this.screen.imageSmoothingEnabled = false;
@@ -66,7 +66,7 @@ export class Game {
         this.camera.setTarget(this.player);
         this.addBody(this.player);
 
-        for (var i = 0; i < 0; i++) {
+        for (var i = 0; i < 1; i++) {
             game.addBody(new Asteroid(game, { target: game.player, view: { width: 48, height: 48, x: 450, y: 500 } }));
         }
 
@@ -217,13 +217,5 @@ export class Game {
             game.addBody(game.builder);
 
         })
-    }
-
-    /**
-      * @deprecated The method should not be used
-      */
-    evalBody(modelName, params) {
-        let model = eval(modelName);
-        return new model(this, params);
     }
 }

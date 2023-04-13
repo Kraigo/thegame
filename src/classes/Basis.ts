@@ -1,7 +1,7 @@
 // import { Bonus } from "./Bonus";
 import { Game } from "./Game";
 import { SpriteAnimation, SpriteAnimationState } from "./Sprite";
-import { Direction, Health, ViewPosition, Attack } from "./utils/index";
+import { Health, ViewPosition, Attack, Vector } from "./utils/index";
 import * as SAT from 'sat';
 
 export interface BasisParams {
@@ -16,9 +16,9 @@ export interface BasisCollision {
 
 export class Basis {
     view: ViewPosition;
-    direction: Direction;
-    look: Direction;
-    lookAngel: number;
+    direction: Vector;
+    look: Vector;
+    lookAngle: number;
     speed: number;
     velocity: number;
     gravity: number;
@@ -40,9 +40,9 @@ export class Basis {
     ) {
         this.view = new ViewPosition(params.view);
         this.collider = null;
-        this.direction = { x: 0, y: 0 };
-        this.look = { x: 0, y: 0 }
-        this.lookAngel = 90;
+        this.direction = new Vector(0, 0);
+        this.look = new Vector(0, 0);
+        this.lookAngle = 90;
         this.speed = 0;
         this.velocity = 0;
         this.gravity = 0.5;
@@ -141,7 +141,8 @@ export class Basis {
 
         return (distance < b1.r + b2.r);
     }
-    collidingView(view) {
+
+    collidingView(view: ViewPosition): boolean {
         view.width = view.width || 0;
         view.height = view.height || 0;
         return !(this.view.x + this.view.width < view.x ||
@@ -149,12 +150,15 @@ export class Basis {
             this.view.x > view.x + view.width ||
             this.view.y > view.y + view.height);
     }
+
     collidingBody(body) {
         return (this != body && this.colliding({ x: this.view.x, y: this.view.y, r: this.view.width / 2 }, { x: body.view.x, y: body.view.y, r: body.view.width / 2 }));
     }
+
     isOuterCamera() {
         return !this.collidingView(this.view);
     }
+
     directionTo(view) {
         // (x1,y2) ==> (x2, y2)
         var vx = (view.x + view.width / 2) - (this.view.x + this.view.width / 2);
@@ -163,9 +167,9 @@ export class Basis {
         return { x: vx / dxy, y: vy / dxy }
     }
 
-    vectorAngle(p1, p2) {
+    vectorAngle(p1, p2): number {
         var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-        return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+        return angleRadians * 180 / Math.PI;
     }
 
     //vectorAngle(vector) {
@@ -201,7 +205,15 @@ export class Basis {
     }
 
     canAttack(body) {
-        return (this != body && this.colliding({ x: this.view.x, y: this.view.y, r: this.view.width / 2 }, { x: body.view.x, y: body.view.y, r: this.attack.range + this.view.width / 2 }));
+        return (this != body && this.colliding({
+            x: this.view.x,
+            y: this.view.y,
+            r: this.view.width / 2
+        }, {
+            x: body.view.x,
+            y: body.view.y,
+            r: this.attack.range + this.view.width / 2
+        }));
     }
 
     stepMove(x, y) {

@@ -46,7 +46,7 @@ export class Socket {
                 onJoin(data);
             }
             socketBodies[data.socketId].position = data.position;
-            socketBodies[data.socketId].lookAngel = data.lookAngel;
+            socketBodies[data.socketId].lookAngle = data.lookAngle;
             socketBodies[data.socketId].direction = data.direction;
 
         }
@@ -56,7 +56,7 @@ export class Socket {
 
             socketBodies[data.socketId] = socketPlayer;
             socketBodies[data.socketId].id = data.socketId;
-            socketBodies[data.socketId].lookAngel = data.lookAngel;
+            socketBodies[data.socketId].lookAngle = data.lookAngle;
 
             game.bodies.push(socketPlayer);
         }
@@ -79,7 +79,7 @@ export class Socket {
     move(player) {
         this.socket.emit('move', {
             position: player.position,
-            lookAngel: player.lookAngel,
+            lookAngle: player.lookAngle,
             direction: player.direction
         });
     }

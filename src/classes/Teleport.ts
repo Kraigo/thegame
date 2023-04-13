@@ -25,7 +25,7 @@ export class Teleport extends Block {
     }
 
     render() {
-        this.game.sprite.draw(this, this.lookAngel);
+        this.game.sprite.draw(this, this.lookAngle);
     }
 
     onEnter(body: Basis) {

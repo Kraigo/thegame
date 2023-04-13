@@ -2,10 +2,10 @@ import { Basis } from "./Basis";
 import { Block, BlockParams } from "./Block";
 import { Game } from "./Game";
 import { SpriteAnimationName } from "./Sprite";
+import { ViewPosition } from "./utils/view-position";
 
 export interface SpawnParams<T> extends BlockParams {
     time?: number,
-    populate: () => T;
 }
 
 export class Spawn<T extends Basis> extends Block {
@@ -14,15 +14,14 @@ export class Spawn<T extends Basis> extends Block {
     populationModel: any;
     populationParams: any;
     child?: any;
-    populate: () => T;
-    
+
     constructor(
         game: Game,
+        public populate: (view: ViewPosition) => T,
         params: SpawnParams<T>
     ) {
         super(game, params);
         this.time = params.time || 1000;
-        this.populate = params.populate.bind(this);
         this.interval = null;
         this.child = null;
         this.animation.name = SpriteAnimationName.spawner;
@@ -30,9 +29,11 @@ export class Spawn<T extends Basis> extends Block {
     }
 
     spawnItem() {
-        const body = this.populate();
-        body.view.x = this.view.x;
-        body.view.y = this.view.y;
+        const view = new ViewPosition({
+            x: this.view.x,
+            y: this.view.y
+        })
+        const body = this.populate(view);
         body.createCollider();
         this.child = body;
         this.game.addBody(body);
@@ -58,5 +59,5 @@ export class Spawn<T extends Basis> extends Block {
             // }
         }, this.time)
     }
-    
+
 }

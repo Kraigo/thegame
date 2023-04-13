@@ -3,7 +3,7 @@ import { Bonus } from "./Bonus";
 import { Bullet } from "./Bullet";
 import { Game } from "./Game";
 import { SpriteAnimationName, SpriteAnimationState } from "./Sprite";
-import { getRandomInt } from "./utils/index";
+import { Vector, ViewPosition, getRandomInt } from "./utils/index";
 import { Shooting } from "./utils/shootings";
 
 export interface UnitParams extends BasisParams {
@@ -15,80 +15,86 @@ export class Unit extends Basis {
     shooting: Shooting;
     bonuses: Bonus[];
 
-	constructor(game: Game, params: UnitParams = {}) {
-		super(game, params);
-		this.id = null;
-		this.speed = 3;
-		this.index = 1;
-		this.health.current = 90;
+    constructor(game: Game, params: UnitParams = {}) {
+        super(game, params);
+        this.id = null;
+        this.speed = 3;
+        this.index = 1;
+        this.health.current = 90;
         this.bonuses = [];
 
-		this.shooting = {
-			start: false,
-			bullet: 1,
-			rate: 3,
-			reload: 0
-		};
-		this.attack = {
-			damageMin: 5,
-			damageMax: 10,
-			range: 10
-		};
-		this.animation.name = SpriteAnimationName.player;
-	}
-	update() {
+        this.shooting = {
+            start: false,
+            bullet: 1,
+            rate: 3,
+            reload: 0,
+            projections: 5
+        };
+        this.attack = {
+            damageMin: 5,
+            damageMax: 10,
+            range: 10
+        };
+        this.animation.name = SpriteAnimationName.player;
+    }
+    update() {
 
-		//for (var i=0, body; i<this.game.bodies.length; i++) {
-		//	body = this.game.bodies[i];
-		//	if (body instanceof Asteroid && this.game.collidingBody(this, body)) {
-		//		console.log('loose');
-		//	}
-		//}
+        //for (var i=0, body; i<this.game.bodies.length; i++) {
+        //	body = this.game.bodies[i];
+        //	if (body instanceof Asteroid && this.game.collidingBody(this, body)) {
+        //		console.log('loose');
+        //	}
+        //}
 
-		this.shot();
-		this.move();
-		this.faceContacts();
-	}
-	move() {
-		if (this.direction.x || this.direction.y) {
-			this.stepMove(this.direction.x * this.speed, this.direction.y * this.speed);	
-			this.changeAnimation(SpriteAnimationState.walk);
-		} else {
-			this.changeAnimation(SpriteAnimationState.stand);
-		}
-		this.fixStuck();
-	}
-
-
-	shot() {
-		if (!this.shooting.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {
-			this.shooting.bullet = 1;
-			this.shooting.reload = 0;
-		}
+        this.shot();
+        this.move();
+        this.faceContacts();
+    }
+    move() {
+        if (this.direction.x || this.direction.y) {
+            this.stepMove(this.direction.x * this.speed, this.direction.y * this.speed);
+            this.changeAnimation(SpriteAnimationState.walk);
+        } else {
+            this.changeAnimation(SpriteAnimationState.stand);
+        }
+        this.fixStuck();
+    }
 
 
-		if(this.shooting.bullet && this.shooting.start) {
-			this.shooting.bullet = 0;
+    shot() {
+        if (!this.shooting.bullet && ++this.shooting.reload >= 60 / this.shooting.rate) {
+            this.shooting.bullet = 1;
+            this.shooting.reload = 0;
+        }
 
-			let bulletParams = {
-				x: this.view.x + this.view.width/2,
-				y: this.view.y + this.view.height/2,
-				direction: this.directionTo({
-					x: this.game.mouse.x + this.game.camera.x,
-					y: this.game.mouse.y + this.game.camera.y,
-					width: 0,
-					height: 0
-				}),
-				damage: getRandomInt(this.attack.damageMin, this.attack.damageMax),
-				owner: this.game.player
-			}
-			var bullet = new Bullet(this.game, bulletParams);
 
-			this.game.addBody(bullet);
+        if (this.shooting.bullet && this.shooting.start) {
+            this.shooting.bullet = 0;
 
-		}
+            for (let projection = 0; projection < this.shooting.projections; projection++) {
+                const startX = this.view.x + this.view.width / 2;
+                const startY = this.view.y + this.view.height / 2;
+                const directionX = this.game.mouse.x + this.game.camera.x;
+                const directionY = this.game.mouse.y + this.game.camera.y;
 
-	}
+                let bulletParams = {
+                    x: startX,
+                    y: startY,
+                    direction: this.view.directionToVector(new Vector(
+                        directionX + (projection * 10),
+                        directionY + (projection * 10),
+                    )),
+                    damage: getRandomInt(this.attack.damageMin, this.attack.damageMax),
+                    owner: this.game.player
+                }
+                var bullet = new Bullet(this.game, bulletParams);
+
+                this.game.addBody(bullet);
+            }
+
+        }
+
+    }
 
     removeBonus(bonus) {
         bonus.make(this, bonus.effect, true);
@@ -98,18 +104,28 @@ export class Unit extends Basis {
     addBonus(bonus) {
         // if (bonus instanceof Bonus) {
 
-		// 	bonus.make(this, bonus.effect);
+        // 	bonus.make(this, bonus.effect);
 
-		// 	if (!bonus.permanent) {
-		// 		this.bonuses.push(bonus);
+        // 	if (!bonus.permanent) {
+        // 		this.bonuses.push(bonus);
 
-		// 		if (bonus.time) {
-		// 			setTimeout(() => {
-		// 				this.removeBonus(bonus);
-		// 			}, bonus.time)
-		// 		}
-		// 	}
+        // 		if (bonus.time) {
+        // 			setTimeout(() => {
+        // 				this.removeBonus(bonus);
+        // 			}, bonus.time)
+        // 		}
+        // 	}
         // }
+    }
+
+    drawShadow() {
+        this.game.screen.beginPath();
+        const positionX = this.view.x + this.view.width / 2 - this.game.camera.x;
+        const positionY = this.view.y + this.view.height / 2 - this.game.camera.y;
+        const shadowSize = (this.view.width + this.view.height) / 6;
+        this.game.screen.arc(positionX, positionY, shadowSize, 0, 2 * Math.PI);
+        this.game.screen.fillStyle = "rgba(0,0,0,0.2)";
+        this.game.screen.fill();
     }
 
 }

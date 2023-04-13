@@ -1,13 +1,12 @@
 import { Basis, BasisParams } from "./Basis";
 import { SpriteAnimationName } from "./Sprite";
 import { Unit } from "./Unit";
-import { Direction } from "./utils/direction";
-import { getRandomInt } from "./utils/index";
+import { Vector, getRandomInt } from "./utils/index";
 
 export interface BulletParams extends BasisParams {
     x: number;
     y: number;
-    direction: Direction;
+    direction: Vector;
     damage: number;
     owner: Unit;
 }
@@ -17,11 +16,17 @@ export class Bullet extends Basis {
     timer: number;
 
     constructor(game, params: BulletParams) {
-        super(game, params);
-        this.view.width = 24;
-        this.view.height = 24;
-        this.view.x = params.x - this.view.width / 2;
-        this.view.y = params.y - this.view.height / 2;
+        const bulletSize = 24;
+        super(game, {
+            ...params,
+            view: {
+                ...params.view,
+                width: bulletSize,
+                height: bulletSize,
+                x: params.x - bulletSize / 2,
+                y: params.y - bulletSize / 2,
+            },
+        });
         this.direction = params.direction;
         this.speed = 5;
         this.animation.name = SpriteAnimationName.bullet;

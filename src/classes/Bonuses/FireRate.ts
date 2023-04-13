@@ -15,7 +15,7 @@ export class BonusFireRate extends Bonus {
     }
     
     render() {
-        this.game.sprite.draw(this, this.lookAngel);
+        this.game.sprite.draw(this, this.lookAngle);
     }
 
     applyEffect(body) {
