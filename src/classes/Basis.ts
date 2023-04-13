@@ -31,7 +31,7 @@ export class Basis {
     willAttack: boolean;
     rotationSpeed: number;
     density: number;
-    contacts: unknown[];
+    contacts: Basis[];
     index: number;
 
     constructor(
@@ -277,26 +277,21 @@ export class Basis {
     }
 
     faceContacts() {
+        const enterContacts = this.faceBodies();
 
-        let enterContacts = this.faceBodies();
-
-        for (var i = 0; i < enterContacts.length; i++) {
-            if(!enterContacts[i].body.willDie) {
-                enterContacts[i].body.onEnter(this);
-                // enterContacts[i].body.onEnter(this, enterContacts[i].response);
+        for (const contact of enterContacts) {
+            if(!contact.body.willDie) {
+                contact.body.onEnter(this);
             }
         }
 
+        let leaveContacts = this.contacts.filter(c => !enterContacts.some(e => e.body == c));
 
-        // TODO: Leave contacts? What is it?
-        // let leaveContacts = this.contacts.filter(c => !enterContacts.some(e => e.body == c));
+        for (const contact of leaveContacts) {
+            contact.onLeave(this);
+        }
 
-        // for (var i = 0; i < leaveContacts.length; i++) {
-        //     leaveContacts[i].onLeave(this);
-        // }
-
-        // this.contacts = enterContacts.map(c => c.body);
-        // return this.contacts;
+        this.contacts = enterContacts.map(c => c.body);
     }
 
 }

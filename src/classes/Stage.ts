@@ -11,6 +11,8 @@ import { BonusSpeedUp } from "./Bonuses/SpeedUp";
 import { Asteroid } from "./Asteroid";
 import { TripleFire } from "./Bonuses/TripleFire";
 import { Vector, ViewPosition } from "./utils/index";
+import { Player } from "./Player";
+import { Bonus } from "./Bonus";
 
 type LevelSolid = SAT.Box;
 
@@ -105,8 +107,26 @@ export class Stage {
             //     populate: () => new Asteroid(this.game, {
             //         target: this.game.player
             //     })
-            // })
+            // }),
+
+            new Teleport(this.game, {
+                view: {
+                    x: 63,
+                    y: 379
+                },
+                pairId: 'test'
+            }),
+
+            new Teleport(this.game, {
+                view: {
+                    x: 510,
+                    y: 238
+                },
+                pairId: 'test'
+            }),
         ]
+
+        this.sortBodies();
 
 
 
@@ -437,5 +457,20 @@ export class Stage {
                     ...meta.params
                 });
         }
+    }
+
+    sortBodyPriority(element): number {
+        switch (true) {
+            case element instanceof Player:
+                return 1;
+            case element instanceof Bonus:
+            case element instanceof Teleport:
+                return 10;
+            default:
+                return 100;
+        }
+    }
+    sortBodies() {
+        this.levelBodies.sort((a, b) => this.sortBodyPriority(b) - this.sortBodyPriority(a));
     }
 }

@@ -3,7 +3,7 @@ import { Bonus } from "./Bonus";
 import { Bullet } from "./Bullet";
 import { Game } from "./Game";
 import { SpriteAnimationName, SpriteAnimationState } from "./Sprite";
-import { Vector, ViewPosition, getRandomInt } from "./utils/index";
+import { Vector, getRandomInt } from "./utils/index";
 import { Shooting } from "./utils/shootings";
 
 export interface UnitParams extends BasisParams {
@@ -28,7 +28,7 @@ export class Unit extends Basis {
             bullet: 1,
             rate: 3,
             reload: 0,
-            projections: 5
+            projections: 1
         };
         this.attack = {
             damageMin: 5,
@@ -101,21 +101,19 @@ export class Unit extends Basis {
 
         this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
     }
-    addBonus(bonus) {
-        // if (bonus instanceof Bonus) {
 
-        // 	bonus.make(this, bonus.effect);
+    addBonus(bonus: Bonus): void {
+        bonus.make(this, bonus.effect);
 
-        // 	if (!bonus.permanent) {
-        // 		this.bonuses.push(bonus);
+        if (!bonus.permanent) {
+            this.bonuses.push(bonus);
 
-        // 		if (bonus.time) {
-        // 			setTimeout(() => {
-        // 				this.removeBonus(bonus);
-        // 			}, bonus.time)
-        // 		}
-        // 	}
-        // }
+            if (bonus.time) {
+                setTimeout(() => {
+                    this.removeBonus(bonus);
+                }, bonus.time)
+            }
+        }
     }
 
     drawShadow() {

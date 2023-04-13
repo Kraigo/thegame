@@ -6,7 +6,12 @@ export class TripleFire extends Bonus {
         super(game, params);
         this.title = 'TripleFire';
         this.time = 2000;
-        this.effect = {}
+        this.permanent = true;
+        this.effect = {
+            shooting: {
+                projections: 2
+            }
+        }
         this.animation.name = SpriteAnimationName.bonusTripleFire;
     }
     

@@ -12,7 +12,14 @@ export class Teleport extends Block {
     active: boolean;
 
     constructor(game, params: TeleportParams = {}) {
-        super(game, params);
+        super(game, {
+            ...params,
+            view: {
+                width: 52,
+                height: 52,
+                ...params.view
+            }
+        });
         this.pairId = params.pairId || Math.random().toString();
         this.active = true;
         this.animation.name = SpriteAnimationName.teleport;
@@ -35,7 +42,6 @@ export class Teleport extends Block {
                     b instanceof Teleport
                     && b !== this
                     && b.pairId === this.pairId);
-
                 (pairTeleport as Teleport).active = false;
                 body.teleport(pairTeleport.view.x, pairTeleport.view.y);
             }
