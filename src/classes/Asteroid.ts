@@ -96,35 +96,17 @@ export class Asteroid extends Unit {
         }
         else if (this.target) {
             for (let pointView of this.path) {
-                // if (this.collidingView(pointView)) {
-                //     this.path.splice( this.path.indexOf(pointView),1)
-                // }
-                if (!this.collidingView(pointView)) {
-                    this.direction = this.view.directionToVector(pointView);
-                    this.move();
-                    this.routeTo(pointView);
-                    this.changeAnimation(SpriteAnimationState.walk);
-                    break;
+                if (this.collidingView(pointView)) {
+                    const index = this.path.indexOf(pointView);
+                    this.path.splice(index, 1);
+                    continue;
                 }
+                this.direction = this.view.directionToVector(pointView);
+                this.move();
+                this.routeTo(pointView);
+                this.changeAnimation(SpriteAnimationState.walk);
+                break;
             }
-
-            // if (this.path.length) {
-            //     for (var i = 0, pointView; i < this.path.length; i++) {
-            //         pointView = this.path[i];
-
-            //         if (!this.collidingView(pointView)) {
-            //             this.direction = this.directionTo(pointView) as any;
-            //             this.move();
-            //             this.routeTo(pointView);
-            //             this.changeAnimation(SpriteAnimationState.walk);
-            //             break;
-
-            //         }
-
-            //     }
-
-            // }
-
         } else {
             this.path = [];
             this.changeAnimation(SpriteAnimationState.stand);

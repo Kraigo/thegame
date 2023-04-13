@@ -19,4 +19,11 @@ export class Vector {
         var angleRadians = Math.atan2(v.y - this.y, v.x - this.x);
         return angleRadians * 180 / Math.PI;
     }
+
+    rotate(angle: number) {
+        var nx = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+        var ny = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+
+        return new Vector(nx, ny);
+    }
 }
