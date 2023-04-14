@@ -2,6 +2,7 @@ import { Basis } from "./Basis";
 import { Unit } from "./Unit";
 import { Block, BlockParams } from "./Block";
 import { SpriteAnimationName } from "./Sprite";
+import { getUniqId } from "./utils/random";
 
 export interface TeleportParams extends BlockParams {
     pairId?: string;
@@ -20,11 +21,9 @@ export class Teleport extends Block {
                 ...params.view
             }
         });
-        this.pairId = params.pairId || Math.random().toString();
+        this.pairId = params.pairId || getUniqId();
         this.active = true;
         this.animation.name = SpriteAnimationName.teleport;
-        this.view.width = 52;
-        this.view.height = 52;
         this.collider = {
             r: 5
         }

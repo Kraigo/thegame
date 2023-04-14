@@ -3,16 +3,20 @@ import { Game } from "./Game";
 import { Size } from "./utils/size";
 
 export enum SpriteAnimationName {
-    player = 'player',
-    monster = 'monster',
-    bullet = 'bullet',
-    teleport = 'teleport',
-    bonusSpeed = 'bonusSpeed',
-    bonusHealth = 'bonusHealth',
-    bonusAmmo = 'bonusAmmo',
-    bonusFire = 'bonusFire',
-    bonusTripleFire = 'bonusTripleFire',
-    spawner = 'spawner',
+    player,
+    monster,
+    bullet,
+    teleport,
+    bonusSpeed,
+    bonusHealth,
+    bonusAmmo,
+    bonusFire,
+    bonusTripleFire,
+    spawner,
+    doorClosed,
+    doorOpen,
+    button,
+    buttonPressed
 }
 
 export enum SpriteAnimationState {
@@ -45,43 +49,55 @@ export type SpriteCollection = {
 }
 
 const SPRITES = {
-    player: {
+    [SpriteAnimationName.player]: {
         stand: [{x:0, y: 0}],
         walk: [{x:0, y: 0}, {x:48, y:0}, {x:96, y:0}, {x:144, y:0}, {x:0, y: 48}, {x:48, y:48}, {x:96, y:48}, {x:144, y:48}],
         die: [{x: 0, y: 336}, {x: 0, y: 336}, {x: 48, y: 336}, {x: 48, y: 336}]
     },
-    monster: {
+    [SpriteAnimationName.monster]: {
         stand: [{x:0, y: 144}],
         walk: [{x:0, y: 144}, {x:48, y:144}, {x:96, y:144}, {x:144, y:144},{x:0, y: 192}, {x:48, y:192}, {x:96, y:192}, {x:144, y:192}],
         bite: [{x: 0, y:240}, {x: 48, y:240}, {x: 96, y:240}],
         attack: [{x:0, y: 288}, {x:48, y: 288}, {x:96, y: 288}, {x:144, y: 288}, {x:192, y: 288}],
         die: [{x: 0, y: 336}, {x: 0, y: 336}, {x: 48, y: 336}, {x: 48, y: 336}]
     },
-    bullet: {
+    [SpriteAnimationName.bullet]: {
         stand: [{x:0, y: 96, w: 24, h:24}],
         die: [{x:0, y: 120, w: 24, h:24},{x:24, y: 120, w: 24, h:24}]
     },
-    teleport: {
+    [SpriteAnimationName.teleport]: {
         stand: [{x:0, y: 384, w: 52, h: 52}, {x:52, y: 384, w: 52, h: 52}, {x:104, y: 384, w: 52, h: 52}]
     },
-    bonusSpeed: {
+    [SpriteAnimationName.bonusSpeed]: {
         stand: [{x: 0, y: 436, w: 48, h: 48}]
     },
-    bonusHealth: {
+    [SpriteAnimationName.bonusHealth]: {
         stand: [{x: 48, y: 436, w: 48, h: 48}]
     },
-    bonusAmmo: {
+    [SpriteAnimationName.bonusAmmo]: {
         stand: [{x: 96, y: 436, w: 48, h: 48}]
     },
-    bonusFire: {
+    [SpriteAnimationName.bonusFire]: {
         stand: [{x: 144, y: 436, w: 48, h: 48}]
     },
-    bonusTripleFire: {
+    [SpriteAnimationName.bonusTripleFire]: {
         stand: [{x: 192, y: 436, w: 48, h: 48}]
     },
-    spawner: {
+    [SpriteAnimationName.spawner]: {
         stand: [{x: 48, y: 216}]
-    }
+    },
+    [SpriteAnimationName.doorClosed]: {
+        stand: [{x: 144, y: 488}]
+    },
+    [SpriteAnimationName.doorOpen]: {
+        stand: [{x: 96, y: 488}]
+    },
+    [SpriteAnimationName.button]: {
+        stand: [{x: 0, y: 488}]
+    },
+    [SpriteAnimationName.buttonPressed]: {
+        stand: [{x: 48, y: 488}]
+    },
 };
 
 

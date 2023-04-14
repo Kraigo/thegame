@@ -1,10 +1,11 @@
 // import { Bonus } from "./Bonus";
 import { Game } from "./Game";
 import { SpriteAnimation, SpriteAnimationState } from "./Sprite";
-import { Health, ViewPosition, Attack, Vector } from "./utils/index";
+import { Health, ViewPosition, Attack, Vector, getUniqId } from "./utils/index";
 import * as SAT from 'sat';
 
 export interface BasisParams {
+    id?: string;
     view: Partial<ViewPosition>
 }
 
@@ -15,6 +16,7 @@ export interface BasisCollision {
 }
 
 export class Basis {
+    id: string;
     view: ViewPosition;
     direction: Vector;
     look: Vector;
@@ -38,6 +40,8 @@ export class Basis {
         public readonly game: Game,
         params: BasisParams
     ) {
+        this.id = params.id || getUniqId(5);
+        this.index = 1;
         this.view = new ViewPosition(params.view);
         this.collider = null;
         this.direction = new Vector(0, 0);
@@ -95,6 +99,13 @@ export class Basis {
             this.game.screen.arc(this.collider.pos.x - this.game.camera.x, this.collider.pos.y - this.game.camera.y, this.collider.r, 0, 2 * Math.PI);
             this.game.screen.stroke();
         }
+
+
+        // this.game.screen.beginPath();
+        // this.game.screen.moveTo(this.game.player.view.x + this.game.camera.x, this.game.player.view.y + this.game.camera.x);
+        // this.game.screen.moveTo(this.game.mouse.x + this.game.camera.x, this.game.mouse.y + this.game.camera.y);
+        // this.game.screen.strokeStyle = 'red';
+        // this.game.screen.stroke();
     }
 
     healthBar() {

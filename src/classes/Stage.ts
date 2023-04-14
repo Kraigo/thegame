@@ -13,6 +13,8 @@ import { TripleFire } from "./Bonuses/TripleFire";
 import { Vector, ViewPosition } from "./utils/index";
 import { Player } from "./Player";
 import { Bonus } from "./Bonus";
+import { Door } from "./Door";
+import { Button } from "./Button";
 
 type LevelSolid = SAT.Box;
 
@@ -24,7 +26,6 @@ export class Stage {
     finder: PF.AStarFinder;
     levelGrid: PF.Grid;
 
-    levelBodies: Block[];
     level: any[];
     levelSolid: LevelSolid[];
 
@@ -49,106 +50,6 @@ export class Stage {
             // allowDiagonal: true,
             // dontCrossCorners: true
         });
-
-
-        this.levelBodies = [
-
-            new BonusHealth(this.game, {
-                view: {
-                    x: 408,
-                    y: 148
-                },
-                collider: {
-                    r: 5
-                }
-            }),
-            new TripleFire(this.game, {
-                view: {
-                    x: 408 - 48 * 4,
-                    y: 148
-                },
-                collider: {
-                    r: 5
-                }
-            }),
-            new BonusFireRate(this.game, {
-                view: {
-                    x: 360,
-                    y: 600
-                },
-                collider: {
-                    r: 5
-                }
-            }),
-            new Spawn(this.game,
-                (view) => new BonusSpeedUp(this.game, { view }),
-                {
-                    view: {
-                        x: 63,
-                        y: 312
-                    }
-                }),
-            // new Spawn(this.game, {
-            //     time: 5000,
-            //     view: {
-            //         x: 700,
-            //         y: 160
-            //     },
-            //     populate: () => new Asteroid(this.game, {
-            //         target: this.game.player
-            //     })
-            // }),
-            // new Spawn(this.game, {
-            //     time: 5000,
-            //     view: {
-            //         x: 50,
-            //         y: 670
-            //     },
-            //     populate: () => new Asteroid(this.game, {
-            //         target: this.game.player
-            //     })
-            // }),
-
-            new Teleport(this.game, {
-                view: {
-                    x: 63,
-                    y: 379
-                },
-                pairId: 'test'
-            }),
-
-            new Teleport(this.game, {
-                view: {
-                    x: 510,
-                    y: 238
-                },
-                pairId: 'test'
-            }),
-        ]
-
-        this.sortBodies();
-
-
-
-        //for (var x = 0; x < this.game.world.width; x+=this.size.width) {
-        //    for (var y = 0; y < this.game.world.height; y+=this.size.height) {
-        //        //if (x === 0 ) {
-        //        //    this.build(['wall_4', x, y]);
-        //        //} else if (y === 0 ) {
-        //        //    this.build(['wall_2', x, y]);
-        //        //} else if (x === this.game.world.width - this.size.width ) {
-        //        //    this.build(['wall_6', x, y]);
-        //        //} else if (y === this.game.world.height - this.size.height ) {
-        //        //    this.build(['wall_8', x, y]);
-        //        //} else {
-        //            this.build(['wall_5', x, y]);
-        //        //}
-        //
-        //    }
-        //}
-
-        this.loadLevel('1');
-
     }
 
     render() {
@@ -250,8 +151,161 @@ export class Stage {
         }
     }
 
+    prebuildLevel() {
+        const levelBodies = [
+
+            new BonusHealth(this.game, {
+                view: {
+                    x: 408,
+                    y: 148
+                },
+                collider: {
+                    r: 5
+                }
+            }),
+            new TripleFire(this.game, {
+                view: {
+                    x: 408 - 48 * 4,
+                    y: 148
+                },
+                collider: {
+                    r: 5
+                }
+            }),
+            new BonusFireRate(this.game, {
+                view: {
+                    x: 360,
+                    y: 600
+                },
+                collider: {
+                    r: 5
+                }
+            }),
+            new Spawn(this.game,
+                (view) => new BonusSpeedUp(this.game, { view }),
+                {
+                    view: {
+                        x: 63,
+                        y: 312
+                    }
+                }),
+            // new Spawn(this.game, {
+            //     time: 5000,
+            //     view: {
+            //         x: 700,
+            //         y: 160
+            //     },
+            //     populate: () => new Asteroid(this.game, {
+            //         target: this.game.player
+            //     })
+            // }),
+            // new Spawn(this.game, {
+            //     time: 5000,
+            //     view: {
+            //         x: 50,
+            //         y: 670
+            //     },
+            //     populate: () => new Asteroid(this.game, {
+            //         target: this.game.player
+            //     })
+            // }),
+
+            new Teleport(this.game, {
+                view: {
+                    x: 63,
+                    y: 379
+                },
+                pairId: 'test'
+            }),
+
+            new Teleport(this.game, {
+                view: {
+                    x: 510,
+                    y: 238
+                },
+                pairId: 'test'
+            }),
+            new Door(this.game, {
+                id: 'door1',
+                view: {
+                    x: 768,
+                    y: 460
+                },
+            }),
+            new Door(this.game, {
+                id: 'door1',
+                view: {
+                    x: 768,
+                    y: 460 + 24
+                },
+            }),
+            new Door(this.game, {
+                id: 'door1',
+                view: {
+                    x: 768,
+                    y: 508
+                },
+            }),
+            new Door(this.game, {
+                id: 'door1',
+                view: {
+                    x: 768,
+                    y: 508 + 24
+                },
+            }),
+            new Button(this.game, {
+                view: {
+                    x: 617,
+                    y: 479
+                },
+                targetId: 'door1'
+            }),
+            new Button(this.game, {
+                view: {
+                    x: 784,
+                    y: 484
+                },
+                targetId: 'door2'
+            }),
+            new Door(this.game, {
+                id: 'door2',
+                view: {
+                    x: 768+96,
+                    y: 460
+                },
+            }),
+            new Door(this.game, {
+                id: 'door2',
+                view: {
+                    x: 768+96,
+                    y: 460 + 24
+                },
+            }),
+            new Door(this.game, {
+                id: 'door2',
+                view: {
+                    x: 768+96,
+                    y: 508
+                },
+            }),
+            new Door(this.game, {
+                id: 'door2',
+                view: {
+                    x: 768+96,
+                    y: 508 + 24
+                },
+            }),
+        ]
+        
+        for (const body of levelBodies) {
+            this.game.addBody(body);
+        }
+    }
+
 
     async loadLevel(lvl) {
+
+        this.prebuildLevel();
 
         const resp = await fetch('levels/level_' + lvl + '.json');
         const levelData = await resp.json();
@@ -275,13 +329,6 @@ export class Stage {
         for (const meta of levelData.bodies) {
             const body = this.parseBody(meta);
             this.game.addBody(body);
-        }
-
-        for (const body of this.levelBodies) {
-            this.game.addBody(body);
-
-            // let body = this.game.evalBody(this.levelBodies[i].model, this.levelBodies[i].params);
-            // self.game.addBody(body);
         }
 
 
@@ -469,8 +516,5 @@ export class Stage {
             default:
                 return 100;
         }
-    }
-    sortBodies() {
-        this.levelBodies.sort((a, b) => this.sortBodyPriority(b) - this.sortBodyPriority(a));
     }
 }

@@ -19,7 +19,7 @@ export class Unit extends Basis {
         super(game, params);
         this.id = null;
         this.speed = 3;
-        this.index = 1;
+        this.index = 1000;
         this.health.current = 90;
         this.bonuses = [];
 
@@ -70,15 +70,16 @@ export class Unit extends Basis {
 
         if (this.shooting.bullet && this.shooting.start) {
             this.shooting.bullet = 0;
+            const rotateOffset = this.shooting.projections * 5;
 
             for (let projection = 0; projection < this.shooting.projections; projection++) {
                 const startX = this.view.x + this.view.width / 2;
                 const startY = this.view.y + this.view.height / 2;
+                const bulletSize = 24;
                 const target = new Vector(
-                    this.game.mouse.x + this.game.camera.x,
-                    this.game.mouse.y + this.game.camera.y,
+                    this.game.mouse.x + this.game.camera.x - bulletSize,
+                    this.game.mouse.y + this.game.camera.y - bulletSize,
                 )
-                const rotateOffset = projection * 10;
                 const rotate = getRandomInt(-rotateOffset, rotateOffset);
 
                 let bulletParams = {
@@ -91,9 +92,7 @@ export class Unit extends Basis {
                     owner: this.game.player
                 }
 
-                console.log(bulletParams);
                 var bullet = new Bullet(this.game, bulletParams);
-
                 this.game.addBody(bullet);
             }
 

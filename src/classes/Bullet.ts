@@ -18,15 +18,15 @@ export class Bullet extends Basis {
         super(game, {
             ...params,
             view: {
+                ...params.view,
                 width: bulletSize,
                 height: bulletSize,
                 x: params.view.x - bulletSize / 2,
                 y: params.view.y - bulletSize / 2,
-                ...params.view,
             },
         });
         this.direction = params.direction;
-        this.speed = 5;
+        this.speed = getRandomInt(5,7);
         this.animation.name = SpriteAnimationName.bullet;
         this.attack.damageMin = params.damage;
         this.attack.damageMax = params.damage;

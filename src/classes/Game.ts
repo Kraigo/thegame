@@ -65,35 +65,24 @@ export class Game {
 
         this.camera.setTarget(this.player);
         this.addBody(this.player);
+        this.modeToggler();
 
         for (var i = 0; i < 0; i++) {
-            game.addBody(new Asteroid(game, { target: game.player, view: { width: 48, height: 48, x: 450, y: 500 } }));
+            game.addBody(new Asteroid(this, { target: game.player, view: { width: 48, height: 48, x: 450, y: 500 } }));
         }
+    }
 
-        // setInterval(function() {
-        // 	var x, y;
-        // 	if (game.camera.x < 0) {
-        // 		x = game.camera.width / 2;
-        // 	} else if (game.camera.x > 48) {
-        // 		x = game.camera.width / 2 + game.camera.x - 48;
-        // 	}
-
-        // 	if (game.camera.y < 0) {
-        // 		y = game.camera.height;
-        // 	} else if (game.camera.y > 48) {
-        // 		y = game.camera.y - 48;
-        // 	}
-        // 	game.addBody(new Asteroid(game, {target: game.player, width: 48, height: 48, x: x, y: y}));
-        // }, 1000);
+    async init() {
+        const game = this;
+        await this.stage.loadLevel('1');
 
 
-        var tick = function () {
+        const tick = function () {
             game.update();
             game.render();
             requestAnimationFrame(tick);
         };
         tick();
-        this.modeToggler();
     }
 
     render() {
@@ -119,8 +108,7 @@ export class Game {
         this.screen.rect(0 - this.camera.x, 0 - this.camera.y, this.world.width, this.world.height);
         this.screen.stroke();
 
-        for (var i = 0, body; i < this.bodies.length; i++) {
-            body = this.bodies[i];
+        for (let body of this.bodies) {
             if (this.camera.isCameraShow(body)) {
                 body.render();
             }
@@ -154,7 +142,7 @@ export class Game {
 
     addBody(body) {
         this.bodies.push(body);
-        this.bodies.sort(b => b.index);
+        this.bodies.sort((a, b) => a.index - b.index);
     }
 
     removeBody(body) {
