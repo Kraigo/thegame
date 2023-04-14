@@ -11,7 +11,7 @@ export class Teleport extends Block {
     pairId: String;
     active: boolean;
 
-    constructor(game, params: TeleportParams = {}) {
+    constructor(game, params: TeleportParams) {
         super(game, {
             ...params,
             view: {

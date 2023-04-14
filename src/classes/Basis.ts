@@ -5,7 +5,7 @@ import { Health, ViewPosition, Attack, Vector } from "./utils/index";
 import * as SAT from 'sat';
 
 export interface BasisParams {
-    view?: Partial<ViewPosition>
+    view: Partial<ViewPosition>
 }
 
 export interface BasisCollision {
@@ -36,7 +36,7 @@ export class Basis {
 
     constructor(
         public readonly game: Game,
-        params: BasisParams = {}
+        params: BasisParams
     ) {
         this.view = new ViewPosition(params.view);
         this.collider = null;
@@ -158,24 +158,6 @@ export class Basis {
     isOuterCamera() {
         return !this.collidingView(this.view);
     }
-
-    directionTo(view) {
-        // (x1,y2) ==> (x2, y2)
-        var vx = (view.x + view.width / 2) - (this.view.x + this.view.width / 2);
-        var vy = (view.y + view.height / 2) - (this.view.y + this.view.height / 2);
-        var dxy = Math.sqrt(vx * vx + vy * vy);
-        return { x: vx / dxy, y: vy / dxy }
-    }
-
-    vectorAngle(p1, p2): number {
-        var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-        return angleRadians * 180 / Math.PI;
-    }
-
-    //vectorAngle(vector) {
-    //	var angleRad = Math.acos( vector.x / Math.sqrt(vector.x*vector.x + vector.y*vector.y) );
-    //	return angleRad * 180 / Math.PI;
-    //}
 
     changeAnimation(state: SpriteAnimationState) {
         if (this.animation.state != state) {

@@ -47,9 +47,8 @@ export class Asteroid extends Unit {
 
     render() {
         this.drawShadow();
-        const angle = this.vectorAngle(
-            { x: this.view.x - this.game.camera.x, y: this.view.y - this.game.camera.y },
-            { x: this.view.x - this.game.camera.x + this.look.x, y: this.view.y - this.game.camera.y + this.look.y });
+        const lookVector = new Vector(this.view.x + this.look.x, this.view.y + this.look.y)
+        const angle = this.view.angleTo(lookVector);
         this.game.sprite.draw(this, angle);
         this.healthBar();
 

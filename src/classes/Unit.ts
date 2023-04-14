@@ -15,7 +15,7 @@ export class Unit extends Basis {
     shooting: Shooting;
     bonuses: Bonus[];
 
-    constructor(game: Game, params: UnitParams = {}) {
+    constructor(game: Game, params: UnitParams) {
         super(game, params);
         this.id = null;
         this.speed = 3;
@@ -28,7 +28,7 @@ export class Unit extends Basis {
             bullet: 1,
             rate: 3,
             reload: 0,
-            projections: 1
+            projections: 3
         };
         this.attack = {
             damageMin: 5,
@@ -74,19 +74,24 @@ export class Unit extends Basis {
             for (let projection = 0; projection < this.shooting.projections; projection++) {
                 const startX = this.view.x + this.view.width / 2;
                 const startY = this.view.y + this.view.height / 2;
-                const directionX = this.game.mouse.x + this.game.camera.x;
-                const directionY = this.game.mouse.y + this.game.camera.y;
+                const target = new Vector(
+                    this.game.mouse.x + this.game.camera.x,
+                    this.game.mouse.y + this.game.camera.y,
+                )
+                const rotateOffset = projection * 10;
+                const rotate = getRandomInt(-rotateOffset, rotateOffset);
 
                 let bulletParams = {
-                    x: startX,
-                    y: startY,
-                    direction: this.view.directionToVector(new Vector(
-                        directionX + (projection * 10),
-                        directionY + (projection * 10),
-                    )),
+                    view: {
+                        x: startX,
+                        y: startY
+                    },
+                    direction: this.view.directionToVector(target).rotateDegree(rotate),
                     damage: getRandomInt(this.attack.damageMin, this.attack.damageMax),
                     owner: this.game.player
                 }
+
+                console.log(bulletParams);
                 var bullet = new Bullet(this.game, bulletParams);
 
                 this.game.addBody(bullet);

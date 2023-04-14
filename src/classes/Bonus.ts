@@ -12,7 +12,7 @@ export class Bonus extends Basis {
     permanent: boolean;
     title: string
 
-    constructor(game, params: BonusParams = {}) {
+    constructor(game, params: BonusParams) {
         super(game, {
             ...params,
             view: {

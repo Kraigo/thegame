@@ -9,15 +9,13 @@ export class Builder extends Basis {
     viewSy: number;
 
     constructor(game) {
-        super(game, {});
-
-        this.view = new ViewPosition({
-            width: 24,
-            height: 24,
-            // x: 0,
-            // y: 0,
-            // sx: 0,
-            // sy: 0
+        super(game, {
+            view: {
+                x: 0,
+                y: 0,
+                width: 24,
+                height: 24
+            }
         });
         this.speed = 3;
         this.material = {

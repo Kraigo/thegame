@@ -4,8 +4,6 @@ import { Unit } from "./Unit";
 import { Vector, getRandomInt } from "./utils/index";
 
 export interface BulletParams extends BasisParams {
-    x: number;
-    y: number;
     direction: Vector;
     damage: number;
     owner: Unit;
@@ -20,11 +18,11 @@ export class Bullet extends Basis {
         super(game, {
             ...params,
             view: {
-                ...params.view,
                 width: bulletSize,
                 height: bulletSize,
-                x: params.x - bulletSize / 2,
-                y: params.y - bulletSize / 2,
+                x: params.view.x - bulletSize / 2,
+                y: params.view.y - bulletSize / 2,
+                ...params.view,
             },
         });
         this.direction = params.direction;
@@ -89,10 +87,11 @@ export class Bullet extends Basis {
         }
     }
     render() {
-
-        var angle = this.vectorAngle(
-            { x: this.view.x - this.game.camera.x, y: this.view.y - this.game.camera.y },
-            { x: this.view.x - this.game.camera.x + this.direction.x * this.speed, y: this.view.y - this.game.camera.y + this.direction.y * this.speed });
+        const targetVector = new Vector(
+            this.view.x + this.direction.x * this.speed,
+            this.view.y + this.direction.y * this.speed
+        );
+        const angle = this.view.angleTo(targetVector);
         this.game.sprite.draw(this, angle);
 
         //this.faceBarrier(true);
